@@ -1,9 +1,14 @@
 .header {
     box-sizing: border-box;
-    background-color: var(--header-bg);
-    min-width: 300px;
+    background-color: var(--background);
+    min-width: 350px;
     display: flex;
     justify-content: center;
+}
+
+.nav {
+    max-width: 1400px;
+    width: 100%;
 }
 
 .nav_list {
@@ -18,25 +23,19 @@
     align-items: center;
     white-space: nowrap;
     cursor: pointer;
-    color: var(--text-color);
+    color: var(--text-inactive-color);
 }
 
 .nav_item.nav_item_selected {
-    color: var(--white);
+    color: var(--text-primary-color);
 }
 
 
 @media screen and (min-width: 1000px) {
-    .nav {
-        max-width: 1200px;
-        width: 100%;
-    }
-
     .nav_list {
         flex-direction: row;
         justify-content: space-between;
         gap: 50px;
-        width: 100%;
     }
 
     .nav_item:first-child {

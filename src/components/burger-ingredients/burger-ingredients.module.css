@@ -1,0 +1,18 @@
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.ingredients_container {
+    max-height: 60vh;
+    overflow-y: scroll;
+}
+
+.ingredients {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    gap: 15px;
+    margin-right: 15px;
+}

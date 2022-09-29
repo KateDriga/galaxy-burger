@@ -1,0 +1,35 @@
+import {
+  CurrencyIcon,
+  Counter,
+} from '@ya.praktikum/react-developer-burger-ui-components';
+import burgerIngredientStyles from './burger-ingredient.module.css';
+import { useState } from 'react';
+
+export const BurgerIngredient = ({ imgSrc, imgSrcMobile, price, ingName }) => {
+  const [ingCount, setIngCount] = useState(0);
+
+  return (
+    <div
+      className={burgerIngredientStyles.burger_ingredient}
+      onClick={() => setIngCount(prevState => ++prevState)}
+    >
+      {ingCount > 0 && <Counter count={ingCount} size="default" />}
+      <img
+        className={burgerIngredientStyles.burger_image}
+        alt="Burger Item"
+        src={imgSrcMobile}
+        srcSet={`${imgSrc} 1000w`}
+      />
+      <p
+        className={`${burgerIngredientStyles.burger_price} text text_type_digits-default p-1`}
+      >
+        {price} <CurrencyIcon type="primary" />
+      </p>
+      <p
+        className={`${burgerIngredientStyles.burger_name} text text_type_main-default`}
+      >
+        {ingName}
+      </p>
+    </div>
+  );
+};
