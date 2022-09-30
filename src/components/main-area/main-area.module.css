@@ -11,6 +11,12 @@
     justify-content: center;
     gap: 50px;
     max-width: 1400px;
+    min-width: 320px;
+    width: 100%;
+}
+
+.section {
+    flex-basis: 50%;
 }
 
 @media screen and (min-width: 1000px) {

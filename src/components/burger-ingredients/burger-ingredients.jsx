@@ -1,19 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
-import ingredientsData from '../../utils/data.json';
 import burgerIngredientsStyles from './burger-ingredients.module.css';
 import { BurgerIngredient } from '../burger-ingredient/burger-ingredient';
 import { useIsInViewport } from '../../hooks/useIsInViewport';
 
-export const BurgerIngredients = () => {
+export const BurgerIngredients = ({ burgerIngredients }) => {
   const ingLabels = {
     bun: 'Булки',
     sauce: 'Соусы',
     main: 'Начинки',
   };
   const ingTypes = useMemo(() => {
-    return [...new Set(ingredientsData.map(i => i['type']))];
-  }, []);
+    return [...new Set(burgerIngredients?.map(i => i['type']))];
+  }, [burgerIngredients]);
 
   const [currentIngType, setCurrentIngType] = useState(ingTypes[0]);
 
@@ -68,7 +67,7 @@ export const BurgerIngredients = () => {
                 {ingLabels[t] ?? 'Прочее'}
               </h3>
               <div className={burgerIngredientsStyles.ingredients}>
-                {ingredientsData
+                {burgerIngredients
                   .filter(i => i['type'] === t)
                   .map(i => (
                     <BurgerIngredient

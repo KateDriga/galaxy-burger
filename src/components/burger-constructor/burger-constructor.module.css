@@ -1,0 +1,68 @@
+.constructor, .ingredients_middle {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.constructor {
+    max-height: 70vh;
+    overflow-x: auto;
+}
+
+.ingredients_middle {
+    overflow-y: auto;
+    overflow-x: auto;
+    min-height: 30vh;
+}
+
+.constructor_element_row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.constructor_element {
+    display: flex;
+    max-width: 300px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.order_details {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 40px;
+    max-width: 300px;
+}
+
+.order_details_price {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+@media screen and (min-width: 600px) {
+    .constructor_element {
+        max-width: inherit;
+        justify-content: center;
+    }
+
+    .order_details {
+        max-width: inherit;
+    }
+}
+
+@media screen and (min-width: 1000px) {
+    .constructor {
+        align-items: end;
+    }
+
+    .constructor_element {
+        max-width: inherit;
+        justify-content: end;
+    }
+}
