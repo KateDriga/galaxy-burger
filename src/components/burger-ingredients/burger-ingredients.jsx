@@ -3,6 +3,8 @@ import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import burgerIngredientsStyles from './burger-ingredients.module.css';
 import { BurgerIngredient } from '../burger-ingredient/burger-ingredient';
 import { useIsInViewport } from '../../hooks/useIsInViewport';
+import PropTypes from 'prop-types';
+import { ingredientPropTypes } from '../../utils/propTypes';
 
 export const BurgerIngredients = ({ burgerIngredients }) => {
   const ingLabels = {
@@ -85,4 +87,8 @@ export const BurgerIngredients = ({ burgerIngredients }) => {
       </div>
     </>
   );
+};
+
+BurgerIngredients.propTypes = {
+  burgerIngredients: PropTypes.arrayOf(ingredientPropTypes).isRequired,
 };

@@ -4,6 +4,7 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import burgerIngredientStyles from './burger-ingredient.module.css';
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 
 export const BurgerIngredient = ({ imgSrc, imgSrcMobile, price, ingName }) => {
   const [ingCount, setIngCount] = useState(0);
@@ -32,4 +33,11 @@ export const BurgerIngredient = ({ imgSrc, imgSrcMobile, price, ingName }) => {
       </p>
     </div>
   );
+};
+
+BurgerIngredient.propTypes = {
+  imgSrc: PropTypes.string.isRequired,
+  imgSrcMobile: PropTypes.string.isRequired,
+  price: PropTypes.number.isRequired,
+  ingName: PropTypes.string.isRequired,
 };

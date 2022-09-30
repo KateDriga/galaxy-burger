@@ -5,8 +5,10 @@ import {
   DragIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import defaultImg from '../../images/blankImage.png';
+import { ingredientPropTypes } from '../../utils/propTypes';
 import burgerConstructorStyles from './burger-constructor.module.css';
 import cn from 'classnames';
+import PropTypes from 'prop-types';
 
 export const BurgerConstructor = ({ bunIngredient, midIngredients }) => {
   const totalPrice =
@@ -76,4 +78,9 @@ export const BurgerConstructor = ({ bunIngredient, midIngredients }) => {
       </div>
     </div>
   );
+};
+
+BurgerConstructor.propTypes = {
+  bunIngredient: ingredientPropTypes.isRequired,
+  midIngredients: PropTypes.arrayOf(ingredientPropTypes).isRequired,
 };
