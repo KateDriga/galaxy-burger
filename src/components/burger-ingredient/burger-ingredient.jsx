@@ -8,11 +8,12 @@ import PropTypes from 'prop-types';
 
 export const BurgerIngredient = ({ imgSrc, imgSrcMobile, price, ingName }) => {
   const [ingCount, setIngCount] = useState(0);
+  const incrementIngredient = () => setIngCount(prevState => ++prevState);
 
   return (
     <div
       className={burgerIngredientStyles.burger_ingredient}
-      onClick={() => setIngCount(prevState => ++prevState)}
+      onClick={incrementIngredient}
     >
       {ingCount > 0 && <Counter count={ingCount} size="default" />}
       <img

@@ -1,32 +1,34 @@
 import { Logo } from '@ya.praktikum/react-developer-burger-ui-components';
+import { MENU_ITEMS } from '../../utils/appConstVariables';
 import cn from 'classnames';
 import appHeaderStyles from './app-header.module.css';
-import { useState } from 'react';
-import { menuItems } from '../../utils/menu';
 
 export const AppHeader = () => {
-  const [selectedMenuId, setSelectedMenuId] = useState(menuItems[0]._id);
+  const selectedMenuItem = 'Конструктор';
 
   return (
     <header className={cn(appHeaderStyles.header, 'p-10')}>
       <nav className={appHeaderStyles.nav}>
         <ul className={appHeaderStyles.nav_list}>
           <li className={appHeaderStyles.nav_item}>
-            <Logo />
+            <a href="#" className={appHeaderStyles.nav_item_link}>
+              <Logo />
+            </a>
           </li>
-          {menuItems.map(i => {
-            const isSelected = i._id === selectedMenuId;
+          {MENU_ITEMS.map(i => {
+            const isSelected = i.label === selectedMenuItem;
             const IconTag = i.iconTag;
             return (
-              <li
-                key={i._id}
-                onClick={() => setSelectedMenuId(i._id)}
-                className={cn(appHeaderStyles.nav_item, {
-                  [appHeaderStyles.nav_item_selected]: isSelected,
-                })}
-              >
-                <IconTag type={isSelected ? 'primary' : 'secondary'} />
-                <p className="text text_type_main-default p-2">{i.label}</p>
+              <li key={i.label} className={appHeaderStyles.nav_item}>
+                <a
+                  href="#"
+                  className={cn(appHeaderStyles.nav_item_link, {
+                    [appHeaderStyles.nav_item_link_selected]: isSelected,
+                  })}
+                >
+                  <IconTag type={isSelected ? 'primary' : 'secondary'} />
+                  <p className="text text_type_main-default p-2">{i.label}</p>
+                </a>
               </li>
             );
           })}

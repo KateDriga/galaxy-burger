@@ -4,16 +4,19 @@ import {
   CurrencyIcon,
   DragIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import defaultImg from '../../images/blankImage.png';
-import { ingredientPropTypes } from '../../utils/propTypes';
+import { INGREDIENT_PROP_TYPES } from '../../utils/propTypes';
 import burgerConstructorStyles from './burger-constructor.module.css';
 import cn from 'classnames';
 import PropTypes from 'prop-types';
+import { useMemo } from 'react';
 
 export const BurgerConstructor = ({ bunIngredient, midIngredients }) => {
-  const totalPrice =
-    bunIngredient?.price * 2 +
-    midIngredients?.map(i => i.price).reduce((a, b) => a + b, 0);
+  const totalPrice = useMemo(() => {
+    return (
+      bunIngredient.price * 2 +
+      midIngredients.map(i => i.price).reduce((a, b) => a + b, 0)
+    );
+  }, [bunIngredient, midIngredients]);
 
   return (
     <div className={cn(burgerConstructorStyles.constructor, 'custom-scroll')}>
@@ -21,9 +24,9 @@ export const BurgerConstructor = ({ bunIngredient, midIngredients }) => {
         <ConstructorElement
           type="top"
           isLocked={true}
-          text={bunIngredient?.name || 'Выберите булку'}
-          price={bunIngredient?.price || 0}
-          thumbnail={bunIngredient?.image_mobile || defaultImg}
+          text={bunIngredient.name}
+          price={bunIngredient.price}
+          thumbnail={bunIngredient.image_mobile}
         />
       </div>
       <div
@@ -33,7 +36,7 @@ export const BurgerConstructor = ({ bunIngredient, midIngredients }) => {
           'p-2'
         )}
       >
-        {midIngredients?.map(i => (
+        {midIngredients.map(i => (
           <div
             key={i._id}
             className={burgerConstructorStyles.constructor_element_row}
@@ -53,9 +56,9 @@ export const BurgerConstructor = ({ bunIngredient, midIngredients }) => {
         <ConstructorElement
           type="bottom"
           isLocked={true}
-          text={bunIngredient?.name || 'Выберите булку'}
-          price={bunIngredient?.price || 0}
-          thumbnail={bunIngredient?.image_mobile || defaultImg}
+          text={bunIngredient.name}
+          price={bunIngredient.price}
+          thumbnail={bunIngredient.image_mobile}
         />
       </div>
       <div
@@ -81,6 +84,6 @@ export const BurgerConstructor = ({ bunIngredient, midIngredients }) => {
 };
 
 BurgerConstructor.propTypes = {
-  bunIngredient: ingredientPropTypes.isRequired,
-  midIngredients: PropTypes.arrayOf(ingredientPropTypes).isRequired,
+  bunIngredient: INGREDIENT_PROP_TYPES.isRequired,
+  midIngredients: PropTypes.arrayOf(INGREDIENT_PROP_TYPES).isRequired,
 };

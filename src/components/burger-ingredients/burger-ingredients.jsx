@@ -1,43 +1,46 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
-import burgerIngredientsStyles from './burger-ingredients.module.css';
-import { BurgerIngredient } from '../burger-ingredient/burger-ingredient';
 import { useIsInViewport } from '../../hooks/useIsInViewport';
+import { IngredientsCategory } from '../ingredients-category/ingredients-category';
+import { INGREDIENT_PROP_TYPES } from '../../utils/propTypes';
+import { INGREDIENTS_TABS } from '../../utils/appConstVariables';
+import burgerIngredientsStyles from './burger-ingredients.module.css';
 import PropTypes from 'prop-types';
-import { ingredientPropTypes } from '../../utils/propTypes';
 
 export const BurgerIngredients = ({ burgerIngredients }) => {
-  const ingLabels = {
-    bun: 'Булки',
-    sauce: 'Соусы',
-    main: 'Начинки',
-  };
-  const ingTypes = useMemo(() => {
-    return [...new Set(burgerIngredients?.map(i => i['type']))];
+  const categoryIngredientsMap = useMemo(() => {
+    const buns = burgerIngredients.filter(ing => ing.type === 'bun');
+    const sauces = burgerIngredients.filter(ing => ing.type === 'sauce');
+    const mains = burgerIngredients.filter(ing => ing.type === 'main');
+    return new Map([
+      ['bun', buns],
+      ['sauce', sauces],
+      ['main', mains],
+    ]);
   }, [burgerIngredients]);
 
-  const [currentIngType, setCurrentIngType] = useState(ingTypes[0]);
+  const [currentIngType, setCurrentIngType] = useState('bun');
 
-  const ingTypeRefs = useMemo(() => {
+  const ingTypeRefsMap = useMemo(() => {
     const refs = new Map();
-    ingTypes.forEach(t => refs.set(t, React.createRef()));
+    INGREDIENTS_TABS.forEach(t => refs.set(t.type, React.createRef()));
     return refs;
-  }, [ingTypes]);
+  }, []);
 
-  const refInViewport = useIsInViewport(ingTypeRefs);
+  const refInViewport = useIsInViewport(ingTypeRefsMap);
 
   useEffect(() => {
-    const ingType = [...ingTypeRefs.entries()].find(
+    const ingType = [...ingTypeRefsMap.entries()].find(
       ([_, v]) => v.current === refInViewport
     )?.[0];
     if (ingType) {
       setCurrentIngType(ingType);
     }
-  }, [ingTypeRefs, refInViewport]);
+  }, [ingTypeRefsMap, refInViewport]);
 
   const onTabSelected = value => {
     setCurrentIngType(value);
-    ingTypeRefs.get(value).current.scrollIntoView({
+    ingTypeRefsMap.get(value).current.scrollIntoView({
       behavior: 'smooth',
       block: 'start',
     });
@@ -46,15 +49,15 @@ export const BurgerIngredients = ({ burgerIngredients }) => {
   return (
     <>
       <div className={burgerIngredientsStyles.tabs}>
-        {ingTypes.map(t => {
+        {INGREDIENTS_TABS.map(t => {
           return (
             <Tab
-              key={t}
-              value={t}
-              active={currentIngType === t}
+              key={t.type}
+              value={t.type}
+              active={currentIngType === t.type}
               onClick={onTabSelected}
             >
-              {ingLabels[t] ?? 'Прочее'}
+              {t.label}
             </Tab>
           );
         })}
@@ -62,26 +65,14 @@ export const BurgerIngredients = ({ burgerIngredients }) => {
       <div
         className={`${burgerIngredientsStyles.ingredients_container} custom-scroll`}
       >
-        {ingTypes.map(t => {
+        {INGREDIENTS_TABS.map(t => {
           return (
-            <div key={t} ref={ingTypeRefs.get(t)}>
-              <h3 className="text text_type_main-medium pt-10">
-                {ingLabels[t] ?? 'Прочее'}
-              </h3>
-              <div className={burgerIngredientsStyles.ingredients}>
-                {burgerIngredients
-                  .filter(i => i['type'] === t)
-                  .map(i => (
-                    <BurgerIngredient
-                      key={i['_id']}
-                      imgSrc={i['image']}
-                      imgSrcMobile={i['image_mobile']}
-                      price={i['price']}
-                      ingName={i['name']}
-                    />
-                  ))}
-              </div>
-            </div>
+            <IngredientsCategory
+              key={t.type}
+              title={t.label}
+              ingredients={categoryIngredientsMap.get(t.type)}
+              categoryRef={ingTypeRefsMap.get(t.type)}
+            />
           );
         })}
       </div>
@@ -90,5 +81,5 @@ export const BurgerIngredients = ({ burgerIngredients }) => {
 };
 
 BurgerIngredients.propTypes = {
-  burgerIngredients: PropTypes.arrayOf(ingredientPropTypes).isRequired,
+  burgerIngredients: PropTypes.arrayOf(INGREDIENT_PROP_TYPES).isRequired,
 };

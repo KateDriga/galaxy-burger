@@ -4,20 +4,32 @@ import {
   ProfileIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
-export const menuItems = [
+export const MENU_ITEMS = [
   {
-    _id: 1,
     label: 'Конструктор',
     iconTag: BurgerIcon,
   },
   {
-    _id: 2,
     label: 'Лента заказов',
     iconTag: ListIcon,
   },
   {
-    _id: 3,
     label: 'Личный кабинет',
     iconTag: ProfileIcon,
+  },
+];
+
+export const INGREDIENTS_TABS = [
+  {
+    label: 'Булки',
+    type: 'bun',
+  },
+  {
+    label: 'Соусы',
+    type: 'sauce',
+  },
+  {
+    label: 'Начинки',
+    type: 'main',
   },
 ];
