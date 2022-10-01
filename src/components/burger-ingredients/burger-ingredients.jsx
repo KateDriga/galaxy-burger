@@ -30,13 +30,8 @@ export const BurgerIngredients = ({ burgerIngredients }) => {
   const refInViewport = useIsInViewport(ingTypeRefsMap);
 
   useEffect(() => {
-    const ingType = [...ingTypeRefsMap.entries()].find(
-      ([_, v]) => v.current === refInViewport
-    )?.[0];
-    if (ingType) {
-      setCurrentIngType(ingType);
-    }
-  }, [ingTypeRefsMap, refInViewport]);
+    setCurrentIngType(refInViewport);
+  }, [refInViewport]);
 
   const onTabSelected = value => {
     setCurrentIngType(value);
