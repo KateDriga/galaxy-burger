@@ -4,11 +4,12 @@ import {
   CurrencyIcon,
   DragIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
+import { useMemo } from 'react';
 import { INGREDIENT_PROP_TYPES } from '../../utils/propTypes';
+import { DEFAULT_BUN_INGREDIENT } from '../../utils/appConstVariables';
+import PropTypes from 'prop-types';
 import burgerConstructorStyles from './burger-constructor.module.css';
 import cn from 'classnames';
-import PropTypes from 'prop-types';
-import { useMemo } from 'react';
 
 export const BurgerConstructor = ({ bunIngredient, midIngredients }) => {
   const totalPrice = useMemo(() => {
@@ -86,4 +87,9 @@ export const BurgerConstructor = ({ bunIngredient, midIngredients }) => {
 BurgerConstructor.propTypes = {
   bunIngredient: INGREDIENT_PROP_TYPES.isRequired,
   midIngredients: PropTypes.arrayOf(INGREDIENT_PROP_TYPES).isRequired,
+};
+
+BurgerConstructor.defaultProps = {
+  bunIngredient: DEFAULT_BUN_INGREDIENT,
+  midIngredients: [],
 };

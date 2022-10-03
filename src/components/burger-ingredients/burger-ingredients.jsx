@@ -4,8 +4,8 @@ import { useIsInViewport } from '../../hooks/useIsInViewport';
 import { IngredientsCategory } from '../ingredients-category/ingredients-category';
 import { INGREDIENT_PROP_TYPES } from '../../utils/propTypes';
 import { INGREDIENTS_TABS } from '../../utils/appConstVariables';
-import burgerIngredientsStyles from './burger-ingredients.module.css';
 import PropTypes from 'prop-types';
+import burgerIngredientsStyles from './burger-ingredients.module.css';
 
 export const BurgerIngredients = ({ burgerIngredients }) => {
   const categoryIngredientsMap = useMemo(() => {
