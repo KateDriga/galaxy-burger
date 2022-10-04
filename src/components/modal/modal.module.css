@@ -1,0 +1,39 @@
+.modal {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    z-index: 999;
+}
+
+.modal_content {
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    max-width: 720px;
+    min-width: 320px;
+    max-height: 540px;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    background-color: var(--background);
+    display: flex;
+    flex-direction: column;
+    border-radius: 25px;
+    box-sizing: border-box;
+}
+
+.modal_header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.modal_close_icon {
+    fill: var(--text-inactive-color);
+    min-width: 24px;
+}
+
+.modal_close_icon:hover, .modal_close_icon:focus {
+    fill: var(--text-primary-color);
+}

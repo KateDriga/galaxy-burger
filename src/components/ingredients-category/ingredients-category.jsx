@@ -11,10 +11,14 @@ export const IngredientsCategory = ({ title, ingredients, categoryRef }) => {
         {ingredients.map(i => (
           <BurgerIngredient
             key={i._id}
-            imgSrc={i.image}
+            imgSrc={i.image_large}
             imgSrcMobile={i.image_mobile}
             price={i.price}
             ingName={i.name}
+            calories={i.calories}
+            proteins={i.proteins}
+            fat={i.fat}
+            carbohydrates={i.carbohydrates}
           />
         ))}
       </div>
