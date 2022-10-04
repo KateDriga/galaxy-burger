@@ -11,6 +11,8 @@ export const AppHeader = () => {
       <nav className={appHeaderStyles.nav}>
         <ul className={appHeaderStyles.nav_list}>
           <li className={appHeaderStyles.nav_item}>
+            {/*TODO add router link*/}
+            {/*eslint-disable-next-line*/}
             <a href="#" className={appHeaderStyles.nav_item_link}>
               <Logo />
             </a>
@@ -20,6 +22,8 @@ export const AppHeader = () => {
             const IconTag = i.iconTag;
             return (
               <li key={i.label} className={appHeaderStyles.nav_item}>
+                {/*TODO add router link*/}
+                {/*eslint-disable-next-line*/}
                 <a
                   href="#"
                   className={cn(appHeaderStyles.nav_item_link, {
