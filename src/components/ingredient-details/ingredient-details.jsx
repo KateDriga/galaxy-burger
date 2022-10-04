@@ -12,7 +12,7 @@ export const IngredientDetails = ({
   carbohydrates,
 }) => {
   return (
-    <div className={ingredientDetailsStyles.ingredient_details}>
+    <>
       <img
         alt="Burger Item"
         src={imgSrcMobile}
@@ -69,7 +69,7 @@ export const IngredientDetails = ({
           </span>
         </li>
       </ul>
-    </div>
+    </>
   );
 };
 

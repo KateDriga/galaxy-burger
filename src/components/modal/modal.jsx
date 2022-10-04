@@ -19,7 +19,7 @@ export const Modal = ({ children, title, onClose }) => {
   return ReactDOM.createPortal(
     <div className={modalStyles.modal}>
       <ModalOverlay onClose={onClose} />
-      <div className={cn(modalStyles.modal_content, 'p-10')}>
+      <div className={cn(modalStyles.modal_content, 'p-10', 'custom-scroll')}>
         <div className={modalStyles.modal_header}>
           <h2 className="text text_type_main-large">{title}</h2>
           <CloseIcon
@@ -28,7 +28,7 @@ export const Modal = ({ children, title, onClose }) => {
             tabIndex="0"
           />
         </div>
-        {children}
+        <div className={modalStyles.modal_info}>{children}</div>
       </div>
     </div>,
     MODAL_ROOT

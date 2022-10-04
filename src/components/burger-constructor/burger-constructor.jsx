@@ -4,20 +4,42 @@ import {
   CurrencyIcon,
   DragIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useMemo } from 'react';
+import { Modal } from '../modal/modal';
+import { OrderDetails } from '../order-details/order-details';
+import { useCallback, useMemo, useState } from 'react';
 import { INGREDIENT_PROP_TYPES } from '../../utils/propTypes';
 import { DEFAULT_BUN_INGREDIENT } from '../../utils/appConstVariables';
-import PropTypes from 'prop-types';
 import burgerConstructorStyles from './burger-constructor.module.css';
 import cn from 'classnames';
+import PropTypes from 'prop-types';
 
 export const BurgerConstructor = ({ bunIngredient, midIngredients }) => {
+  const [modalIsVisible, setModalIsVisible] = useState(false);
+
   const totalPrice = useMemo(() => {
     return (
       bunIngredient.price * 2 +
       midIngredients.map(i => i.price).reduce((a, b) => a + b, 0)
     );
   }, [bunIngredient, midIngredients]);
+
+  // TODO replace test data with info from server
+  const generateRandomOrderNumber = useCallback(() => {
+    return Math.trunc(Math.random() * 100_000) + 1;
+  }, []);
+
+  const placeOrder = () => {
+    if (totalPrice > 0) {
+      setModalIsVisible(true);
+    }
+  };
+  const handleCloseModal = () => setModalIsVisible(false);
+
+  const modal = (
+    <Modal onClose={handleCloseModal} title="">
+      <OrderDetails orderNumber={generateRandomOrderNumber()} />
+    </Modal>
+  );
 
   return (
     <div className={cn(burgerConstructorStyles.constructor, 'custom-scroll')}>
@@ -75,11 +97,17 @@ export const BurgerConstructor = ({ bunIngredient, midIngredients }) => {
           <CurrencyIcon type="primary" />
         </div>
         {totalPrice > 0 && (
-          <Button type="primary" size="large" htmlType="button">
+          <Button
+            type="primary"
+            size="large"
+            htmlType="button"
+            onClick={placeOrder}
+          >
             Оформить заказ
           </Button>
         )}
       </div>
+      {modalIsVisible && modal}
     </div>
   );
 };

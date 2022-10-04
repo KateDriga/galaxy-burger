@@ -1,11 +1,3 @@
-.ingredient_details {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 620px;
-    align-self: center;
-}
-
 .ingredient_image {
     width: 100%;
 }
