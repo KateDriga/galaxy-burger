@@ -1,3 +1,9 @@
+# Project overview
+
+Stellar Burgers - burger at the edge of the Universe. 
+Create an order from any menu items with Drag'n'Drop.
+Order feed is updated in real time and allows to review all the receipts and details of the orders.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
