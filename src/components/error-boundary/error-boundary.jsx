@@ -1,4 +1,5 @@
 import React from 'react';
+import errorBoundaryStyles from './error-boundary.module.css';
 
 export class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -18,7 +19,7 @@ export class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <section>
+        <section className={errorBoundaryStyles.error_section}>
           <h1>Что-то пошло не так :(</h1>
           <p>Пожалуйста, перезагрузите страницу или зайдите позднее.</p>
         </section>

@@ -5,7 +5,7 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import blankImage from '../images/blank-image.png';
 
-export const BASE_URL = 'https://norma.nomoreparties.space/api/ingredients';
+export const BASE_URL = 'https://norma.nomoreparties.space/api';
 
 export const MODAL_ROOT = document.getElementById('modal');
 

@@ -9,17 +9,7 @@ export const IngredientsCategory = ({ title, ingredients, categoryRef }) => {
       <h3 className="text text_type_main-medium pt-10">{title}</h3>
       <div className={ingredientsCategoryStyles.ingredients}>
         {ingredients.map(i => (
-          <BurgerIngredient
-            key={i._id}
-            imgSrc={i.image_large}
-            imgSrcMobile={i.image_mobile}
-            price={i.price}
-            ingName={i.name}
-            calories={i.calories}
-            proteins={i.proteins}
-            fat={i.fat}
-            carbohydrates={i.carbohydrates}
-          />
+          <BurgerIngredient key={i._id} ingredient={i} />
         ))}
       </div>
     </div>

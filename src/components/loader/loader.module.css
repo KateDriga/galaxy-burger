@@ -6,6 +6,7 @@
     height: 80px;
     position: fixed;
     top: 40%;
+    left: calc(50% - 40px);
     animation: spin 1s linear infinite;
 }
 

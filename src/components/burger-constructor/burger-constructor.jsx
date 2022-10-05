@@ -35,12 +35,6 @@ export const BurgerConstructor = ({ bunIngredient, midIngredients }) => {
   };
   const handleCloseModal = () => setModalIsVisible(false);
 
-  const modal = (
-    <Modal onClose={handleCloseModal} title="">
-      <OrderDetails orderNumber={generateRandomOrderNumber()} />
-    </Modal>
-  );
-
   return (
     <div className={cn(burgerConstructorStyles.constructor, 'custom-scroll')}>
       <div className={cn(burgerConstructorStyles.constructor_element, 'pr-5')}>
@@ -107,7 +101,11 @@ export const BurgerConstructor = ({ bunIngredient, midIngredients }) => {
           </Button>
         )}
       </div>
-      {modalIsVisible && modal}
+      {modalIsVisible && (
+        <Modal onClose={handleCloseModal} title="">
+          <OrderDetails orderNumber={generateRandomOrderNumber()} />
+        </Modal>
+      )}
     </div>
   );
 };

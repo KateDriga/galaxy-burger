@@ -8,34 +8,33 @@ import PropTypes from 'prop-types';
 import burgerIngredientsStyles from './burger-ingredients.module.css';
 
 export const BurgerIngredients = ({ burgerIngredients }) => {
-  const categoryIngredientsMap = useMemo(() => {
+  const categoryIngredients = useMemo(() => {
     const buns = burgerIngredients.filter(ing => ing.type === 'bun');
     const sauces = burgerIngredients.filter(ing => ing.type === 'sauce');
     const mains = burgerIngredients.filter(ing => ing.type === 'main');
-    return new Map([
-      ['bun', buns],
-      ['sauce', sauces],
-      ['main', mains],
-    ]);
+    return {
+      bun: { ingredients: buns, categoryRef: React.createRef() },
+      sauce: { ingredients: sauces, categoryRef: React.createRef() },
+      main: { ingredients: mains, categoryRef: React.createRef() },
+    };
   }, [burgerIngredients]);
 
-  const [currentIngType, setCurrentIngType] = useState('bun');
+  const [currentIngRef, setCurrentIngRef] = useState(
+    categoryIngredients.bun.categoryRef
+  );
 
-  const ingTypeRefsMap = useMemo(() => {
-    const refs = new Map();
-    INGREDIENTS_TABS.forEach(t => refs.set(t.type, React.createRef()));
-    return refs;
-  }, []);
-
-  const refInViewport = useIsInViewport(ingTypeRefsMap);
+  const refInViewport = useIsInViewport(
+    Object.values(categoryIngredients).map(v => v.categoryRef)
+  );
 
   useEffect(() => {
-    setCurrentIngType(refInViewport);
+    setCurrentIngRef(refInViewport);
   }, [refInViewport]);
 
-  const onTabSelected = value => {
-    setCurrentIngType(value);
-    ingTypeRefsMap.get(value).current.scrollIntoView({
+  const onTabSelected = category => {
+    const ingRef = categoryIngredients[category].categoryRef;
+    setCurrentIngRef(ingRef);
+    ingRef.current.scrollIntoView({
       behavior: 'smooth',
       block: 'start',
     });
@@ -49,7 +48,10 @@ export const BurgerIngredients = ({ burgerIngredients }) => {
             <Tab
               key={t.type}
               value={t.type}
-              active={currentIngType === t.type}
+              active={
+                currentIngRef ===
+                categoryIngredients[t.type].categoryRef.current
+              }
               onClick={onTabSelected}
             >
               {t.label}
@@ -65,8 +67,8 @@ export const BurgerIngredients = ({ burgerIngredients }) => {
             <IngredientsCategory
               key={t.type}
               title={t.label}
-              ingredients={categoryIngredientsMap.get(t.type)}
-              categoryRef={ingTypeRefsMap.get(t.type)}
+              ingredients={categoryIngredients[t.type].ingredients}
+              categoryRef={categoryIngredients[t.type].categoryRef}
             />
           );
         })}

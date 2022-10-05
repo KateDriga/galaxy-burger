@@ -5,19 +5,10 @@ import {
 import { Modal } from '../modal/modal';
 import { IngredientDetails } from '../ingredient-details/ingredient-details';
 import { useState } from 'react';
+import { INGREDIENT_PROP_TYPES } from '../../utils/propTypes';
 import burgerIngredientStyles from './burger-ingredient.module.css';
-import PropTypes from 'prop-types';
 
-export const BurgerIngredient = ({
-  imgSrc,
-  imgSrcMobile,
-  price,
-  ingName,
-  calories,
-  proteins,
-  fat,
-  carbohydrates,
-}) => {
+export const BurgerIngredient = ({ ingredient }) => {
   // TODO implement increment ingredient functionality
   const ingCount = 0;
   // const [ingCount, setIngCount] = useState(0);
@@ -26,20 +17,6 @@ export const BurgerIngredient = ({
   const [modalIsVisible, setModalIsVisible] = useState(false);
   const handleOpenModal = () => setModalIsVisible(true);
   const handleCloseModal = () => setModalIsVisible(false);
-
-  const modal = (
-    <Modal title="Детали ингредиента" onClose={handleCloseModal}>
-      <IngredientDetails
-        name={ingName}
-        imgSrc={imgSrc}
-        imgSrcMobile={imgSrcMobile}
-        calories={calories}
-        proteins={proteins}
-        fat={fat}
-        carbohydrates={carbohydrates}
-      />
-    </Modal>
-  );
 
   return (
     <>
@@ -51,28 +28,29 @@ export const BurgerIngredient = ({
         <img
           className={burgerIngredientStyles.burger_image}
           alt="Burger Item"
-          src={imgSrcMobile}
-          srcSet={`${imgSrc} 1000w`}
+          src={ingredient.image_mobile}
+          srcSet={`${ingredient.image} 1000w`}
         />
         <p
           className={`${burgerIngredientStyles.burger_price} text text_type_digits-default p-1`}
         >
-          {price} <CurrencyIcon type="primary" />
+          {ingredient.price} <CurrencyIcon type="primary" />
         </p>
         <p
           className={`${burgerIngredientStyles.burger_name} text text_type_main-default`}
         >
-          {ingName}
+          {ingredient.name}
         </p>
       </div>
-      {modalIsVisible && modal}
+      {modalIsVisible && (
+        <Modal title="Детали ингредиента" onClose={handleCloseModal}>
+          <IngredientDetails ingredient={ingredient} />
+        </Modal>
+      )}
     </>
   );
 };
 
 BurgerIngredient.propTypes = {
-  imgSrc: PropTypes.string.isRequired,
-  imgSrcMobile: PropTypes.string.isRequired,
-  price: PropTypes.number.isRequired,
-  ingName: PropTypes.string.isRequired,
+  ingredient: INGREDIENT_PROP_TYPES.isRequired,
 };
