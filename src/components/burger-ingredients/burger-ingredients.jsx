@@ -32,9 +32,9 @@ export const BurgerIngredients = ({ burgerIngredients }) => {
   }, [refInViewport]);
 
   const onTabSelected = category => {
-    const ingRef = categoryIngredients[category].categoryRef;
+    const ingRef = categoryIngredients[category].categoryRef.current;
     setCurrentIngRef(ingRef);
-    ingRef.current.scrollIntoView({
+    ingRef.scrollIntoView({
       behavior: 'smooth',
       block: 'start',
     });
