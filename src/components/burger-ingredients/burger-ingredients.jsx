@@ -48,10 +48,7 @@ export const BurgerIngredients = ({ burgerIngredients }) => {
             <Tab
               key={t.type}
               value={t.type}
-              active={
-                currentIngRef ===
-                categoryIngredients[t.type].categoryRef.current
-              }
+              active={currentIngRef === categoryIngredients[t.type].categoryRef}
               onClick={onTabSelected}
             >
               {t.label}

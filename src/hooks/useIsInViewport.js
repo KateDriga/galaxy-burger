@@ -20,5 +20,5 @@ export const useIsInViewport = refs => {
     };
   }, [refs]);
 
-  return intersectingRef;
+  return refs.find(r => r.current === intersectingRef);
 };
