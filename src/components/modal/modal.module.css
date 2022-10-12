@@ -32,6 +32,7 @@
 .modal_close_icon {
     fill: var(--text-inactive-color);
     min-width: 24px;
+    cursor: pointer;
 }
 
 .modal_close_icon:hover, .modal_close_icon:focus {

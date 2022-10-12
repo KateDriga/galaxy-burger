@@ -6,22 +6,31 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Modal } from '../modal/modal';
 import { OrderDetails } from '../order-details/order-details';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { INGREDIENT_PROP_TYPES } from '../../utils/propTypes';
-import { DEFAULT_BUN_INGREDIENT } from '../../utils/appConstVariables';
+import { BUN_INGREDIENT_PLACEHOLDER } from '../../utils/appConstVariables';
 import burgerConstructorStyles from './burger-constructor.module.css';
 import cn from 'classnames';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectBurgerIngredients,
+  selectConstructorBunIngredient,
+  selectConstructorMiddleIngredients,
+  selectTotalPrice,
+} from '../../services/selectors/ingredients';
+import { placeNewOrder } from '../../services/effects/orders';
 
-export const BurgerConstructor = ({ bunIngredient, midIngredients }) => {
+export const BurgerConstructor = () => {
+  const dispatch = useDispatch();
   const [modalIsVisible, setModalIsVisible] = useState(false);
 
-  const totalPrice = useMemo(() => {
-    return (
-      bunIngredient.price * 2 +
-      midIngredients.map(i => i.price).reduce((a, b) => a + b, 0)
-    );
-  }, [bunIngredient, midIngredients]);
+  const bunIngredient =
+    useSelector(selectConstructorBunIngredient) || BUN_INGREDIENT_PLACEHOLDER;
+  const midIngredients = useSelector(selectConstructorMiddleIngredients);
+  // const midIngredients = useSelector(selectBurgerIngredients);
+
+  const totalPrice = useSelector(selectTotalPrice) || 100;
 
   // TODO replace test data with info from server
   const generateRandomOrderNumber = useCallback(() => {
@@ -29,9 +38,10 @@ export const BurgerConstructor = ({ bunIngredient, midIngredients }) => {
   }, []);
 
   const placeOrder = () => {
-    if (totalPrice > 0) {
-      setModalIsVisible(true);
-    }
+    dispatch(placeNewOrder());
+    // if (totalPrice > 0) {
+    //   // setModalIsVisible(true);
+    // }
   };
   const handleCloseModal = () => setModalIsVisible(false);
 
@@ -116,6 +126,6 @@ BurgerConstructor.propTypes = {
 };
 
 BurgerConstructor.defaultProps = {
-  bunIngredient: DEFAULT_BUN_INGREDIENT,
+  bunIngredient: BUN_INGREDIENT_PLACEHOLDER,
   midIngredients: [],
 };

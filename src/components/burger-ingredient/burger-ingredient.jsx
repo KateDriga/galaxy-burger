@@ -5,6 +5,11 @@ import {
 import { Modal } from '../modal/modal';
 import { IngredientDetails } from '../ingredient-details/ingredient-details';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import {
+  viewIngredientDetails,
+  closeIngredientDetails,
+} from '../../services/slices/ingredients';
 import { INGREDIENT_PROP_TYPES } from '../../utils/propTypes';
 import burgerIngredientStyles from './burger-ingredient.module.css';
 
@@ -14,9 +19,16 @@ export const BurgerIngredient = ({ ingredient }) => {
   // const [ingCount, setIngCount] = useState(0);
   // const incrementIngredient = () => setIngCount(prevState => ++prevState);
 
+  const dispatch = useDispatch();
   const [modalIsVisible, setModalIsVisible] = useState(false);
-  const handleOpenModal = () => setModalIsVisible(true);
-  const handleCloseModal = () => setModalIsVisible(false);
+  const handleOpenModal = () => {
+    setModalIsVisible(true);
+    dispatch(viewIngredientDetails({ id: ingredient._id }));
+  };
+  const handleCloseModal = () => {
+    setModalIsVisible(false);
+    dispatch(closeIngredientDetails());
+  };
 
   return (
     <>

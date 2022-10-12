@@ -39,7 +39,7 @@ export const INGREDIENTS_TABS = [
   },
 ];
 
-export const DEFAULT_BUN_INGREDIENT = {
+export const BUN_INGREDIENT_PLACEHOLDER = {
   _id: '0000000000000000',
   name: 'Здесь может быть Ваша булка. Перетащите ее в это поле :)',
   type: 'bun',

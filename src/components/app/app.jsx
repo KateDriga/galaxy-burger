@@ -1,30 +1,17 @@
 import { AppHeader } from '../app-header/app-header';
 import { MainArea } from '../main-area/main-area';
 import { Loader } from '../loader/loader';
-import { useEffect, useState } from 'react';
-import { getIngredients } from '../../utils/burger-api';
 import { ErrorBoundary } from '../error-boundary/error-boundary';
+import { useSelector } from 'react-redux';
+import { selectBurgerIngredientsLoading } from '../../services/selectors/ingredients';
 
 export const App = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [burgerIngredients, setBurgerIngredients] = useState(null);
-
-  useEffect(() => {
-    getIngredients()
-      .then(setBurgerIngredients)
-      .finally(() => setIsLoading(false));
-  }, []);
+  const isLoading = useSelector(selectBurgerIngredientsLoading);
 
   return (
     <>
       <AppHeader />
-      <ErrorBoundary>
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <MainArea burgerIngredients={burgerIngredients} />
-        )}
-      </ErrorBoundary>
+      <ErrorBoundary>{isLoading ? <Loader /> : <MainArea />}</ErrorBoundary>
     </>
   );
 };
