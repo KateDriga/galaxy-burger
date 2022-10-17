@@ -6,7 +6,7 @@ import { Modal } from '../modal/modal';
 import { OrderDetails } from '../order-details/order-details';
 import { ConstructorIngredient } from '../constructor-ingredient/constructor-ingredient';
 import { Loader } from '../loader/loader';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -14,12 +14,15 @@ import {
   selectConstructorMiddleIngredientIds,
   selectTotalPrice,
 } from '../../services/selectors/ingredients';
-import { placeNewOrder } from '../../services/effects/orders';
+import { placeNewOrder } from '../../services/thunks/orders';
 import {
   addBunIngredientToConstructor,
   addMiddleIngredientToConstructor,
 } from '../../services/slices/ingredients';
-import { selectOrderIsLoading } from '../../services/selectors/orders';
+import {
+  selectOrderIsFailed,
+  selectOrderIsLoading,
+} from '../../services/selectors/orders';
 import { BUN_INGREDIENT_PLACEHOLDER } from '../../utils/appConstVariables';
 import burgerConstructorStyles from './burger-constructor.module.css';
 import cn from 'classnames';
@@ -27,6 +30,7 @@ import cn from 'classnames';
 export const BurgerConstructor = () => {
   const dispatch = useDispatch();
   const isLoading = useSelector(selectOrderIsLoading);
+  const failCreatingOrder = useSelector(selectOrderIsFailed);
   const [modalIsVisible, setModalIsVisible] = useState(false);
 
   const bunIngredient =
@@ -43,13 +47,11 @@ export const BurgerConstructor = () => {
     },
   });
 
-  const placeOrder = () => dispatch(placeNewOrder());
+  const placeOrder = () => {
+    dispatch(placeNewOrder());
+    setModalIsVisible(true);
+  };
   const handleCloseModal = () => setModalIsVisible(false);
-
-  // TODO replace test data with info from server
-  const generateRandomOrderNumber = useCallback(() => {
-    return Math.trunc(Math.random() * 100_000) + 1;
-  }, []);
 
   return isLoading ? (
     <Loader />
@@ -103,7 +105,14 @@ export const BurgerConstructor = () => {
       </div>
       {modalIsVisible && (
         <Modal onClose={handleCloseModal} title="">
-          <OrderDetails orderNumber={generateRandomOrderNumber()} />
+          {failCreatingOrder ? (
+            <p className="text text_type_main-default">
+              К сожалению возникли технические недоладки. Попробуйте оформить
+              заказ еще раз.
+            </p>
+          ) : (
+            <OrderDetails />
+          )}
         </Modal>
       )}
     </div>

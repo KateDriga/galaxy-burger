@@ -6,6 +6,8 @@ export const selectBurgerIngredients = state =>
 export const selectBurgerIngredientsLoading = state =>
   state.ingredients.isLoading;
 
+export const selectFailLoadingIngredients = state => state.ingredients.isFailed;
+
 export const selectBurgerIngredientById = (state, id) =>
   state.ingredients.burgerIngredients[id];
 
@@ -16,11 +18,6 @@ export const selectConstructorBunIngredient = state =>
 
 export const selectConstructorMiddleIngredientIds = state =>
   state.ingredients.constructorIngredientIds.middleIngredientIds;
-
-export const selectConstructorMiddleIngredients = state =>
-  selectConstructorMiddleIngredientIds(state).map(id =>
-    selectBurgerIngredientById(state, id)
-  );
 
 export const selectConstructorIngredientIds = state =>
   state.ingredients.constructorIngredientIds;

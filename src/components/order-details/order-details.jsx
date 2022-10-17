@@ -1,9 +1,12 @@
 import doneImage from '../../images/done.png';
+import { useSelector } from 'react-redux';
+import { selectOrderNumber } from '../../services/selectors/orders';
 import orderDetailsStyles from './order-details.module.css';
 import cn from 'classnames';
-import PropTypes from 'prop-types';
 
-export const OrderDetails = ({ orderNumber }) => {
+export const OrderDetails = () => {
+  const orderNumber = useSelector(selectOrderNumber);
+
   return (
     <>
       <h1
@@ -38,8 +41,4 @@ export const OrderDetails = ({ orderNumber }) => {
       </p>
     </>
   );
-};
-
-OrderDetails.propTypes = {
-  orderNumber: PropTypes.number.isRequired,
 };

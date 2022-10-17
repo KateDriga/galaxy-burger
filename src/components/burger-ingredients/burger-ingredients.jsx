@@ -3,17 +3,23 @@ import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import { IngredientsCategory } from '../ingredients-category/ingredients-category';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIsInViewport } from '../../hooks/useIsInViewport';
-import { loadIngredients } from '../../services/effects/ingredients';
-import { selectBurgerIngredients } from '../../services/selectors/ingredients';
+import { loadIngredients } from '../../services/thunks/ingredients';
+import {
+  selectBurgerIngredients,
+  selectFailLoadingIngredients,
+} from '../../services/selectors/ingredients';
 import { INGREDIENTS_TABS } from '../../utils/appConstVariables';
 import burgerIngredientsStyles from './burger-ingredients.module.css';
 
 export const BurgerIngredients = () => {
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(loadIngredients());
   }, [dispatch]);
+
   const burgerIngredients = useSelector(selectBurgerIngredients);
+  const failLoadingIngredients = useSelector(selectFailLoadingIngredients);
 
   const categoryIngredients = useMemo(() => {
     const bunIds = burgerIngredients
@@ -54,35 +60,39 @@ export const BurgerIngredients = () => {
   };
 
   return (
-    <>
-      <div className={burgerIngredientsStyles.tabs}>
-        {INGREDIENTS_TABS.map(t => {
-          return (
-            <Tab
-              key={t.type}
-              value={t.type}
-              active={currentIngRef === categoryIngredients[t.type].categoryRef}
-              onClick={onTabSelected}
-            >
-              {t.label}
-            </Tab>
-          );
-        })}
-      </div>
-      <div
-        className={`${burgerIngredientsStyles.ingredients_container} custom-scroll`}
-      >
-        {INGREDIENTS_TABS.map(t => {
-          return (
-            <IngredientsCategory
-              key={t.type}
-              title={t.label}
-              ingredientIds={categoryIngredients[t.type].ingredientIds}
-              categoryRef={categoryIngredients[t.type].categoryRef}
-            />
-          );
-        })}
-      </div>
-    </>
+    !failLoadingIngredients && (
+      <>
+        <div className={burgerIngredientsStyles.tabs}>
+          {INGREDIENTS_TABS.map(t => {
+            return (
+              <Tab
+                key={t.type}
+                value={t.type}
+                active={
+                  currentIngRef === categoryIngredients[t.type].categoryRef
+                }
+                onClick={onTabSelected}
+              >
+                {t.label}
+              </Tab>
+            );
+          })}
+        </div>
+        <div
+          className={`${burgerIngredientsStyles.ingredients_container} custom-scroll`}
+        >
+          {INGREDIENTS_TABS.map(t => {
+            return (
+              <IngredientsCategory
+                key={t.type}
+                title={t.label}
+                ingredientIds={categoryIngredients[t.type].ingredientIds}
+                categoryRef={categoryIngredients[t.type].categoryRef}
+              />
+            );
+          })}
+        </div>
+      </>
+    )
   );
 };
