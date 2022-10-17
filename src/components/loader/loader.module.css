@@ -4,7 +4,7 @@
     border-radius: 50%;
     width: 80px;
     height: 80px;
-    position: fixed;
+    position: absolute;
     top: 40%;
     left: calc(50% - 40px);
     animation: spin 1s linear infinite;

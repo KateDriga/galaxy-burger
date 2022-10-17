@@ -17,6 +17,7 @@
 
 .section {
     flex-basis: 50%;
+    position: relative;
 }
 
 @media screen and (min-width: 1000px) {

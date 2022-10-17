@@ -1,3 +1,5 @@
+import { getIdFromConstructorIngredientId } from '../../utils/util-functions';
+
 export const selectBurgerIngredients = state =>
   Object.values(state.ingredients.burgerIngredients);
 
@@ -24,10 +26,14 @@ export const selectConstructorIngredientIds = state =>
   state.ingredients.constructorIngredientIds;
 
 export const selectTotalPrice = state => {
-  const bunIngredientPrice = selectConstructorBunIngredient(state)?.price ?? 0;
+  const bunIngredientPrice =
+    selectConstructorBunIngredient(state)?.price * 2 || 0;
   const midIngredientsPrice =
     state.ingredients.constructorIngredientIds.middleIngredientIds.reduce(
-      (acc, id) => acc + selectBurgerIngredientById(state, id).price,
+      (acc, id) =>
+        acc +
+        selectBurgerIngredientById(state, getIdFromConstructorIngredientId(id))
+          .price,
       0
     );
   return bunIngredientPrice + midIngredientsPrice;

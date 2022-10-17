@@ -41,7 +41,7 @@ export const INGREDIENTS_TABS = [
 
 export const BUN_INGREDIENT_PLACEHOLDER = {
   _id: '0000000000000000',
-  name: 'Здесь может быть Ваша булка. Перетащите ее в это поле :)',
+  name: 'Перетащите булку в это поле \u{1F959}',
   type: 'bun',
   price: 0,
   image: blankImage,

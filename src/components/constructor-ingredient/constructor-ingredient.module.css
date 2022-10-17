@@ -1,0 +1,27 @@
+.constructor_element {
+    display: flex;
+    max-width: 300px;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.constructor_element_row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+@media screen and (min-width: 600px) {
+    .constructor_element {
+        max-width: inherit;
+    }
+}
+
+@media screen and (min-width: 1000px) {
+    .constructor_element {
+        justify-content: end;
+    }
+}

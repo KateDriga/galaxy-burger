@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useIsInViewport } from '../../hooks/useIsInViewport';
 import { IngredientsCategory } from '../ingredients-category/ingredients-category';
-import { INGREDIENTS_TABS } from '../../utils/appConstVariables';
-import burgerIngredientsStyles from './burger-ingredients.module.css';
 import { useDispatch, useSelector } from 'react-redux';
+import { useIsInViewport } from '../../hooks/useIsInViewport';
 import { loadIngredients } from '../../services/effects/ingredients';
 import { selectBurgerIngredients } from '../../services/selectors/ingredients';
+import { INGREDIENTS_TABS } from '../../utils/appConstVariables';
+import burgerIngredientsStyles from './burger-ingredients.module.css';
 
 export const BurgerIngredients = () => {
   const dispatch = useDispatch();
@@ -16,13 +16,19 @@ export const BurgerIngredients = () => {
   const burgerIngredients = useSelector(selectBurgerIngredients);
 
   const categoryIngredients = useMemo(() => {
-    const buns = burgerIngredients.filter(ing => ing.type === 'bun');
-    const sauces = burgerIngredients.filter(ing => ing.type === 'sauce');
-    const mains = burgerIngredients.filter(ing => ing.type === 'main');
+    const bunIds = burgerIngredients
+      .filter(ing => ing.type === 'bun')
+      .map(ing => ing._id);
+    const sauceIds = burgerIngredients
+      .filter(ing => ing.type === 'sauce')
+      .map(ing => ing._id);
+    const mainIds = burgerIngredients
+      .filter(ing => ing.type === 'main')
+      .map(ing => ing._id);
     return {
-      bun: { ingredients: buns, categoryRef: React.createRef() },
-      sauce: { ingredients: sauces, categoryRef: React.createRef() },
-      main: { ingredients: mains, categoryRef: React.createRef() },
+      bun: { ingredientIds: bunIds, categoryRef: React.createRef() },
+      sauce: { ingredientIds: sauceIds, categoryRef: React.createRef() },
+      main: { ingredientIds: mainIds, categoryRef: React.createRef() },
     };
   }, [burgerIngredients]);
 
@@ -71,7 +77,7 @@ export const BurgerIngredients = () => {
             <IngredientsCategory
               key={t.type}
               title={t.label}
-              ingredients={categoryIngredients[t.type].ingredients}
+              ingredientIds={categoryIngredients[t.type].ingredientIds}
               categoryRef={categoryIngredients[t.type].categoryRef}
             />
           );

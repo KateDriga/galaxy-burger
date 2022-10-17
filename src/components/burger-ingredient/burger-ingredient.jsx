@@ -5,38 +5,53 @@ import {
 import { Modal } from '../modal/modal';
 import { IngredientDetails } from '../ingredient-details/ingredient-details';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useDrag } from 'react-dnd';
+import { selectBurgerIngredientById } from '../../services/selectors/ingredients';
 import {
   viewIngredientDetails,
   closeIngredientDetails,
 } from '../../services/slices/ingredients';
-import { INGREDIENT_PROP_TYPES } from '../../utils/propTypes';
 import burgerIngredientStyles from './burger-ingredient.module.css';
+import PropTypes from 'prop-types';
 
-export const BurgerIngredient = ({ ingredient }) => {
-  // TODO implement increment ingredient functionality
-  const ingCount = 0;
-  // const [ingCount, setIngCount] = useState(0);
-  // const incrementIngredient = () => setIngCount(prevState => ++prevState);
-
+export const BurgerIngredient = ({ ingredientId }) => {
   const dispatch = useDispatch();
   const [modalIsVisible, setModalIsVisible] = useState(false);
+
+  const ingredient = useSelector(state =>
+    selectBurgerIngredientById(state, ingredientId)
+  );
+
   const handleOpenModal = () => {
     setModalIsVisible(true);
     dispatch(viewIngredientDetails({ id: ingredient._id }));
   };
+
   const handleCloseModal = () => {
     setModalIsVisible(false);
     dispatch(closeIngredientDetails());
   };
 
+  const [{ opacity }, dragRef] = useDrag({
+    type: 'ingredient',
+    item: { id: ingredient._id, type: ingredient.type },
+    collect: monitor => ({
+      opacity: monitor.isDragging() ? 0.3 : 1,
+    }),
+  });
+
   return (
     <>
       <div
+        style={{ opacity }}
         className={burgerIngredientStyles.burger_ingredient}
         onClick={handleOpenModal}
+        ref={dragRef}
       >
-        {ingCount > 0 && <Counter count={ingCount} size="default" />}
+        {ingredient?.count > 0 && (
+          <Counter count={ingredient.count} size="default" />
+        )}
         <img
           className={burgerIngredientStyles.burger_image}
           alt="Burger Item"
@@ -64,5 +79,5 @@ export const BurgerIngredient = ({ ingredient }) => {
 };
 
 BurgerIngredient.propTypes = {
-  ingredient: INGREDIENT_PROP_TYPES.isRequired,
+  ingredientId: PropTypes.string.isRequired,
 };

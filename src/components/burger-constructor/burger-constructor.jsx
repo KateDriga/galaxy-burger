@@ -1,61 +1,68 @@
 import {
   Button,
-  ConstructorElement,
   CurrencyIcon,
-  DragIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Modal } from '../modal/modal';
 import { OrderDetails } from '../order-details/order-details';
+import { ConstructorIngredient } from '../constructor-ingredient/constructor-ingredient';
+import { Loader } from '../loader/loader';
 import { useCallback, useState } from 'react';
-import { INGREDIENT_PROP_TYPES } from '../../utils/propTypes';
-import { BUN_INGREDIENT_PLACEHOLDER } from '../../utils/appConstVariables';
-import burgerConstructorStyles from './burger-constructor.module.css';
-import cn from 'classnames';
-import PropTypes from 'prop-types';
+import { useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  selectBurgerIngredients,
   selectConstructorBunIngredient,
-  selectConstructorMiddleIngredients,
+  selectConstructorMiddleIngredientIds,
   selectTotalPrice,
 } from '../../services/selectors/ingredients';
 import { placeNewOrder } from '../../services/effects/orders';
+import {
+  addBunIngredientToConstructor,
+  addMiddleIngredientToConstructor,
+} from '../../services/slices/ingredients';
+import { selectOrderIsLoading } from '../../services/selectors/orders';
+import { BUN_INGREDIENT_PLACEHOLDER } from '../../utils/appConstVariables';
+import burgerConstructorStyles from './burger-constructor.module.css';
+import cn from 'classnames';
 
 export const BurgerConstructor = () => {
   const dispatch = useDispatch();
+  const isLoading = useSelector(selectOrderIsLoading);
   const [modalIsVisible, setModalIsVisible] = useState(false);
 
   const bunIngredient =
     useSelector(selectConstructorBunIngredient) || BUN_INGREDIENT_PLACEHOLDER;
-  const midIngredients = useSelector(selectConstructorMiddleIngredients);
-  // const midIngredients = useSelector(selectBurgerIngredients);
+  const midIngredientsIds = useSelector(selectConstructorMiddleIngredientIds);
+  const totalPrice = useSelector(selectTotalPrice);
 
-  const totalPrice = useSelector(selectTotalPrice) || 100;
+  const [, dropTarget] = useDrop({
+    accept: 'ingredient',
+    drop({ id, type }) {
+      type === 'bun'
+        ? dispatch(addBunIngredientToConstructor({ id }))
+        : dispatch(addMiddleIngredientToConstructor({ id }));
+    },
+  });
+
+  const placeOrder = () => dispatch(placeNewOrder());
+  const handleCloseModal = () => setModalIsVisible(false);
 
   // TODO replace test data with info from server
   const generateRandomOrderNumber = useCallback(() => {
     return Math.trunc(Math.random() * 100_000) + 1;
   }, []);
 
-  const placeOrder = () => {
-    dispatch(placeNewOrder());
-    // if (totalPrice > 0) {
-    //   // setModalIsVisible(true);
-    // }
-  };
-  const handleCloseModal = () => setModalIsVisible(false);
-
-  return (
-    <div className={cn(burgerConstructorStyles.constructor, 'custom-scroll')}>
-      <div className={cn(burgerConstructorStyles.constructor_element, 'pr-5')}>
-        <ConstructorElement
-          type="top"
-          isLocked={true}
-          text={bunIngredient.name}
-          price={bunIngredient.price}
-          thumbnail={bunIngredient.image_mobile}
-        />
-      </div>
+  return isLoading ? (
+    <Loader />
+  ) : (
+    <div
+      className={cn(burgerConstructorStyles.constructor, 'custom-scroll')}
+      ref={dropTarget}
+    >
+      <ConstructorIngredient
+        id={bunIngredient._id}
+        elType="top"
+        extraText="(верх)"
+      />
       <div
         className={cn(
           burgerConstructorStyles.ingredients_middle,
@@ -63,31 +70,15 @@ export const BurgerConstructor = () => {
           'p-2'
         )}
       >
-        {midIngredients.map(i => (
-          <div
-            key={i._id}
-            className={burgerConstructorStyles.constructor_element_row}
-          >
-            <DragIcon type="primary" />
-            <div className={cn(burgerConstructorStyles.constructor_element)}>
-              <ConstructorElement
-                text={i.name}
-                price={i.price}
-                thumbnail={i.image_mobile}
-              />
-            </div>
-          </div>
+        {midIngredientsIds.map((id, index) => (
+          <ConstructorIngredient key={id} id={id} index={index} />
         ))}
       </div>
-      <div className={cn(burgerConstructorStyles.constructor_element, 'pr-5')}>
-        <ConstructorElement
-          type="bottom"
-          isLocked={true}
-          text={bunIngredient.name}
-          price={bunIngredient.price}
-          thumbnail={bunIngredient.image_mobile}
-        />
-      </div>
+      <ConstructorIngredient
+        id={bunIngredient._id}
+        elType="bottom"
+        extraText="(низ)"
+      />
       <div
         className={cn(
           burgerConstructorStyles.order_details,
@@ -100,16 +91,15 @@ export const BurgerConstructor = () => {
           </span>
           <CurrencyIcon type="primary" />
         </div>
-        {totalPrice > 0 && (
-          <Button
-            type="primary"
-            size="large"
-            htmlType="button"
-            onClick={placeOrder}
-          >
-            Оформить заказ
-          </Button>
-        )}
+        <Button
+          type="primary"
+          size="large"
+          htmlType="button"
+          onClick={placeOrder}
+          disabled={!totalPrice}
+        >
+          Оформить заказ
+        </Button>
       </div>
       {modalIsVisible && (
         <Modal onClose={handleCloseModal} title="">
@@ -118,14 +108,4 @@ export const BurgerConstructor = () => {
       )}
     </div>
   );
-};
-
-BurgerConstructor.propTypes = {
-  bunIngredient: INGREDIENT_PROP_TYPES.isRequired,
-  midIngredients: PropTypes.arrayOf(INGREDIENT_PROP_TYPES).isRequired,
-};
-
-BurgerConstructor.defaultProps = {
-  bunIngredient: BUN_INGREDIENT_PLACEHOLDER,
-  midIngredients: [],
 };

@@ -2,7 +2,6 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   orderNumber: null,
-  ingredientIds: [],
   isLoading: false,
   isFailed: false,
 };
@@ -25,12 +24,12 @@ const ordersSlice = createSlice({
         isFailed: true,
       };
     },
-    saveOrderNumber: (state, { payload }) => {
+    saveOrderNumber: (state, { payload: { orderNumber } }) => {
       return {
         ...state,
         isLoading: false,
         isFailed: false,
-        orderNumber: payload,
+        orderNumber: orderNumber,
       };
     },
   },
