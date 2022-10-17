@@ -32,9 +32,19 @@ const ordersSlice = createSlice({
         orderNumber: orderNumber,
       };
     },
+    clearOrderNumber: state => {
+      return {
+        ...state,
+        orderNumber: null,
+      };
+    },
   },
 });
 
-export const { startCreatingOrder, failCreatingOrder, saveOrderNumber } =
-  ordersSlice.actions;
+export const {
+  startCreatingOrder,
+  failCreatingOrder,
+  saveOrderNumber,
+  clearOrderNumber,
+} = ordersSlice.actions;
 export const orderReducer = ordersSlice.reducer;

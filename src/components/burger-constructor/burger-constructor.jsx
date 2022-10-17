@@ -15,6 +15,7 @@ import {
   selectTotalPrice,
 } from '../../services/selectors/ingredients';
 import { placeNewOrder } from '../../services/thunks/orders';
+import { clearOrderNumber } from '../../services/slices/orders';
 import {
   addBunIngredientToConstructor,
   addMiddleIngredientToConstructor,
@@ -51,7 +52,10 @@ export const BurgerConstructor = () => {
     dispatch(placeNewOrder());
     setModalIsVisible(true);
   };
-  const handleCloseModal = () => setModalIsVisible(false);
+  const handleCloseModal = () => {
+    setModalIsVisible(false);
+    dispatch(clearOrderNumber());
+  };
 
   return isLoading ? (
     <Loader />
