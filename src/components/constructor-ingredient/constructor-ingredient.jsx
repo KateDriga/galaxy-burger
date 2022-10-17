@@ -14,6 +14,7 @@ import { getIdFromConstructorIngredientId } from '../../utils/util-functions';
 import { BUN_INGREDIENT_PLACEHOLDER } from '../../utils/appConstVariables';
 import constructorIngredientStyles from './constructor-ingredient.module.css';
 import cn from 'classnames';
+import PropTypes from 'prop-types';
 
 export const ConstructorIngredient = ({
   id,
@@ -107,4 +108,11 @@ export const ConstructorIngredient = ({
       </div>
     </div>
   );
+};
+
+ConstructorIngredient.propTypes = {
+  id: PropTypes.string.isRequired,
+  index: PropTypes.number,
+  elType: PropTypes.oneOf(['top', 'bottom']),
+  extraText: PropTypes.string,
 };
