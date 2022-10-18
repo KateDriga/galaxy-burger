@@ -9,17 +9,13 @@ import { Loader } from '../loader/loader';
 import { useState } from 'react';
 import { useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
+import { selectTotalPrice } from '../../services/selectors/ingredients';
 import {
   selectConstructorBunIngredient,
   selectConstructorMiddleIngredientIds,
-  selectTotalPrice,
-} from '../../services/selectors/ingredients';
+} from '../../services/selectors/constructor';
 import { placeNewOrder } from '../../services/thunks/order';
-import { clearOrderNumber } from '../../services/slices/order';
-import {
-  addBunIngredientToConstructor,
-  addMiddleIngredientToConstructor,
-} from '../../services/slices/ingredients';
+import { addIngredientToConstructor } from '../../services/thunks/constructor';
 import {
   selectOrderIsFailed,
   selectOrderIsLoading,
@@ -36,15 +32,16 @@ export const BurgerConstructor = () => {
 
   const bunIngredient =
     useSelector(selectConstructorBunIngredient) || BUN_INGREDIENT_PLACEHOLDER;
-  const midIngredientsIds = useSelector(selectConstructorMiddleIngredientIds);
-  const totalPrice = useSelector(selectTotalPrice);
+  const midIngredientsIds =
+    useSelector(selectConstructorMiddleIngredientIds) || [];
+  const totalPrice = useSelector(state =>
+    selectTotalPrice(state, bunIngredient._id, midIngredientsIds)
+  );
 
   const [, dropTarget] = useDrop({
     accept: 'ingredient',
-    drop({ id, type }) {
-      type === 'bun'
-        ? dispatch(addBunIngredientToConstructor({ id }))
-        : dispatch(addMiddleIngredientToConstructor({ id }));
+    drop({ id }) {
+      dispatch(addIngredientToConstructor(id));
     },
   });
 
@@ -54,7 +51,6 @@ export const BurgerConstructor = () => {
   };
   const handleCloseModal = () => {
     setModalIsVisible(false);
-    dispatch(clearOrderNumber());
   };
 
   return isLoading ? (

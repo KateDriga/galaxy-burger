@@ -10,13 +10,11 @@ const modalSlice = createSlice({
   reducers: {
     setIngredientId: (state, { payload: { id } }) => {
       return {
-        ...state,
         ingredientId: id,
       };
     },
-    clearIngredientId: state => {
+    clearIngredientId: _ => {
       return {
-        ...state,
         ingredientId: null,
       };
     },

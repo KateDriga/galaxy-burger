@@ -22,6 +22,9 @@ export const BurgerIngredients = () => {
   const failLoadingIngredients = useSelector(selectFailLoadingIngredients);
 
   const categoryIngredients = useMemo(() => {
+    if (!burgerIngredients) {
+      return null;
+    }
     const bunIds = burgerIngredients
       .filter(ing => ing.type === 'bun')
       .map(ing => ing._id);
@@ -39,11 +42,13 @@ export const BurgerIngredients = () => {
   }, [burgerIngredients]);
 
   const [currentIngRef, setCurrentIngRef] = useState(
-    categoryIngredients.bun.categoryRef
+    categoryIngredients?.bun.categoryRef
   );
 
   const refInViewport = useIsInViewport(
-    Object.values(categoryIngredients).map(v => v.categoryRef)
+    categoryIngredients
+      ? Object.values(categoryIngredients).map(v => v.categoryRef)
+      : []
   );
 
   useEffect(() => {
@@ -63,34 +68,36 @@ export const BurgerIngredients = () => {
     !failLoadingIngredients && (
       <>
         <div className={burgerIngredientsStyles.tabs}>
-          {INGREDIENTS_TABS.map(t => {
-            return (
-              <Tab
-                key={t.type}
-                value={t.type}
-                active={
-                  currentIngRef === categoryIngredients[t.type].categoryRef
-                }
-                onClick={onTabSelected}
-              >
-                {t.label}
-              </Tab>
-            );
-          })}
+          {categoryIngredients &&
+            INGREDIENTS_TABS.map(t => {
+              return (
+                <Tab
+                  key={t.type}
+                  value={t.type}
+                  active={
+                    currentIngRef === categoryIngredients[t.type].categoryRef
+                  }
+                  onClick={onTabSelected}
+                >
+                  {t.label}
+                </Tab>
+              );
+            })}
         </div>
         <div
           className={`${burgerIngredientsStyles.ingredients_container} custom-scroll`}
         >
-          {INGREDIENTS_TABS.map(t => {
-            return (
-              <IngredientsCategory
-                key={t.type}
-                title={t.label}
-                ingredientIds={categoryIngredients[t.type].ingredientIds}
-                categoryRef={categoryIngredients[t.type].categoryRef}
-              />
-            );
-          })}
+          {categoryIngredients &&
+            INGREDIENTS_TABS.map(t => {
+              return (
+                <IngredientsCategory
+                  key={t.type}
+                  title={t.label}
+                  ingredientIds={categoryIngredients[t.type].ingredientIds}
+                  categoryRef={categoryIngredients[t.type].categoryRef}
+                />
+              );
+            })}
         </div>
       </>
     )

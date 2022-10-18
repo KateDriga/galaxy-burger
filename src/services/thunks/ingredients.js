@@ -10,7 +10,7 @@ export function loadIngredients() {
   return function (dispatch, getState) {
     const state = getState();
     const burgerIngredients = selectBurgerIngredients(state);
-    if (burgerIngredients.length > 0) {
+    if (burgerIngredients) {
       return;
     }
     dispatch(startLoadingIngredients());

@@ -35,7 +35,7 @@ export const BurgerIngredient = ({ ingredientId }) => {
 
   const [{ opacity }, dragRef] = useDrag({
     type: 'ingredient',
-    item: { id: ingredient._id, type: ingredient.type },
+    item: { id: ingredient._id },
     collect: monitor => ({
       opacity: monitor.isDragging() ? 0.3 : 1,
     }),

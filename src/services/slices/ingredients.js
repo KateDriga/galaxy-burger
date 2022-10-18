@@ -1,17 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-import {
-  generateConstructorIngredientId,
-  getIdFromConstructorIngredientId,
-} from '../../utils/util-functions';
 
 const initialState = {
   isLoading: false,
   isFailed: false,
-  burgerIngredients: {},
-  constructorIngredientIds: {
-    bunIngredientId: null,
-    middleIngredientIds: [],
-  },
+  burgerIngredients: null,
 };
 
 const ingredientsSlice = createSlice({
@@ -40,109 +32,46 @@ const ingredientsSlice = createSlice({
         burgerIngredients: ingredients,
       };
     },
-    addBunIngredientToConstructor: (state, { payload: { id } }) => {
-      if (state.constructorIngredientIds.bunIngredientId === id) {
-        return state;
-      }
-      const newBun = { ...state.burgerIngredients[id] };
-      newBun.count = 2;
-      const newBurgerIngredients = { ...state.burgerIngredients, [id]: newBun };
-
-      const replacedBunId = state.constructorIngredientIds.bunIngredientId;
-      if (replacedBunId) {
-        const replacedBun = { ...state.burgerIngredients[replacedBunId] };
-        replacedBun.count = 0;
-        newBurgerIngredients[replacedBunId] = replacedBun;
-      }
-
+    incrementIngredientAmount: (state, { payload: { id } }) => {
+      const ingredient = state.burgerIngredients[id];
+      const updatedIngredient = {
+        ...ingredient,
+        count: (ingredient.count || 0) + (ingredient.type === 'bun' ? 2 : 1),
+      };
       return {
         ...state,
-        burgerIngredients: newBurgerIngredients,
-        constructorIngredientIds: {
-          ...state.constructorIngredientIds,
-          bunIngredientId: id,
+        burgerIngredients: {
+          ...state.burgerIngredients,
+          [id]: updatedIngredient,
         },
       };
     },
-    addMiddleIngredientToConstructor: (state, { payload: { id } }) => {
-      const newBurgerIngredient = { ...state.burgerIngredients[id] };
-      newBurgerIngredient.count = (newBurgerIngredient.count || 0) + 1;
-
-      const newBurgerIngredients = {
-        ...state.burgerIngredients,
-        [id]: newBurgerIngredient,
+    decrementIngredientAmount: (state, { payload: { id } }) => {
+      const ingredient = state.burgerIngredients[id];
+      const updatedIngredient = {
+        ...ingredient,
+        count: ingredient.count - (ingredient.type === 'bun' ? 2 : 1),
       };
-
-      const newMiddleIngredientIds = [
-        ...state.constructorIngredientIds.middleIngredientIds,
-        generateConstructorIngredientId(id),
-      ];
       return {
         ...state,
-        burgerIngredients: newBurgerIngredients,
-        constructorIngredientIds: {
-          ...state.constructorIngredientIds,
-          middleIngredientIds: newMiddleIngredientIds,
+        burgerIngredients: {
+          ...state.burgerIngredients,
+          [id]: updatedIngredient,
         },
       };
     },
-    removeIngredientFromConstructor: (state, { payload: { id, index } }) => {
-      const newMiddleIngredientIds = [
-        ...state.constructorIngredientIds.middleIngredientIds,
-      ];
-      newMiddleIngredientIds.splice(index, 1);
-
-      const ingredientId = getIdFromConstructorIngredientId(id);
-      const ingredientToDecrement = {
-        ...state.burgerIngredients[ingredientId],
-      };
-      ingredientToDecrement.count = --ingredientToDecrement.count;
-      const newBurgerIngredients = {
-        ...state.burgerIngredients,
-        [ingredientId]: ingredientToDecrement,
-      };
-
-      return {
-        ...state,
-        burgerIngredients: newBurgerIngredients,
-        constructorIngredientIds: {
-          ...state.constructorIngredientIds,
-          middleIngredientIds: newMiddleIngredientIds,
-        },
-      };
-    },
-    changeConstructorIngredientsOrder: (
-      state,
-      { payload: { oldIndex, newIndex } }
-    ) => {
-      const id = state.constructorIngredientIds.middleIngredientIds[oldIndex];
-      const newMiddleIngredientIds =
-        state.constructorIngredientIds.middleIngredientIds.filter(
-          (_, index) => index !== oldIndex
-        );
-      newMiddleIngredientIds.splice(newIndex, 0, id);
-      return {
-        ...state,
-        constructorIngredientIds: {
-          ...state.constructorIngredientIds,
-          middleIngredientIds: newMiddleIngredientIds,
-        },
-      };
-    },
-    clearConstructorIngredients: state => {
-      const newConstructorIngredientIds = initialState.constructorIngredientIds;
+    clearIngredientsCount: state => {
       const newBurgerIngredients = Object.values(
         state.burgerIngredients
       ).reduce((acc, ing) => {
         const newIngredient = { ...ing };
-        newIngredient.count = 0;
+        delete newIngredient.count;
         return { ...acc, [newIngredient._id]: newIngredient };
       }, {});
 
       return {
         ...state,
         burgerIngredients: newBurgerIngredients,
-        constructorIngredientIds: newConstructorIngredientIds,
       };
     },
   },
@@ -152,10 +81,8 @@ export const {
   startLoadingIngredients,
   failLoadingIngredients,
   addBurgerIngredients,
-  addBunIngredientToConstructor,
-  addMiddleIngredientToConstructor,
-  removeIngredientFromConstructor,
-  changeConstructorIngredientsOrder,
-  clearConstructorIngredients,
+  incrementIngredientAmount,
+  decrementIngredientAmount,
+  clearIngredientsCount,
 } = ingredientsSlice.actions;
 export const ingredientsReducer = ingredientsSlice.reducer;

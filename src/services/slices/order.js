@@ -10,11 +10,11 @@ const orderSlice = createSlice({
   name: 'order',
   initialState,
   reducers: {
-    startCreatingOrder: state => {
+    startCreatingOrder: _ => {
       return {
-        ...state,
         isLoading: true,
         isFailed: false,
+        orderNumber: null,
       };
     },
     failCreatingOrder: state => {
@@ -26,25 +26,14 @@ const orderSlice = createSlice({
     },
     saveOrderNumber: (state, { payload: { orderNumber } }) => {
       return {
-        ...state,
         isLoading: false,
         isFailed: false,
         orderNumber: orderNumber,
       };
     },
-    clearOrderNumber: state => {
-      return {
-        ...state,
-        orderNumber: null,
-      };
-    },
   },
 });
 
-export const {
-  startCreatingOrder,
-  failCreatingOrder,
-  saveOrderNumber,
-  clearOrderNumber,
-} = orderSlice.actions;
+export const { startCreatingOrder, failCreatingOrder, saveOrderNumber } =
+  orderSlice.actions;
 export const orderReducer = orderSlice.reducer;

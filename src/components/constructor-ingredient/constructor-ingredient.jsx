@@ -6,10 +6,8 @@ import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useDrag, useDrop } from 'react-dnd';
 import { selectBurgerIngredientById } from '../../services/selectors/ingredients';
-import {
-  changeConstructorIngredientsOrder,
-  removeIngredientFromConstructor,
-} from '../../services/slices/ingredients';
+import { changeIngredientsOrder } from '../../services/slices/constructor';
+import { removeIngredientFromConstructor } from '../../services/thunks/constructor';
 import { getIdFromConstructorIngredientId } from '../../utils/util-functions';
 import { BUN_INGREDIENT_PLACEHOLDER } from '../../utils/appConstVariables';
 import constructorIngredientStyles from './constructor-ingredient.module.css';
@@ -33,7 +31,7 @@ export const ConstructorIngredient = ({
 
   const removeIngredient = () => {
     if (!isBunIng) {
-      dispatch(removeIngredientFromConstructor({ id, index }));
+      dispatch(removeIngredientFromConstructor(id, index));
     }
   };
 
@@ -70,7 +68,7 @@ export const ConstructorIngredient = ({
         return;
       }
       dispatch(
-        changeConstructorIngredientsOrder({
+        changeIngredientsOrder({
           oldIndex: dragIndex,
           newIndex: hoverIndex,
         })

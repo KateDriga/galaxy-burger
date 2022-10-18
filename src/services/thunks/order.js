@@ -4,27 +4,34 @@ import {
   startCreatingOrder,
 } from '../slices/order';
 import { createOrder } from '../../utils/burger-api';
-import { selectConstructorIngredientIds } from '../selectors/ingredients';
 import { getIdFromConstructorIngredientId } from '../../utils/util-functions';
-import { clearConstructorIngredients } from '../slices/ingredients';
+import { clearIngredientsCount } from '../slices/ingredients';
+import { clearConstructor } from '../slices/constructor';
+import {
+  selectConstructorBunIngredientId,
+  selectConstructorMiddleIngredientIds,
+} from '../selectors/constructor';
 
 export function placeNewOrder() {
   return function (dispatch, getState) {
     const state = getState();
-    const ingredientIds = selectConstructorIngredientIds(state);
-    const middleIngredientIds = ingredientIds.middleIngredientIds.map(id =>
+    const bunId = getIdFromConstructorIngredientId(
+      selectConstructorBunIngredientId(state)
+    );
+    const middleConstructorIds =
+      selectConstructorMiddleIngredientIds(state) || [];
+    const middleIngredientIds = middleConstructorIds.map(id =>
       getIdFromConstructorIngredientId(id)
     );
     dispatch(startCreatingOrder());
-    createOrder([
-      ingredientIds.bunIngredientId,
-      ...middleIngredientIds,
-      ingredientIds.bunIngredientId,
-    ])
+    createOrder(
+      [bunId, ...middleIngredientIds, bunId].filter(id => id !== null)
+    )
       .then(res => res.order)
       .then(order => {
         dispatch(saveOrderNumber({ orderNumber: order.number }));
-        dispatch(clearConstructorIngredients());
+        dispatch(clearIngredientsCount());
+        dispatch(clearConstructor());
       })
       .catch(error => {
         console.error(error);

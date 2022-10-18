@@ -5,5 +5,5 @@ export const generateConstructorIngredientId = id => {
 };
 
 export const getIdFromConstructorIngredientId = id => {
-  return id.split('_')[0];
+  return !id ? null : id.split('_')[0];
 };
