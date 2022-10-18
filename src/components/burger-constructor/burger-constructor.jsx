@@ -14,8 +14,8 @@ import {
   selectConstructorMiddleIngredientIds,
   selectTotalPrice,
 } from '../../services/selectors/ingredients';
-import { placeNewOrder } from '../../services/thunks/orders';
-import { clearOrderNumber } from '../../services/slices/orders';
+import { placeNewOrder } from '../../services/thunks/order';
+import { clearOrderNumber } from '../../services/slices/order';
 import {
   addBunIngredientToConstructor,
   addMiddleIngredientToConstructor,
@@ -23,7 +23,7 @@ import {
 import {
   selectOrderIsFailed,
   selectOrderIsLoading,
-} from '../../services/selectors/orders';
+} from '../../services/selectors/order';
 import { BUN_INGREDIENT_PLACEHOLDER } from '../../utils/appConstVariables';
 import burgerConstructorStyles from './burger-constructor.module.css';
 import cn from 'classnames';

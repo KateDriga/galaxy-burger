@@ -9,9 +9,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useDrag } from 'react-dnd';
 import { selectBurgerIngredientById } from '../../services/selectors/ingredients';
 import {
-  viewIngredientDetails,
-  closeIngredientDetails,
-} from '../../services/slices/ingredients';
+  setIngredientId,
+  clearIngredientId,
+} from '../../services/slices/modal';
 import burgerIngredientStyles from './burger-ingredient.module.css';
 import PropTypes from 'prop-types';
 
@@ -25,12 +25,12 @@ export const BurgerIngredient = ({ ingredientId }) => {
 
   const handleOpenModal = () => {
     setModalIsVisible(true);
-    dispatch(viewIngredientDetails({ id: ingredient._id }));
+    dispatch(setIngredientId({ id: ingredient._id }));
   };
 
   const handleCloseModal = () => {
     setModalIsVisible(false);
-    dispatch(closeIngredientDetails());
+    dispatch(clearIngredientId());
   };
 
   const [{ opacity }, dragRef] = useDrag({

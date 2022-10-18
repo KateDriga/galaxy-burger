@@ -6,8 +6,8 @@ const initialState = {
   isFailed: false,
 };
 
-const ordersSlice = createSlice({
-  name: 'orders',
+const orderSlice = createSlice({
+  name: 'order',
   initialState,
   reducers: {
     startCreatingOrder: state => {
@@ -46,5 +46,5 @@ export const {
   failCreatingOrder,
   saveOrderNumber,
   clearOrderNumber,
-} = ordersSlice.actions;
-export const orderReducer = ordersSlice.reducer;
+} = orderSlice.actions;
+export const orderReducer = orderSlice.reducer;

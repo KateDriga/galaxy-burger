@@ -2,7 +2,7 @@ import {
   failCreatingOrder,
   saveOrderNumber,
   startCreatingOrder,
-} from '../slices/orders';
+} from '../slices/order';
 import { createOrder } from '../../utils/burger-api';
 import { selectConstructorIngredientIds } from '../selectors/ingredients';
 import { getIdFromConstructorIngredientId } from '../../utils/util-functions';

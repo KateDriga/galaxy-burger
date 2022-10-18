@@ -12,7 +12,6 @@ const initialState = {
     bunIngredientId: null,
     middleIngredientIds: [],
   },
-  currentIngredientId: null,
 };
 
 const ingredientsSlice = createSlice({
@@ -39,18 +38,6 @@ const ingredientsSlice = createSlice({
         isLoading: false,
         isFailed: false,
         burgerIngredients: ingredients,
-      };
-    },
-    viewIngredientDetails: (state, { payload: { id } }) => {
-      return {
-        ...state,
-        currentIngredientId: id,
-      };
-    },
-    closeIngredientDetails: state => {
-      return {
-        ...state,
-        currentIngredientId: null,
       };
     },
     addBunIngredientToConstructor: (state, { payload: { id } }) => {
@@ -165,8 +152,6 @@ export const {
   startLoadingIngredients,
   failLoadingIngredients,
   addBurgerIngredients,
-  viewIngredientDetails,
-  closeIngredientDetails,
   addBunIngredientToConstructor,
   addMiddleIngredientToConstructor,
   removeIngredientFromConstructor,

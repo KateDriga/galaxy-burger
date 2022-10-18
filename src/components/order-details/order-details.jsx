@@ -1,6 +1,6 @@
 import doneImage from '../../images/done.png';
 import { useSelector } from 'react-redux';
-import { selectOrderNumber } from '../../services/selectors/orders';
+import { selectOrderNumber } from '../../services/selectors/order';
 import orderDetailsStyles from './order-details.module.css';
 import cn from 'classnames';
 
