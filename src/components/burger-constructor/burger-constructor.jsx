@@ -4,39 +4,40 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Modal } from '../modal/modal';
 import { OrderDetails } from '../order-details/order-details';
+import { OrderError } from '../order-error/order-error';
 import { ConstructorIngredient } from '../constructor-ingredient/constructor-ingredient';
 import { Loader } from '../loader/loader';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectTotalPrice } from '../../services/selectors/ingredients';
 import {
   selectConstructorBunIngredient,
   selectConstructorMiddleIngredientIds,
 } from '../../services/selectors/constructor';
 import { placeNewOrder } from '../../services/thunks/order';
 import { addIngredientToConstructor } from '../../services/thunks/constructor';
-import {
-  selectOrderIsFailed,
-  selectOrderIsLoading,
-} from '../../services/selectors/order';
+import { selectOrderState } from '../../services/selectors/order';
 import { BUN_INGREDIENT_PLACEHOLDER } from '../../utils/appConstVariables';
 import burgerConstructorStyles from './burger-constructor.module.css';
 import cn from 'classnames';
+import { selectBurgerIngredients } from '../../services/selectors/ingredients';
 
 export const BurgerConstructor = () => {
   const dispatch = useDispatch();
-  const isLoading = useSelector(selectOrderIsLoading);
-  const failCreatingOrder = useSelector(selectOrderIsFailed);
+  const { isOrderLoading, isOrderFailed } = useSelector(selectOrderState);
+  const burgerIngredients = useSelector(selectBurgerIngredients);
   const [modalIsVisible, setModalIsVisible] = useState(false);
 
   const bunIngredient =
     useSelector(selectConstructorBunIngredient) || BUN_INGREDIENT_PLACEHOLDER;
   const midIngredientsIds =
     useSelector(selectConstructorMiddleIngredientIds) || [];
-  const totalPrice = useSelector(state =>
-    selectTotalPrice(state, bunIngredient._id, midIngredientsIds)
-  );
+  const totalPrice = useMemo(() => {
+    return burgerIngredients?.reduce(
+      (acc, ing) => acc + ing.price * (ing.count || 0),
+      0
+    );
+  }, [burgerIngredients]);
 
   const [, dropTarget] = useDrop({
     accept: 'ingredient',
@@ -53,7 +54,7 @@ export const BurgerConstructor = () => {
     setModalIsVisible(false);
   };
 
-  return isLoading ? (
+  return isOrderLoading ? (
     <Loader />
   ) : (
     <div
@@ -105,14 +106,7 @@ export const BurgerConstructor = () => {
       </div>
       {modalIsVisible && (
         <Modal onClose={handleCloseModal} title="">
-          {failCreatingOrder ? (
-            <p className="text text_type_main-default">
-              К сожалению возникли технические недоладки. Попробуйте оформить
-              заказ еще раз.
-            </p>
-          ) : (
-            <OrderDetails />
-          )}
+          {isOrderFailed ? <OrderError /> : <OrderDetails />}
         </Modal>
       )}
     </div>

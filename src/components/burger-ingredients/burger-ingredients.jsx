@@ -6,7 +6,7 @@ import { useIsInViewport } from '../../hooks/useIsInViewport';
 import { loadIngredients } from '../../services/thunks/ingredients';
 import {
   selectBurgerIngredients,
-  selectFailLoadingIngredients,
+  selectBurgerIngredientsState,
 } from '../../services/selectors/ingredients';
 import { INGREDIENTS_TABS } from '../../utils/appConstVariables';
 import burgerIngredientsStyles from './burger-ingredients.module.css';
@@ -19,7 +19,9 @@ export const BurgerIngredients = () => {
   }, [dispatch]);
 
   const burgerIngredients = useSelector(selectBurgerIngredients);
-  const failLoadingIngredients = useSelector(selectFailLoadingIngredients);
+  const { isFailed: failLoadingIngredients } = useSelector(
+    selectBurgerIngredientsState
+  );
 
   const categoryIngredients = useMemo(() => {
     if (!burgerIngredients) {

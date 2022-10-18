@@ -3,15 +3,18 @@ import { MainArea } from '../main-area/main-area';
 import { Loader } from '../loader/loader';
 import { ErrorBoundary } from '../error-boundary/error-boundary';
 import { useSelector } from 'react-redux';
-import { selectBurgerIngredientsLoading } from '../../services/selectors/ingredients';
+import { selectBurgerIngredientsState } from '../../services/selectors/ingredients';
+import { ErrorMessage } from '../error-message/error-message';
 
 export const App = () => {
-  const isLoading = useSelector(selectBurgerIngredientsLoading);
+  const { isLoading, isFailed } = useSelector(selectBurgerIngredientsState);
 
   return (
     <>
       <AppHeader />
-      <ErrorBoundary>{isLoading ? <Loader /> : <MainArea />}</ErrorBoundary>
+      <ErrorBoundary>
+        {isFailed ? <ErrorMessage /> : isLoading ? <Loader /> : <MainArea />}
+      </ErrorBoundary>
     </>
   );
 };

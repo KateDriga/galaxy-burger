@@ -1,5 +1,8 @@
-export const selectOrderIsLoading = state => state.order.isLoading;
-
-export const selectOrderIsFailed = state => state.order.isFailed;
+export const selectOrderState = state => {
+  return {
+    isOrderLoading: state.order.isLoading,
+    isOrderFailed: state.order.isFailed,
+  };
+};
 
 export const selectOrderNumber = state => state.order.orderNumber;
