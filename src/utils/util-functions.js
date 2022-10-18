@@ -1,7 +1,7 @@
-import { v4 as uuid } from 'uuid';
+import { nanoid } from '@reduxjs/toolkit';
 
 export const generateConstructorIngredientId = id => {
-  return `${id}_${uuid().slice(0, 8)}`;
+  return `${id}_${nanoid(8)}`;
 };
 
 export const getIdFromConstructorIngredientId = id => {

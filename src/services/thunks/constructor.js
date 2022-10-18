@@ -1,9 +1,6 @@
 import { selectBurgerIngredientById } from '../selectors/ingredients';
 import { selectConstructorBunIngredientId } from '../selectors/constructor';
-import {
-  generateConstructorIngredientId,
-  getIdFromConstructorIngredientId,
-} from '../../utils/util-functions';
+import { getIdFromConstructorIngredientId } from '../../utils/util-functions';
 import { addIngredient, removeIngredient } from '../slices/constructor';
 import {
   decrementIngredientAmount,
@@ -20,8 +17,7 @@ export function addIngredientToConstructor(id) {
       return;
     }
     const ingredientType = selectBurgerIngredientById(state, id).type;
-    const constructorId = generateConstructorIngredientId(id);
-    dispatch(addIngredient({ id: constructorId, type: ingredientType }));
+    dispatch(addIngredient({ id, type: ingredientType }));
     if (currentBunId && ingredientType === 'bun') {
       dispatch(decrementIngredientAmount({ id: currentBunId }));
     }
@@ -31,7 +27,7 @@ export function addIngredientToConstructor(id) {
 
 export function removeIngredientFromConstructor(id, index) {
   return function (dispatch) {
-    dispatch(removeIngredient({ id, index }));
+    dispatch(removeIngredient({ index }));
     dispatch(
       decrementIngredientAmount({ id: getIdFromConstructorIngredientId(id) })
     );

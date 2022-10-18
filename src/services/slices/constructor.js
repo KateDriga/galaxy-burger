@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { generateConstructorIngredientId } from '../../utils/util-functions';
 
 const initialState = {
   bunIngredientId: null,
@@ -9,22 +10,27 @@ const constructorSlice = createSlice({
   name: 'constructor',
   initialState,
   reducers: {
-    addIngredient: (state, { payload: { id, type } }) => {
-      if (type === 'bun') {
+    addIngredient: {
+      reducer: (state, { payload: { id, type } }) => {
+        if (type === 'bun') {
+          return {
+            ...state,
+            bunIngredientId: id,
+          };
+        }
+        const newMiddleIngredients = state.middleIngredientIds
+          ? [...state.middleIngredientIds, id]
+          : [id];
         return {
           ...state,
-          bunIngredientId: id,
+          middleIngredientIds: newMiddleIngredients,
         };
-      }
-      const newMiddleIngredients = state.middleIngredientIds
-        ? [...state.middleIngredientIds, id]
-        : [id];
-      return {
-        ...state,
-        middleIngredientIds: newMiddleIngredients,
-      };
+      },
+      prepare: ({ id, type }) => {
+        return { payload: { id: generateConstructorIngredientId(id), type } };
+      },
     },
-    removeIngredient: (state, { payload: { id, index } }) => {
+    removeIngredient: (state, { payload: { index } }) => {
       const newMiddleIngredientIds = [...state.middleIngredientIds];
       newMiddleIngredientIds.splice(index, 1);
       return {
