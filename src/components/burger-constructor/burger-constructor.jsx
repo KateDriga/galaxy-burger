@@ -29,7 +29,7 @@ export const BurgerConstructor = () => {
     };
   }, [constructorIngredients]);
   const removeIngredient = (id, idx) =>
-    constructorDispatcher({ type: REMOVE_INGREDIENT, payload: { id, idx } });
+    constructorDispatcher({ type: REMOVE_INGREDIENT, payload: { idx } });
 
   const totalPrice = useMemo(() => {
     return (
