@@ -10,13 +10,22 @@ import { useCallback, useContext, useMemo, useState } from 'react';
 import burgerConstructorStyles from './burger-constructor.module.css';
 import cn from 'classnames';
 import { ConstructorContext } from '../services/app-context';
+import { DEFAULT_BUN_INGREDIENT } from '../../utils/appConstVariables';
 
 export const BurgerConstructor = () => {
   const [modalIsVisible, setModalIsVisible] = useState(false);
 
-  const ingredients = useContext(ConstructorContext);
-  const bunIngredient = ingredients.find(i => i.type === 'bun');
-  const midIngredients = ingredients.filter(i => i.type !== 'bun');
+  const { constructorIngredients, constructorDispatcher } =
+    useContext(ConstructorContext);
+  const { bunIngredient, midIngredients } = useMemo(() => {
+    return {
+      bunIngredient:
+        constructorIngredients.bunIngredient || DEFAULT_BUN_INGREDIENT,
+      midIngredients: constructorIngredients.middleIngredients || [],
+    };
+  }, [constructorIngredients]);
+  const removeIngredient = (id, idx) =>
+    constructorDispatcher({ type: 'removeIngredient', payload: { id, idx } });
 
   const totalPrice = useMemo(() => {
     return (
@@ -55,9 +64,11 @@ export const BurgerConstructor = () => {
           'p-2'
         )}
       >
-        {midIngredients.map(i => (
+        {midIngredients.map((i, idx) => (
           <div
-            key={i._id}
+            // Temporary  solution for context
+            // TODO will be replaced with nanoid (redux)
+            key={`${i._id}_${idx}`}
             className={burgerConstructorStyles.constructor_element_row}
           >
             <DragIcon type="primary" />
@@ -66,6 +77,7 @@ export const BurgerConstructor = () => {
                 text={i.name}
                 price={i.price}
                 thumbnail={i.image_mobile}
+                handleClose={() => removeIngredient(i._id, idx)}
               />
             </div>
           </div>

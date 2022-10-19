@@ -7,15 +7,25 @@ import { IngredientDetails } from '../ingredient-details/ingredient-details';
 import { useState } from 'react';
 import { INGREDIENT_PROP_TYPES } from '../../utils/propTypes';
 import burgerIngredientStyles from './burger-ingredient.module.css';
+import { useContext } from 'react';
+import { ConstructorContext } from '../services/app-context';
 
 export const BurgerIngredient = ({ ingredient }) => {
+  const { constructorDispatcher } = useContext(ConstructorContext);
+
   // TODO implement increment ingredient functionality
   const ingCount = 0;
   // const [ingCount, setIngCount] = useState(0);
   // const incrementIngredient = () => setIngCount(prevState => ++prevState);
 
   const [modalIsVisible, setModalIsVisible] = useState(false);
-  const handleOpenModal = () => setModalIsVisible(true);
+
+  // TODO change with Drag and Drop
+  // temporary solution to test constructor context (add ingredient on click)
+  const handleOpenModal = () => {
+    constructorDispatcher({ type: 'addIngredient', payload: ingredient });
+    setModalIsVisible(true);
+  };
   const handleCloseModal = () => setModalIsVisible(false);
 
   return (
