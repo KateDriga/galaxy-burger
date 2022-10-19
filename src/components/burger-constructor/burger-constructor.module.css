@@ -8,12 +8,15 @@
 .constructor {
     max-height: 70vh;
     overflow-x: auto;
+    max-width: 600px;
 }
 
 .ingredients_middle {
     overflow-y: auto;
     overflow-x: auto;
     min-height: 30vh;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .constructor_element_row {
