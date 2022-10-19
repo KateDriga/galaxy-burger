@@ -40,7 +40,7 @@ export const BurgerConstructor = () => {
 
   const createOrder = () => {
     if (totalPrice > 0) {
-      const bunId = constructorIngredients.bunIngredient?._id;
+      const bunId = constructorIngredients.bunIngredient?._id || null;
       const midIds = midIngredients.map(i => i._id);
       placeOrder([bunId, ...midIds, bunId].filter(id => id !== null))
         .then(res => res.order)
