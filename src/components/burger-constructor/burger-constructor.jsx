@@ -6,17 +6,21 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Modal } from '../modal/modal';
 import { OrderDetails } from '../order-details/order-details';
-import { useCallback, useContext, useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import burgerConstructorStyles from './burger-constructor.module.css';
 import cn from 'classnames';
-import { ConstructorContext } from '../services/app-context';
+import { ConstructorContext, OrderContext } from '../services/app-context';
 import { DEFAULT_BUN_INGREDIENT } from '../../utils/appConstVariables';
+import { REMOVE_INGREDIENT } from '../services/actions/constructor-actions';
+import { placeOrder } from '../../utils/burger-api';
 
 export const BurgerConstructor = () => {
   const [modalIsVisible, setModalIsVisible] = useState(false);
 
   const { constructorIngredients, constructorDispatcher } =
     useContext(ConstructorContext);
+  const { setOrderNumber } = useContext(OrderContext);
+
   const { bunIngredient, midIngredients } = useMemo(() => {
     return {
       bunIngredient:
@@ -25,7 +29,7 @@ export const BurgerConstructor = () => {
     };
   }, [constructorIngredients]);
   const removeIngredient = (id, idx) =>
-    constructorDispatcher({ type: 'removeIngredient', payload: { id, idx } });
+    constructorDispatcher({ type: REMOVE_INGREDIENT, payload: { id, idx } });
 
   const totalPrice = useMemo(() => {
     return (
@@ -34,17 +38,21 @@ export const BurgerConstructor = () => {
     );
   }, [bunIngredient, midIngredients]);
 
-  // TODO replace test data with info from server
-  const generateRandomOrderNumber = useCallback(() => {
-    return Math.trunc(Math.random() * 100_000) + 1;
-  }, []);
-
-  const placeOrder = () => {
+  const createOrder = () => {
     if (totalPrice > 0) {
+      const bunId = constructorIngredients.bunIngredient?._id;
+      const midIds = midIngredients.map(i => i._id);
+      placeOrder([bunId, ...midIds, bunId].filter(id => id !== null))
+        .then(res => res.order)
+        .then(order => setOrderNumber(order.number))
+        .catch(_ => setOrderNumber(null));
       setModalIsVisible(true);
     }
   };
-  const handleCloseModal = () => setModalIsVisible(false);
+  const handleCloseModal = () => {
+    setModalIsVisible(false);
+    setOrderNumber(null);
+  };
 
   return (
     <div className={cn(burgerConstructorStyles.constructor, 'custom-scroll')}>
@@ -52,7 +60,7 @@ export const BurgerConstructor = () => {
         <ConstructorElement
           type="top"
           isLocked={true}
-          text={bunIngredient.name}
+          text={`${bunIngredient.name} (верх)`}
           price={bunIngredient.price}
           thumbnail={bunIngredient.image_mobile}
         />
@@ -87,7 +95,7 @@ export const BurgerConstructor = () => {
         <ConstructorElement
           type="bottom"
           isLocked={true}
-          text={bunIngredient.name}
+          text={`${bunIngredient.name} (низ)`}
           price={bunIngredient.price}
           thumbnail={bunIngredient.image_mobile}
         />
@@ -109,7 +117,7 @@ export const BurgerConstructor = () => {
             type="primary"
             size="large"
             htmlType="button"
-            onClick={placeOrder}
+            onClick={createOrder}
           >
             Оформить заказ
           </Button>
@@ -117,7 +125,7 @@ export const BurgerConstructor = () => {
       </div>
       {modalIsVisible && (
         <Modal onClose={handleCloseModal} title="">
-          <OrderDetails orderNumber={generateRandomOrderNumber()} />
+          <OrderDetails />
         </Modal>
       )}
     </div>

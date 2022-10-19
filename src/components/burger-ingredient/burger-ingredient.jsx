@@ -9,6 +9,7 @@ import { INGREDIENT_PROP_TYPES } from '../../utils/propTypes';
 import burgerIngredientStyles from './burger-ingredient.module.css';
 import { useContext } from 'react';
 import { ConstructorContext } from '../services/app-context';
+import { ADD_INGREDIENT } from '../services/actions/constructor-actions';
 
 export const BurgerIngredient = ({ ingredient }) => {
   const { constructorDispatcher } = useContext(ConstructorContext);
@@ -23,7 +24,7 @@ export const BurgerIngredient = ({ ingredient }) => {
   // TODO change with Drag and Drop
   // temporary solution to test constructor context (add ingredient on click)
   const handleOpenModal = () => {
-    constructorDispatcher({ type: 'addIngredient', payload: ingredient });
+    constructorDispatcher({ type: ADD_INGREDIENT, payload: ingredient });
     setModalIsVisible(true);
   };
   const handleCloseModal = () => setModalIsVisible(false);

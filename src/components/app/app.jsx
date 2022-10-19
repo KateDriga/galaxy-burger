@@ -7,48 +7,28 @@ import { ErrorBoundary } from '../error-boundary/error-boundary';
 import {
   ConstructorContext,
   IngredientsContext,
+  OrderContext,
 } from '../services/app-context';
+import {
+  constructorInitialState,
+  constructorReducer,
+} from '../services/reducers/constructor-reducer';
 
 export const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [burgerIngredients, setBurgerIngredients] = useState(null);
 
-  const constructorInitialState = {
-    bunIngredient: null,
-    middleIngredients: null,
-  };
-
-  function constructorReducer(state, action) {
-    switch (action.type) {
-      case 'addIngredient': {
-        return action.payload.type === 'bun'
-          ? { ...state, bunIngredient: action.payload }
-          : {
-              ...state,
-              middleIngredients: state.middleIngredients
-                ? [...state.middleIngredients, action.payload]
-                : [action.payload],
-            };
-      }
-      case 'removeIngredient':
-        return {
-          ...state,
-          middleIngredients: state.middleIngredients.filter(
-            (_, idx) => idx !== action.payload.idx
-          ),
-        };
-      default:
-        throw new Error(`Wrong type of action: ${action.type}`);
-    }
-  }
-
   const [constructorIngredients, constructorDispatcher] = useReducer(
     constructorReducer,
-    constructorInitialState
+    constructorInitialState,
+    undefined
   );
+
+  const [orderNumber, setOrderNumber] = useState(null);
 
   useEffect(() => {
     getIngredients()
+      .then(res => res.data)
       .then(setBurgerIngredients)
       .finally(() => setIsLoading(false));
   }, []);
@@ -64,7 +44,9 @@ export const App = () => {
             <ConstructorContext.Provider
               value={{ constructorIngredients, constructorDispatcher }}
             >
-              <MainArea burgerIngredients={burgerIngredients} />
+              <OrderContext.Provider value={{ orderNumber, setOrderNumber }}>
+                <MainArea burgerIngredients={burgerIngredients} />
+              </OrderContext.Provider>
             </ConstructorContext.Provider>
           </IngredientsContext.Provider>
         )}

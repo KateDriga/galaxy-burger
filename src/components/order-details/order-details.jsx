@@ -1,15 +1,17 @@
 import doneImage from '../../images/done.png';
 import orderDetailsStyles from './order-details.module.css';
 import cn from 'classnames';
-import PropTypes from 'prop-types';
+import { useContext } from 'react';
+import { OrderContext } from '../services/app-context';
 
-export const OrderDetails = ({ orderNumber }) => {
+export const OrderDetails = () => {
+  const { orderNumber } = useContext(OrderContext);
   return (
     <>
       <h1
         className={cn(orderDetailsStyles.order, 'text text_type_digits-large')}
       >
-        {orderNumber.toString().padStart(6, '0')}
+        {orderNumber ? orderNumber.toString().padStart(6, '0') : '-'}
       </h1>
       <p
         className={cn(
@@ -38,8 +40,4 @@ export const OrderDetails = ({ orderNumber }) => {
       </p>
     </>
   );
-};
-
-OrderDetails.propTypes = {
-  orderNumber: PropTypes.number.isRequired,
 };
