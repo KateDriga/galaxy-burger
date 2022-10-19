@@ -4,6 +4,7 @@ import { Loader } from '../loader/loader';
 import { useEffect, useState } from 'react';
 import { getIngredients } from '../../utils/burger-api';
 import { ErrorBoundary } from '../error-boundary/error-boundary';
+import { ConstructorContext } from '../services/app-context';
 
 export const App = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -22,7 +23,9 @@ export const App = () => {
         {isLoading ? (
           <Loader />
         ) : (
-          <MainArea burgerIngredients={burgerIngredients} />
+          <ConstructorContext.Provider value={burgerIngredients}>
+            <MainArea burgerIngredients={burgerIngredients} />
+          </ConstructorContext.Provider>
         )}
       </ErrorBoundary>
     </>

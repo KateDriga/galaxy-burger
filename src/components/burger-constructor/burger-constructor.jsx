@@ -6,15 +6,17 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Modal } from '../modal/modal';
 import { OrderDetails } from '../order-details/order-details';
-import { useCallback, useMemo, useState } from 'react';
-import { INGREDIENT_PROP_TYPES } from '../../utils/propTypes';
-import { DEFAULT_BUN_INGREDIENT } from '../../utils/appConstVariables';
+import { useCallback, useContext, useMemo, useState } from 'react';
 import burgerConstructorStyles from './burger-constructor.module.css';
 import cn from 'classnames';
-import PropTypes from 'prop-types';
+import { ConstructorContext } from '../services/app-context';
 
-export const BurgerConstructor = ({ bunIngredient, midIngredients }) => {
+export const BurgerConstructor = () => {
   const [modalIsVisible, setModalIsVisible] = useState(false);
+
+  const ingredients = useContext(ConstructorContext);
+  const bunIngredient = ingredients.find(i => i.type === 'bun');
+  const midIngredients = ingredients.filter(i => i.type !== 'bun');
 
   const totalPrice = useMemo(() => {
     return (
@@ -108,14 +110,4 @@ export const BurgerConstructor = ({ bunIngredient, midIngredients }) => {
       )}
     </div>
   );
-};
-
-BurgerConstructor.propTypes = {
-  bunIngredient: INGREDIENT_PROP_TYPES.isRequired,
-  midIngredients: PropTypes.arrayOf(INGREDIENT_PROP_TYPES).isRequired,
-};
-
-BurgerConstructor.defaultProps = {
-  bunIngredient: DEFAULT_BUN_INGREDIENT,
-  midIngredients: [],
 };
