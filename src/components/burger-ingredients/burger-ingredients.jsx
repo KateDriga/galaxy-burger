@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import { IngredientsCategory } from '../ingredients-category/ingredients-category';
+import { Modal } from '../modal/modal';
+import { IngredientDetails } from '../ingredient-details/ingredient-details';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIsInViewport } from '../../hooks/useIsInViewport';
 import { loadIngredients } from '../../services/thunks/ingredients';
@@ -8,6 +10,8 @@ import {
   selectBurgerIngredients,
   selectBurgerIngredientsState,
 } from '../../services/selectors/ingredients';
+import { selectModalIngredientId } from '../../services/selectors/modal';
+import { clearModalIngredientId } from '../../services/slices/modal';
 import { INGREDIENTS_TABS } from '../../utils/appConstVariables';
 import burgerIngredientsStyles from './burger-ingredients.module.css';
 
@@ -22,6 +26,8 @@ export const BurgerIngredients = () => {
   const { isFailed: failLoadingIngredients } = useSelector(
     selectBurgerIngredientsState
   );
+  const modalIngredientId = useSelector(selectModalIngredientId);
+  const handleCloseModal = () => dispatch(clearModalIngredientId());
 
   const categoryIngredients = useMemo(() => {
     if (!burgerIngredients) {
@@ -101,6 +107,11 @@ export const BurgerIngredients = () => {
               );
             })}
         </div>
+        {modalIngredientId && (
+          <Modal title="Детали ингредиента" onClose={handleCloseModal}>
+            <IngredientDetails />
+          </Modal>
+        )}
       </>
     )
   );

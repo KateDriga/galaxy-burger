@@ -8,12 +8,12 @@ const modalSlice = createSlice({
   name: 'modal',
   initialState,
   reducers: {
-    setIngredientId: (state, { payload: { id } }) => {
+    setModalIngredientId: (state, { payload: { id } }) => {
       return {
         ingredientId: id,
       };
     },
-    clearIngredientId: _ => {
+    clearModalIngredientId: _ => {
       return {
         ingredientId: null,
       };
@@ -21,5 +21,6 @@ const modalSlice = createSlice({
   },
 });
 
-export const { setIngredientId, clearIngredientId } = modalSlice.actions;
+export const { setModalIngredientId, clearModalIngredientId } =
+  modalSlice.actions;
 export const modalReducer = modalSlice.reducer;

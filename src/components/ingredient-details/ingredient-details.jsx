@@ -1,8 +1,11 @@
-import { INGREDIENT_PROP_TYPES } from '../../utils/propTypes';
+import { useSelector } from 'react-redux';
+import { selectModalIngredient } from '../../services/selectors/modal';
 import ingredientDetailsStyles from './ingredient-details.module.css';
 import cn from 'classnames';
 
-export const IngredientDetails = ({ ingredient }) => {
+export const IngredientDetails = () => {
+  const ingredient = useSelector(selectModalIngredient);
+
   return (
     <>
       <img
@@ -69,8 +72,4 @@ export const IngredientDetails = ({ ingredient }) => {
       </ul>
     </>
   );
-};
-
-IngredientDetails.propTypes = {
-  ingredient: INGREDIENT_PROP_TYPES.isRequired,
 };
