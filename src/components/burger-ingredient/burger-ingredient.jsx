@@ -35,7 +35,7 @@ export const BurgerIngredient = ({ ingredientId }) => {
       onClick={handleOpenModal}
       ref={dragRef}
     >
-      {ingredient?.count > 0 && (
+      {ingredient.count > 0 && (
         <Counter count={ingredient.count} size="default" />
       )}
       <img

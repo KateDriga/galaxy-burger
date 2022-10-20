@@ -34,7 +34,7 @@ export const BurgerConstructor = () => {
     useSelector(selectConstructorMiddleIngredientIds) || [];
   const totalPrice = useMemo(() => {
     return burgerIngredients?.reduce(
-      (acc, ing) => acc + ing.price * (ing.count || 0),
+      (acc, ing) => acc + ing.price * ing.count,
       0
     );
   }, [burgerIngredients]);
