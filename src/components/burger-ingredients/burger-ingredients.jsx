@@ -4,10 +4,13 @@ import { useIsInViewport } from '../../hooks/useIsInViewport';
 import { IngredientsCategory } from '../ingredients-category/ingredients-category';
 import { INGREDIENTS_TABS } from '../../utils/appConstVariables';
 import burgerIngredientsStyles from './burger-ingredients.module.css';
-import { IngredientsContext } from '../services/app-context';
+import { IngredientsContext, ModalContext } from '../services/app-context';
+import { Modal } from '../modal/modal';
+import { IngredientDetails } from '../ingredient-details/ingredient-details';
 
 export const BurgerIngredients = () => {
   const burgerIngredients = useContext(IngredientsContext);
+  const { modalIngredientId, setModalIngredientId } = useContext(ModalContext);
 
   const categoryIngredients = useMemo(() => {
     const buns = burgerIngredients.filter(ing => ing.type === 'bun');
@@ -41,6 +44,10 @@ export const BurgerIngredients = () => {
     });
   };
 
+  const handleCloseModal = () => setModalIngredientId(null);
+  const getIngredient = () =>
+    burgerIngredients.find(i => i._id === modalIngredientId);
+
   return (
     <>
       <div className={burgerIngredientsStyles.tabs}>
@@ -71,6 +78,11 @@ export const BurgerIngredients = () => {
           );
         })}
       </div>
+      {modalIngredientId && (
+        <Modal title="Детали ингредиента" onClose={handleCloseModal}>
+          <IngredientDetails ingredient={getIngredient()} />
+        </Modal>
+      )}
     </>
   );
 };

@@ -7,6 +7,7 @@ import { ErrorBoundary } from '../error-boundary/error-boundary';
 import {
   ConstructorContext,
   IngredientsContext,
+  ModalContext,
   OrderContext,
 } from '../services/app-context';
 import {
@@ -17,6 +18,7 @@ import {
 export const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [burgerIngredients, setBurgerIngredients] = useState(null);
+  const [modalIngredientId, setModalIngredientId] = useState(null);
 
   const [constructorIngredients, constructorDispatcher] = useReducer(
     constructorReducer,
@@ -49,7 +51,11 @@ export const App = () => {
               value={{ constructorIngredients, constructorDispatcher }}
             >
               <OrderContext.Provider value={{ orderNumber, setOrderNumber }}>
-                <MainArea burgerIngredients={burgerIngredients} />
+                <ModalContext.Provider
+                  value={{ modalIngredientId, setModalIngredientId }}
+                >
+                  <MainArea />
+                </ModalContext.Provider>
               </OrderContext.Provider>
             </ConstructorContext.Provider>
           </IngredientsContext.Provider>
