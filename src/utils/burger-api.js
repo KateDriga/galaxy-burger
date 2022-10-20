@@ -1,24 +1,27 @@
 import { BASE_URL } from './appConstVariables';
 
-const checkResponse = res => {
+function request(endpoint, options) {
+  return fetch(`${BASE_URL}${endpoint}`, options).then(checkResponse);
+}
+
+function checkResponse(res) {
   if (res.ok) {
     return res.json();
   }
   throw new Error(`Fetch data from API error: ${res.status}`);
-};
+}
 
 export function getIngredients() {
-  return fetch(`${BASE_URL}/ingredients`)
-    .then(checkResponse)
-    .catch(console.error);
+  return request('/ingredients');
 }
 
 export function placeOrder(ingredientIds) {
-  return fetch(`${BASE_URL}/orders`, {
+  const options = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ ingredients: ingredientIds }),
-  }).then(checkResponse);
+  };
+  return request('/orders', options);
 }

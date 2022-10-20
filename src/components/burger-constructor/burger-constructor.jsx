@@ -45,7 +45,10 @@ export const BurgerConstructor = () => {
       placeOrder([bunId, ...midIds, bunId].filter(id => id !== null))
         .then(res => res.order)
         .then(order => setOrderNumber(order.number))
-        .catch(_ => setOrderNumber(null));
+        .catch(err => {
+          console.error('Order error:', err);
+          setOrderNumber(null);
+        });
       setModalIsVisible(true);
     }
   };

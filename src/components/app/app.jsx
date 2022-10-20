@@ -30,6 +30,10 @@ export const App = () => {
     getIngredients()
       .then(res => res.data)
       .then(setBurgerIngredients)
+      .catch(err => {
+        console.error('Loading ingredients error', err);
+        setBurgerIngredients(null);
+      })
       .finally(() => setIsLoading(false));
   }, []);
 
