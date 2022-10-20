@@ -34,7 +34,7 @@ export function placeNewOrder() {
         dispatch(clearConstructor());
       })
       .catch(error => {
-        console.error(error);
+        console.error('Order error:', error);
         dispatch(failCreatingOrder());
       });
   };

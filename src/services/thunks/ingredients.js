@@ -24,7 +24,7 @@ export function loadIngredients() {
         dispatch(addBurgerIngredients({ ingredients: ingredientsObj }));
       })
       .catch(error => {
-        console.error(error);
+        console.error('Loading ingredients error', error);
         dispatch(failLoadingIngredients());
       });
   };
