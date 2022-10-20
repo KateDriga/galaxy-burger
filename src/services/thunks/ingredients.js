@@ -18,7 +18,7 @@ export function loadIngredients() {
       .then(res => res.data)
       .then(ingredients => {
         const ingredientsObj = ingredients.reduce(
-          (acc, ing) => ({ ...acc, [ing._id]: ing }),
+          (acc, ing) => ({ ...acc, [ing._id]: { ...ing, count: 0 } }),
           {}
         );
         dispatch(addBurgerIngredients({ ingredients: ingredientsObj }));

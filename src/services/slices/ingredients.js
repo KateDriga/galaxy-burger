@@ -38,7 +38,7 @@ const ingredientsSlice = createSlice({
       const ingredient = state.burgerIngredients[id];
       const updatedIngredient = {
         ...ingredient,
-        count: (ingredient.count || 0) + (ingredient.type === 'bun' ? 2 : 1),
+        count: ingredient.count + (ingredient.type === 'bun' ? 2 : 1),
       };
       return {
         ...state,
@@ -63,17 +63,13 @@ const ingredientsSlice = createSlice({
       };
     },
     clearIngredientsCount: state => {
-      const newBurgerIngredients = Object.values(
+      const updatedBurgerIngredients = Object.values(
         state.burgerIngredients
-      ).reduce((acc, ing) => {
-        const newIngredient = { ...ing };
-        delete newIngredient.count;
-        return { ...acc, [newIngredient._id]: newIngredient };
-      }, {});
+      ).reduce((acc, ing) => ({ ...acc, [ing._id]: { ...ing, count: 0 } }), {});
 
       return {
         ...state,
-        burgerIngredients: newBurgerIngredients,
+        burgerIngredients: updatedBurgerIngredients,
       };
     },
   },
