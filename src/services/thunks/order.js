@@ -4,7 +4,6 @@ import {
   startCreatingOrder,
 } from '../slices/order';
 import { createOrder } from '../../utils/burger-api';
-import { getIdFromConstructorIngredientId } from '../../utils/util-functions';
 import { clearIngredientsCount } from '../slices/ingredients';
 import { clearConstructor } from '../slices/constructor';
 import {
@@ -15,14 +14,10 @@ import {
 export function placeNewOrder() {
   return function (dispatch, getState) {
     const state = getState();
-    const bunId = getIdFromConstructorIngredientId(
-      selectConstructorBunIngredientId(state)
-    );
+    const bunId = selectConstructorBunIngredientId(state) || null;
     const middleConstructorIds =
       selectConstructorMiddleIngredientIds(state) || [];
-    const middleIngredientIds = middleConstructorIds.map(id =>
-      getIdFromConstructorIngredientId(id)
-    );
+    const middleIngredientIds = middleConstructorIds.map(id => id.ingredientId);
     dispatch(startCreatingOrder());
     createOrder(
       [bunId, ...middleIngredientIds, bunId].filter(id => id !== null)

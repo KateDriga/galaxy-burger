@@ -8,7 +8,6 @@ import { useDrag, useDrop } from 'react-dnd';
 import { selectBurgerIngredientById } from '../../services/selectors/ingredients';
 import { changeIngredientsOrder } from '../../services/slices/constructor';
 import { removeIngredientFromConstructor } from '../../services/thunks/constructor';
-import { getIdFromConstructorIngredientId } from '../../utils/util-functions';
 import { BUN_INGREDIENT_PLACEHOLDER } from '../../utils/appConstVariables';
 import constructorIngredientStyles from './constructor-ingredient.module.css';
 import cn from 'classnames';
@@ -21,9 +20,8 @@ export const ConstructorIngredient = ({
   extraText = '',
 }) => {
   const ingredient =
-    useSelector(state =>
-      selectBurgerIngredientById(state, getIdFromConstructorIngredientId(id))
-    ) || BUN_INGREDIENT_PLACEHOLDER;
+    useSelector(state => selectBurgerIngredientById(state, id)) ||
+    BUN_INGREDIENT_PLACEHOLDER;
   const isBunIng = ingredient.type === 'bun';
 
   const ref = useRef(null);

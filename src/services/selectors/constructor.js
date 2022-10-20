@@ -1,12 +1,10 @@
-import { getIdFromConstructorIngredientId } from '../../utils/util-functions';
-
 export const selectConstructorBunIngredientId = state =>
-  state.burgerConstructor.bunIngredientId;
+  state.burgerConstructor.bunIngredientId?.ingredientId;
 
 export const selectConstructorBunIngredient = state =>
   state.burgerConstructor.bunIngredientId &&
   state.ingredients.burgerIngredients?.[
-    getIdFromConstructorIngredientId(state.burgerConstructor.bunIngredientId)
+    state.burgerConstructor.bunIngredientId.ingredientId
   ];
 
 export const selectConstructorMiddleIngredientIds = state =>

@@ -1,5 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { generateConstructorIngredientId } from '../../utils/util-functions';
+import { createSlice, nanoid } from '@reduxjs/toolkit';
 
 const initialState = {
   bunIngredientId: null,
@@ -11,31 +10,32 @@ const constructorSlice = createSlice({
   initialState,
   reducers: {
     addIngredient: {
-      reducer: (state, { payload: { id, type } }) => {
+      reducer: (state, { payload: { constructorId, ingredientId, type } }) => {
+        const newIngredient = { constructorId, ingredientId };
         if (type === 'bun') {
           return {
             ...state,
-            bunIngredientId: id,
+            bunIngredientId: newIngredient,
           };
         }
-        const newMiddleIngredients = state.middleIngredientIds
-          ? [...state.middleIngredientIds, id]
-          : [id];
+        const updatedMiddleIngredients = state.middleIngredientIds
+          ? [...state.middleIngredientIds, newIngredient]
+          : [newIngredient];
         return {
           ...state,
-          middleIngredientIds: newMiddleIngredients,
+          middleIngredientIds: updatedMiddleIngredients,
         };
       },
-      prepare: ({ id, type }) => {
-        return { payload: { id: generateConstructorIngredientId(id), type } };
+      prepare: ({ ingredientId, type }) => {
+        return { payload: { constructorId: nanoid(), ingredientId, type } };
       },
     },
     removeIngredient: (state, { payload: { index } }) => {
-      const newMiddleIngredientIds = [...state.middleIngredientIds];
-      newMiddleIngredientIds.splice(index, 1);
+      const updatedMiddleIngredientIds = [...state.middleIngredientIds];
+      updatedMiddleIngredientIds.splice(index, 1);
       return {
         ...state,
-        middleIngredientIds: newMiddleIngredientIds,
+        middleIngredientIds: updatedMiddleIngredientIds,
       };
     },
     changeIngredientsOrder: (state, { payload: { oldIndex, newIndex } }) => {

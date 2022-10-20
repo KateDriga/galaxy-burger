@@ -68,7 +68,11 @@ export const BurgerConstructor = () => {
         )}
       >
         {midIngredientsIds.map((id, index) => (
-          <ConstructorIngredient key={id} id={id} index={index} />
+          <ConstructorIngredient
+            key={id.constructorId}
+            id={id.ingredientId}
+            index={index}
+          />
         ))}
       </div>
       <ConstructorIngredient
