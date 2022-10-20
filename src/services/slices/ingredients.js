@@ -15,6 +15,7 @@ const ingredientsSlice = createSlice({
         ...state,
         isLoading: true,
         isFailed: false,
+        burgerIngredients: null,
       };
     },
     failLoadingIngredients: state => {
@@ -22,6 +23,7 @@ const ingredientsSlice = createSlice({
         ...state,
         isLoading: false,
         isFailed: true,
+        burgerIngredients: null,
       };
     },
     addBurgerIngredients: (state, { payload: { ingredients } }) => {

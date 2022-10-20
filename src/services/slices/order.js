@@ -17,11 +17,11 @@ const orderSlice = createSlice({
         orderNumber: null,
       };
     },
-    failCreatingOrder: state => {
+    failCreatingOrder: _ => {
       return {
-        ...state,
         isLoading: false,
         isFailed: true,
+        orderNumber: null,
       };
     },
     saveOrderNumber: (state, { payload: { orderNumber } }) => {
