@@ -7,10 +7,12 @@ import {
   LOGIN_ROUTE,
   REGISTER_ROUTE,
   FORGOT_PASSWORD_ROUTE,
+  RESET_PASSWORD_ROUTE,
 } from '../../utils/const-variables/route-variables';
 import { LoginPage } from '../../pages/user-admission/login-page';
 import { RegisterPage } from '../../pages/user-admission/register-page';
 import { ForgotPasswordPage } from '../../pages/user-admission/forgot-password-page';
+import { ResetPasswordPage } from '../../pages/user-admission/reset-password-page';
 
 export const App = () => {
   return (
@@ -25,6 +27,10 @@ export const App = () => {
             <Route
               path={FORGOT_PASSWORD_ROUTE}
               element={<ForgotPasswordPage />}
+            />
+            <Route
+              path={RESET_PASSWORD_ROUTE}
+              element={<ResetPasswordPage />}
             />
           </Routes>
         </BrowserRouter>

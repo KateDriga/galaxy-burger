@@ -1,7 +1,7 @@
 import { useFormInputs } from '../../hooks/useFormInputs';
 import {
   FORM_INPUTS,
-  FORGOT_PASSWORD_ACTIONS,
+  FORGOT_RESET_PASSWORD_ACTIONS,
 } from '../../utils/const-variables/form-variables';
 import { AdmissionForm } from '../../components/admission-form/admission-form';
 
@@ -11,6 +11,7 @@ export const ForgotPasswordPage = () => {
   const emailInput = {
     ...FORM_INPUTS.email,
     value: forgotPasswordForm.form.email,
+    placeholder: 'Укажите e-mail',
   };
 
   return (
@@ -19,7 +20,7 @@ export const ForgotPasswordPage = () => {
       inputs={[emailInput]}
       buttonName="Восстановить"
       onFormChange={forgotPasswordForm.handleFormChange}
-      actions={FORGOT_PASSWORD_ACTIONS}
+      actions={FORGOT_RESET_PASSWORD_ACTIONS}
     />
   );
 };

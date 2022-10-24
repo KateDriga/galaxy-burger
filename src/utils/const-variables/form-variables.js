@@ -15,6 +15,11 @@ export const FORM_INPUTS = {
     name: 'name',
     placeholder: 'Имя',
   },
+  code: {
+    tagType: Input,
+    name: 'code',
+    placeholder: 'Введите код из письма',
+  },
   email: {
     tagType: EmailInput,
     name: 'email',
@@ -48,7 +53,7 @@ export const REGISTER_ACTIONS = [
   },
 ];
 
-export const FORGOT_PASSWORD_ACTIONS = [
+export const FORGOT_RESET_PASSWORD_ACTIONS = [
   {
     path: LOGIN_ROUTE,
     description: 'Вспомнили пароль?',
