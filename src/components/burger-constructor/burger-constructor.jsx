@@ -18,7 +18,7 @@ import { selectTotalPrice } from '../../services/selectors/ingredients';
 import { placeNewOrder } from '../../services/thunks/order';
 import { addIngredientToConstructor } from '../../services/thunks/constructor';
 import { selectOrderState } from '../../services/selectors/order';
-import { BUN_INGREDIENT_PLACEHOLDER } from '../../utils/appConstVariables';
+import { BUN_INGREDIENT_PLACEHOLDER } from '../../utils/const-variables/ingredient-variables';
 import burgerConstructorStyles from './burger-constructor.module.css';
 import cn from 'classnames';
 

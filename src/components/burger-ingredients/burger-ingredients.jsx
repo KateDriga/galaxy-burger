@@ -12,7 +12,7 @@ import {
 } from '../../services/selectors/ingredients';
 import { selectModalIngredientId } from '../../services/selectors/modal';
 import { clearModalIngredientId } from '../../services/slices/modal';
-import { INGREDIENTS_TABS } from '../../utils/appConstVariables';
+import { INGREDIENT_TABS } from '../../utils/const-variables/ingredient-variables';
 import burgerIngredientsStyles from './burger-ingredients.module.css';
 
 export const BurgerIngredients = () => {
@@ -77,7 +77,7 @@ export const BurgerIngredients = () => {
       <>
         <div className={burgerIngredientsStyles.tabs}>
           {categoryIngredients &&
-            INGREDIENTS_TABS.map(t => {
+            INGREDIENT_TABS.map(t => {
               return (
                 <Tab
                   key={t.type}
@@ -96,7 +96,7 @@ export const BurgerIngredients = () => {
           className={`${burgerIngredientsStyles.ingredients_container} custom-scroll`}
         >
           {categoryIngredients &&
-            INGREDIENTS_TABS.map(t => {
+            INGREDIENT_TABS.map(t => {
               return (
                 <IngredientsCategory
                   key={t.type}

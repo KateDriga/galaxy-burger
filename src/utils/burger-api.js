@@ -1,4 +1,4 @@
-import { BASE_URL } from './appConstVariables';
+import { BASE_URL } from './const-variables/app-variables';
 
 function request(endpoint, options) {
   return fetch(`${BASE_URL}${endpoint}`, options).then(checkResponse);

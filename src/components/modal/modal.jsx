@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom';
-import { MODAL_ROOT } from '../../utils/appConstVariables';
+import { MODAL_ROOT } from '../../utils/const-variables/app-variables';
 import { ReactComponent as CloseIcon } from '../../icons/close.svg';
 import { ModalOverlay } from '../modal-overlay/modal-overlay';
 import { useEffect } from 'react';

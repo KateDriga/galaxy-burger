@@ -1,5 +1,5 @@
 import { Logo } from '@ya.praktikum/react-developer-burger-ui-components';
-import { MENU_ITEMS } from '../../utils/appConstVariables';
+import { MENU_ITEMS } from '../../utils/const-variables/app-variables';
 import cn from 'classnames';
 import appHeaderStyles from './app-header.module.css';
 

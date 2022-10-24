@@ -8,7 +8,7 @@ import { useDrag, useDrop } from 'react-dnd';
 import { selectBurgerIngredientById } from '../../services/selectors/ingredients';
 import { changeIngredientsOrder } from '../../services/slices/constructor';
 import { removeIngredientFromConstructor } from '../../services/thunks/constructor';
-import { BUN_INGREDIENT_PLACEHOLDER } from '../../utils/appConstVariables';
+import { BUN_INGREDIENT_PLACEHOLDER } from '../../utils/const-variables/ingredient-variables';
 import constructorIngredientStyles from './constructor-ingredient.module.css';
 import cn from 'classnames';
 import PropTypes from 'prop-types';
