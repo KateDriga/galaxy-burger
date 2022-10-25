@@ -3,7 +3,7 @@ import {
   saveOrderNumber,
   startCreatingOrder,
 } from '../slices/order';
-import { createOrder } from '../../utils/burger-api';
+import { createOrder } from '../../utils/api/rest/orders';
 import { clearIngredientsCount } from '../slices/ingredients';
 import { clearConstructor } from '../slices/constructor';
 import {
@@ -22,9 +22,9 @@ export function placeNewOrder() {
     createOrder(
       [bunId, ...middleIngredientIds, bunId].filter(id => id !== null)
     )
-      .then(res => res.order)
-      .then(order => {
-        dispatch(saveOrderNumber({ orderNumber: order.number }));
+      .then(res => {
+        console.log(res);
+        dispatch(saveOrderNumber({ orderNumber: res.data.order.number }));
         dispatch(clearIngredientsCount());
         dispatch(clearConstructor());
       })

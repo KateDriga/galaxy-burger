@@ -3,7 +3,7 @@ import {
   failLoadingIngredients,
   addBurgerIngredients,
 } from '../slices/ingredients';
-import { getIngredients } from '../../utils/burger-api';
+import { getIngredients } from '../../utils/api/rest/ingredients';
 import { selectBurgerIngredients } from '../selectors/ingredients';
 
 export function loadIngredients() {
@@ -15,9 +15,8 @@ export function loadIngredients() {
     }
     dispatch(startLoadingIngredients());
     getIngredients()
-      .then(res => res.data)
-      .then(ingredients => {
-        const ingredientsObj = ingredients.reduce(
+      .then(res => {
+        const ingredientsObj = res.data.data.reduce(
           (acc, ing) => ({ ...acc, [ing._id]: { ...ing, count: 0 } }),
           {}
         );

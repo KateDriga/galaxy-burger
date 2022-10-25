@@ -1,12 +1,21 @@
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { useFormInputs } from '../../hooks/useFormInputs';
 import {
   FORM_INPUTS,
   FORGOT_RESET_PASSWORD_ACTIONS,
 } from '../../utils/const-variables/form-variables';
 import { AdmissionForm } from '../../components/admission-form/admission-form';
+import { resetUserPassword } from '../../services/thunks/user-admission';
+import { Loader } from '../../components/loader/loader';
+import { clearPasswordResetErrorMessage } from '../../services/slices/user-admission';
+import { selectUserPasswordResetState } from '../../services/selectors/user-admission';
 
 export const ForgotPasswordPage = () => {
   const forgotPasswordForm = useFormInputs({ email: '' });
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isLoading, errorMessage } = useSelector(selectUserPasswordResetState);
 
   const emailInput = {
     ...FORM_INPUTS.email,
@@ -14,13 +23,23 @@ export const ForgotPasswordPage = () => {
     placeholder: 'Укажите e-mail',
   };
 
-  return (
+  const handleButtonClick = e => {
+    e.preventDefault();
+    dispatch(resetUserPassword(forgotPasswordForm.form.email, navigate));
+  };
+
+  const handleCloseModal = () => dispatch(clearPasswordResetErrorMessage());
+
+  return isLoading ? (
+    <Loader />
+  ) : (
     <AdmissionForm
       title="Восстановление пароля"
       inputs={[emailInput]}
-      buttonName="Восстановить"
+      buttonInfo={{ title: 'Восстановить', onClick: handleButtonClick }}
       onFormChange={forgotPasswordForm.handleFormChange}
       actions={FORGOT_RESET_PASSWORD_ACTIONS}
+      errorInfo={{ errorMessage, handleCloseModal }}
     />
   );
 };
