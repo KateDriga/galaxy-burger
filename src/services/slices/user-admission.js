@@ -20,7 +20,7 @@ const initialState = {
 };
 
 const userAdmissionSlice = createSlice({
-  name: 'user',
+  name: 'user-admission',
   initialState,
   reducers: {
     startResettingPassword: state => {

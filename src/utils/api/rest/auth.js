@@ -40,3 +40,11 @@ export const login = (email, password) => {
     data: { email, password },
   });
 };
+
+export const logout = () => {
+  return axiosInstance({
+    url: '/auth/logout',
+    method: 'post',
+    data: { token: getCookie('refreshToken') },
+  });
+};

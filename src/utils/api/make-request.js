@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { BASE_URL } from '../const-variables/app-variables';
 import { refreshToken } from './rest/auth';
+import { setCookie } from '../cookie';
 
-let accessToken = '123';
+let accessToken = null;
 
 export const setAccessToken = token => (accessToken = token);
 
@@ -35,9 +36,8 @@ axiosInstance.interceptors.response.use(
         originalConfig._retry = true;
         refreshToken()
           .then(res => {
-            // refresh token
-            console.log(res);
-            setAccessToken(res.data.token);
+            setAccessToken(res.data.accessToken);
+            setCookie('refreshToken', res.data.refreshToken);
             return axiosInstance(originalConfig);
           })
           .catch(err => Promise.reject(err));

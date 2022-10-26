@@ -23,7 +23,6 @@ export function placeNewOrder() {
       [bunId, ...middleIngredientIds, bunId].filter(id => id !== null)
     )
       .then(res => {
-        console.log(res);
         dispatch(saveOrderNumber({ orderNumber: res.data.order.number }));
         dispatch(clearIngredientsCount());
         dispatch(clearConstructor());

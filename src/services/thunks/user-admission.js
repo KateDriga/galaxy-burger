@@ -17,13 +17,14 @@ import {
   registerUser,
   savePassword,
   login,
+  logout,
 } from '../../utils/api/rest/auth';
 import {
   HOME_ROUTE,
   LOGIN_ROUTE,
   RESET_PASSWORD_ROUTE,
 } from '../../utils/const-variables/route-variables';
-import { setCookie } from '../../utils/cookie';
+import { deleteCookie, setCookie } from '../../utils/cookie';
 import { setAccessToken } from '../../utils/api/make-request';
 
 export function resetUserPassword(email, navigate) {
@@ -112,5 +113,17 @@ export function userLogin(email, password, navigate) {
           })
         );
       });
+  };
+}
+
+export function userLogout() {
+  return function (dispatch) {
+    // TODO dispatch user-profile actions
+    logout()
+      .then(_ => {
+        setAccessToken(null);
+        deleteCookie('refreshToken');
+      })
+      .catch(err => console.error('Failed to logout', err));
   };
 }

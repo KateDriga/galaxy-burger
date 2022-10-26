@@ -8,33 +8,36 @@ import {
   REGISTER_ROUTE,
   FORGOT_PASSWORD_ROUTE,
   RESET_PASSWORD_ROUTE,
+  PROFILE_ROOT,
 } from '../../utils/const-variables/route-variables';
 import { LoginPage } from '../../pages/user-admission/login-page';
 import { RegisterPage } from '../../pages/user-admission/register-page';
 import { ForgotPasswordPage } from '../../pages/user-admission/forgot-password-page';
 import { ResetPasswordPage } from '../../pages/user-admission/reset-password-page';
+import { ProfilePage } from '../../pages/profile-page/profile-page';
 
 export const App = () => {
   return (
-    <>
+    <BrowserRouter>
       <AppHeader />
       <ErrorBoundary>
-        <BrowserRouter>
-          <Routes>
-            <Route path={HOME_ROUTE} element={<MainArea />} />
-            <Route path={LOGIN_ROUTE} element={<LoginPage />} />
-            <Route path={REGISTER_ROUTE} element={<RegisterPage />} />
-            <Route
-              path={FORGOT_PASSWORD_ROUTE}
-              element={<ForgotPasswordPage />}
-            />
-            <Route
-              path={RESET_PASSWORD_ROUTE}
-              element={<ResetPasswordPage />}
-            />
-          </Routes>
-        </BrowserRouter>
+        <Routes>
+          <Route path={HOME_ROUTE} element={<MainArea />} />
+          <Route path={LOGIN_ROUTE} element={<LoginPage />} />
+          <Route path={REGISTER_ROUTE} element={<RegisterPage />} />
+          <Route
+            path={FORGOT_PASSWORD_ROUTE}
+            element={<ForgotPasswordPage />}
+          />
+          <Route path={RESET_PASSWORD_ROUTE} element={<ResetPasswordPage />} />
+          <Route path={`${PROFILE_ROOT}/*`} element={<ProfilePage />} />
+          {/*TODO implement order details*/}
+          <Route
+            path={`${PROFILE_ROOT}/orders/:id`}
+            element={<p>Order Details</p>}
+          />
+        </Routes>
       </ErrorBoundary>
-    </>
+    </BrowserRouter>
   );
 };

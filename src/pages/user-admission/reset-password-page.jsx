@@ -41,13 +41,15 @@ export const ResetPasswordPage = () => {
   return isLoading ? (
     <Loader />
   ) : (
-    <AdmissionForm
-      title="Восстановление пароля"
-      inputs={[emailInput, codeInput]}
-      buttonInfo={{ title: 'Сохранить', onClick: handleButtonClick }}
-      onFormChange={resetPasswordForm.handleFormChange}
-      actions={FORGOT_RESET_PASSWORD_ACTIONS}
-      errorInfo={{ errorMessage, handleCloseModal }}
-    />
+    <div className="pt-30">
+      <AdmissionForm
+        title="Восстановление пароля"
+        inputs={[emailInput, codeInput]}
+        buttonInfo={{ title: 'Сохранить', onClick: handleButtonClick }}
+        onFormChange={resetPasswordForm.handleFormChange}
+        actions={FORGOT_RESET_PASSWORD_ACTIONS}
+        errorInfo={{ errorMessage, handleCloseModal }}
+      />
+    </div>
   );
 };

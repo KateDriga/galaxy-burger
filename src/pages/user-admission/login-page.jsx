@@ -39,13 +39,15 @@ export const LoginPage = () => {
   return isLoading ? (
     <Loader />
   ) : (
-    <AdmissionForm
-      title="Вход"
-      inputs={[emailInput, passwordInput]}
-      buttonInfo={{ title: 'Войти', onClick: handleButtonClick }}
-      onFormChange={loginForm.handleFormChange}
-      actions={LOGIN_ACTIONS}
-      errorInfo={{ errorMessage, handleCloseModal }}
-    />
+    <div className="pt-30">
+      <AdmissionForm
+        title="Вход"
+        inputs={[emailInput, passwordInput]}
+        buttonInfo={{ title: 'Войти', onClick: handleButtonClick }}
+        onFormChange={loginForm.handleFormChange}
+        actions={LOGIN_ACTIONS}
+        errorInfo={{ errorMessage, handleCloseModal }}
+      />
+    </div>
   );
 };

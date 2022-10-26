@@ -33,13 +33,15 @@ export const ForgotPasswordPage = () => {
   return isLoading ? (
     <Loader />
   ) : (
-    <AdmissionForm
-      title="Восстановление пароля"
-      inputs={[emailInput]}
-      buttonInfo={{ title: 'Восстановить', onClick: handleButtonClick }}
-      onFormChange={forgotPasswordForm.handleFormChange}
-      actions={FORGOT_RESET_PASSWORD_ACTIONS}
-      errorInfo={{ errorMessage, handleCloseModal }}
-    />
+    <div className="pt-30">
+      <AdmissionForm
+        title="Восстановление пароля"
+        inputs={[emailInput]}
+        buttonInfo={{ title: 'Восстановить', onClick: handleButtonClick }}
+        onFormChange={forgotPasswordForm.handleFormChange}
+        actions={FORGOT_RESET_PASSWORD_ACTIONS}
+        errorInfo={{ errorMessage, handleCloseModal }}
+      />
+    </div>
   );
 };

@@ -21,8 +21,8 @@ export const AdmissionForm = ({
       <div
         className={cn(admissionFormStyles.admission_container, 'custom-scroll')}
       >
-        <form className={cn(admissionFormStyles.admission_form, 'pt-30 pb-20')}>
-          <h2 className="text text_type_main-medium">{title}</h2>
+        <form className={cn(admissionFormStyles.admission_form, 'pb-20')}>
+          {title && <h2 className="text text_type_main-medium">{title}</h2>}
           {inputs.map(i => {
             const InputTag = i.tagType;
             return (
@@ -33,6 +33,7 @@ export const AdmissionForm = ({
                 name={i.name}
                 placeholder={i.placeholder}
                 size={windowWidth > 1000 ? 'default' : 'small'}
+                icon={i.icon}
               />
             );
           })}
@@ -45,31 +46,33 @@ export const AdmissionForm = ({
             {buttonInfo.title}
           </Button>
         </form>
-        <div
-          className={cn(
-            admissionFormStyles.admission_actions,
-            'text text_type_main-default',
-            'pl-5 pr-5'
-          )}
-        >
-          {actions.map(a => (
-            <Link
-              key={a.title}
-              to={a.path}
-              className={admissionFormStyles.action_item}
-            >
-              <span>{a.description}</span>
-              <Button
-                htmlType="button"
-                type="secondary"
-                size="large"
-                style={{ padding: 0 }}
+        {actions && (
+          <div
+            className={cn(
+              admissionFormStyles.admission_actions,
+              'text text_type_main-default',
+              'pl-5 pr-5'
+            )}
+          >
+            {actions.map(a => (
+              <Link
+                key={a.title}
+                to={a.path}
+                className={admissionFormStyles.action_item}
               >
-                {a.title}
-              </Button>
-            </Link>
-          ))}
-        </div>
+                <span>{a.description}</span>
+                <Button
+                  htmlType="button"
+                  type="secondary"
+                  size="large"
+                  style={{ padding: 0 }}
+                >
+                  {a.title}
+                </Button>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
       {errorInfo?.errorMessage && (
         <Modal onClose={errorInfo.handleCloseModal} title="">

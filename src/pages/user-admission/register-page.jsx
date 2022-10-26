@@ -49,13 +49,15 @@ export const RegisterPage = () => {
   return isLoading ? (
     <Loader />
   ) : (
-    <AdmissionForm
-      title="Регистрация"
-      inputs={[nameInput, emailInput, passwordInput]}
-      buttonInfo={{ title: 'Зарегистрироваться', onClick: handleButtonClick }}
-      onFormChange={registerForm.handleFormChange}
-      actions={REGISTER_ACTIONS}
-      errorInfo={{ errorMessage, handleCloseModal }}
-    />
+    <div className="pt-30">
+      <AdmissionForm
+        title="Регистрация"
+        inputs={[nameInput, emailInput, passwordInput]}
+        buttonInfo={{ title: 'Зарегистрироваться', onClick: handleButtonClick }}
+        onFormChange={registerForm.handleFormChange}
+        actions={REGISTER_ACTIONS}
+        errorInfo={{ errorMessage, handleCloseModal }}
+      />
+    </div>
   );
 };
