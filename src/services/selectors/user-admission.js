@@ -25,3 +25,10 @@ export const selectUserLogInState = state => {
     errorMessage: state.userAdmission.userLogin.errorMessage,
   };
 };
+
+export const selectUpdateUserState = state => {
+  return {
+    isLoading: state.userAdmission.userUpdate.isLoading,
+    errorMessage: state.userAdmission.userUpdate.errorMessage,
+  };
+};

@@ -9,7 +9,7 @@ import {
 import { selectRegisterUserState } from '../../services/selectors/user-admission';
 import { clearRegisterUserErrorMessage } from '../../services/slices/user-admission';
 import { Loader } from '../../components/loader/loader';
-import { registerNewUser } from '../../services/thunks/user-admission';
+import { registerUser } from '../../services/thunks/user-admission';
 
 export const RegisterPage = () => {
   const registerForm = useFormInputs({ name: '', email: '', password: '' });
@@ -32,10 +32,10 @@ export const RegisterPage = () => {
     value: registerForm.form.password,
   };
 
-  const handleButtonClick = e => {
+  const handleRegisterUser = e => {
     e.preventDefault();
     dispatch(
-      registerNewUser(
+      registerUser(
         registerForm.form.email,
         registerForm.form.password,
         registerForm.form.name,
@@ -53,7 +53,7 @@ export const RegisterPage = () => {
       <AdmissionForm
         title="Регистрация"
         inputs={[nameInput, emailInput, passwordInput]}
-        buttonInfo={{ title: 'Зарегистрироваться', onClick: handleButtonClick }}
+        buttons={[{ title: 'Зарегистрироваться', onClick: handleRegisterUser }]}
         onFormChange={registerForm.handleFormChange}
         actions={REGISTER_ACTIONS}
         errorInfo={{ errorMessage, handleCloseModal }}

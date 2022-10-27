@@ -27,7 +27,7 @@ export const LoginPage = () => {
     value: loginForm.form.password,
   };
 
-  const handleButtonClick = e => {
+  const handleUserLogin = e => {
     e.preventDefault();
     dispatch(
       userLogin(loginForm.form.email, loginForm.form.password, navigate)
@@ -43,7 +43,7 @@ export const LoginPage = () => {
       <AdmissionForm
         title="Вход"
         inputs={[emailInput, passwordInput]}
-        buttonInfo={{ title: 'Войти', onClick: handleButtonClick }}
+        buttons={[{ title: 'Войти', onClick: handleUserLogin }]}
         onFormChange={loginForm.handleFormChange}
         actions={LOGIN_ACTIONS}
         errorInfo={{ errorMessage, handleCloseModal }}

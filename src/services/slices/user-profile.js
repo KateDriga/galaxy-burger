@@ -4,7 +4,8 @@ const initialState = {
   personalInfo: {
     name: null,
     email: null,
-    password: null,
+    isLoading: false,
+    errorMessage: null,
   },
 };
 
@@ -12,14 +13,40 @@ const userProfileSlice = createSlice({
   name: 'user-profile',
   initialState,
   reducers: {
-    setPersonalInfo: (state, { payload: { name, email, password } }) => {
-      state.personalInfo.name = name;
-      state.personalInfo.email = email;
-      state.personalInfo.password = password;
+    startLoadingPersonalInfo: state => {
+      state.personalInfo.isLoading = true;
+      state.personalInfo.errorMessage = null;
+      return state;
+    },
+    setPersonalInfo: (state, { payload: { name, email } }) => {
+      state.personalInfo = {
+        name,
+        email,
+        isLoading: false,
+        errorMessage: null,
+      };
+      return state;
+    },
+    failLoadingPersonalInfo: (state, { payload: { errorText } }) => {
+      state.personalInfo = {
+        name: null,
+        email: null,
+        isLoading: false,
+        errorMessage: errorText,
+      };
+      return state;
+    },
+    clearPersonalInfoErrorMessage: state => {
+      state.personalInfo.errorMessage = null;
       return state;
     },
   },
 });
 
-export const { setPersonalInfo } = userProfileSlice.actions;
+export const {
+  startLoadingPersonalInfo,
+  setPersonalInfo,
+  failLoadingPersonalInfo,
+  clearPersonalInfoErrorMessage,
+} = userProfileSlice.actions;
 export const userProfileReducer = userProfileSlice.reducer;

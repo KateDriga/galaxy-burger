@@ -9,7 +9,7 @@ import cn from 'classnames';
 export const AdmissionForm = ({
   title,
   inputs,
-  buttonInfo,
+  buttons,
   onFormChange,
   actions,
   errorInfo,
@@ -28,7 +28,7 @@ export const AdmissionForm = ({
             return (
               <InputTag
                 key={i.name}
-                value={i.value}
+                value={i.value ?? ''}
                 onChange={onFormChange}
                 name={i.name}
                 placeholder={i.placeholder}
@@ -37,14 +37,19 @@ export const AdmissionForm = ({
               />
             );
           })}
-          <Button
-            htmlType="submit"
-            type="primary"
-            size={windowWidth > 1000 ? 'medium' : 'small'}
-            onClick={buttonInfo.onClick}
-          >
-            {buttonInfo.title}
-          </Button>
+          <div className={admissionFormStyles.admission_buttons}>
+            {buttons.map(btn => (
+              <Button
+                key={btn.title}
+                htmlType="submit"
+                type="primary"
+                size={windowWidth > 1000 ? 'medium' : 'small'}
+                onClick={btn.onClick}
+              >
+                {btn.title}
+              </Button>
+            ))}
+          </div>
         </form>
         {actions && (
           <div

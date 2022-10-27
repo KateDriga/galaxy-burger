@@ -23,7 +23,7 @@ export const ForgotPasswordPage = () => {
     placeholder: 'Укажите e-mail',
   };
 
-  const handleButtonClick = e => {
+  const handleResetPassword = e => {
     e.preventDefault();
     dispatch(resetUserPassword(forgotPasswordForm.form.email, navigate));
   };
@@ -37,7 +37,7 @@ export const ForgotPasswordPage = () => {
       <AdmissionForm
         title="Восстановление пароля"
         inputs={[emailInput]}
-        buttonInfo={{ title: 'Восстановить', onClick: handleButtonClick }}
+        buttons={[{ title: 'Восстановить', onClick: handleResetPassword }]}
         onFormChange={forgotPasswordForm.handleFormChange}
         actions={FORGOT_RESET_PASSWORD_ACTIONS}
         errorInfo={{ errorMessage, handleCloseModal }}

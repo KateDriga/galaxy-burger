@@ -3,10 +3,6 @@ import { BASE_URL } from '../const-variables/app-variables';
 import { refreshToken } from './rest/auth';
 import { setCookie } from '../cookie';
 
-let accessToken = null;
-
-export const setAccessToken = token => (accessToken = token);
-
 export const axiosInstance = axios.create({ baseURL: BASE_URL });
 
 axiosInstance.interceptors.request.use(
@@ -15,7 +11,7 @@ axiosInstance.interceptors.request.use(
       config.headers['Content-Type'] = 'application/json';
     }
     if (config.headers.authorization) {
-      config.headers['Authorization'] = accessToken;
+      config.headers.authorization = localStorage.getItem('accessToken');
     }
     return config;
   },
@@ -27,20 +23,21 @@ axiosInstance.interceptors.response.use(
   async err => {
     const originalConfig = err.config;
     if (
-      !['/auth/login', '/auth/register', '/auth/token'].includes(
-        originalConfig.url
-      ) &&
-      err.response
+      ['/auth/user', '/orders'].includes(originalConfig.url) &&
+      (err.response.status === 401 || err.response.status === 403) &&
+      !originalConfig._retry
     ) {
-      if (err.response.status === 401 && !originalConfig._retry) {
-        originalConfig._retry = true;
-        refreshToken()
-          .then(res => {
-            setAccessToken(res.data.accessToken);
-            setCookie('refreshToken', res.data.refreshToken);
-            return axiosInstance(originalConfig);
-          })
-          .catch(err => Promise.reject(err));
+      originalConfig._retry = true;
+
+      try {
+        const { data: tokenInfo } = await refreshToken();
+        localStorage.setItem('accessToken', tokenInfo.accessToken);
+        setCookie('refreshToken', tokenInfo.refreshToken);
+        originalConfig.headers.authorization =
+          localStorage.getItem('accessToken');
+        return axiosInstance(originalConfig);
+      } catch (err) {
+        return Promise.reject(err);
       }
     }
     return Promise.reject(err);

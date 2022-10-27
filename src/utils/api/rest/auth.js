@@ -1,7 +1,7 @@
 import { axiosInstance } from '../make-request';
 import { getCookie } from '../../cookie';
 
-export const registerUser = (email, password, name) => {
+export const register = (email, password, name) => {
   return axiosInstance({
     url: '/auth/register',
     method: 'post',
@@ -46,5 +46,21 @@ export const logout = () => {
     url: '/auth/logout',
     method: 'post',
     data: { token: getCookie('refreshToken') },
+  });
+};
+
+export const getUserProfileInfo = () => {
+  return axiosInstance({
+    url: '/auth/user',
+    headers: { authorization: true },
+  });
+};
+
+export const updateUserProfileInfo = data => {
+  return axiosInstance({
+    url: '/auth/user',
+    method: 'patch',
+    headers: { authorization: true },
+    data,
   });
 };

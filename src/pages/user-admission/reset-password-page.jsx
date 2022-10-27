@@ -25,7 +25,7 @@ export const ResetPasswordPage = () => {
 
   const codeInput = { ...FORM_INPUTS.code, value: resetPasswordForm.form.code };
 
-  const handleButtonClick = e => {
+  const handleSavePassword = e => {
     e.preventDefault();
     dispatch(
       saveNewPassword(
@@ -45,7 +45,7 @@ export const ResetPasswordPage = () => {
       <AdmissionForm
         title="Восстановление пароля"
         inputs={[emailInput, codeInput]}
-        buttonInfo={{ title: 'Сохранить', onClick: handleButtonClick }}
+        buttons={[{ title: 'Сохранить', onClick: handleSavePassword }]}
         onFormChange={resetPasswordForm.handleFormChange}
         actions={FORGOT_RESET_PASSWORD_ACTIONS}
         errorInfo={{ errorMessage, handleCloseModal }}

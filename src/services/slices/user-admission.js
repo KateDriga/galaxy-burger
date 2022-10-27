@@ -17,6 +17,10 @@ const initialState = {
     isLoading: false,
     errorMessage: null,
   },
+  userUpdate: {
+    isLoading: false,
+    errorMessage: null,
+  },
 };
 
 const userAdmissionSlice = createSlice({
@@ -95,6 +99,24 @@ const userAdmissionSlice = createSlice({
       state.userLogin.errorMessage = null;
       return state;
     },
+    startUpdatingUser: state => {
+      state.userUpdate.isLoading = true;
+      state.userUpdate.errorMessage = null;
+      return state;
+    },
+    successUpdatingUser: state => {
+      state.userUpdate = initialState.userUpdate;
+      return state;
+    },
+    failUpdatingUser: (state, { payload: { errorText } }) => {
+      state.userUpdate.isLoading = false;
+      state.userUpdate.errorMessage = errorText;
+      return state;
+    },
+    clearUserUpdateErrorMessage: state => {
+      state.userUpdate.errorMessage = null;
+      return state;
+    },
   },
 });
 
@@ -115,5 +137,9 @@ export const {
   successUserLogIn,
   failUserLogIn,
   clearUserLogInErrorMessage,
+  startUpdatingUser,
+  successUpdatingUser,
+  failUpdatingUser,
+  clearUserUpdateErrorMessage,
 } = userAdmissionSlice.actions;
 export const userAdmissionReducer = userAdmissionSlice.reducer;

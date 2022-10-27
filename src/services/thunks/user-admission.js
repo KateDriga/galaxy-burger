@@ -2,22 +2,26 @@ import {
   failCreatingUser,
   failResettingPassword,
   failSavingPassword,
+  failUpdatingUser,
   failUserLogIn,
   startCreatingUser,
   startLoggingIn,
   startResettingPassword,
   startSavingPassword,
+  startUpdatingUser,
   successCreatingUser,
   successResettingPassword,
   successSavingPassword,
+  successUpdatingUser,
   successUserLogIn,
 } from '../slices/user-admission';
 import {
   resetPassword,
-  registerUser,
+  register,
   savePassword,
   login,
   logout,
+  updateUserProfileInfo,
 } from '../../utils/api/rest/auth';
 import {
   HOME_ROUTE,
@@ -25,7 +29,7 @@ import {
   RESET_PASSWORD_ROUTE,
 } from '../../utils/const-variables/route-variables';
 import { deleteCookie, setCookie } from '../../utils/cookie';
-import { setAccessToken } from '../../utils/api/make-request';
+import { setPersonalInfo } from '../slices/user-profile';
 
 export function resetUserPassword(email, navigate) {
   return function (dispatch) {
@@ -49,14 +53,14 @@ export function resetUserPassword(email, navigate) {
   };
 }
 
-export function registerNewUser(email, password, name, navigate) {
+export function registerUser(email, password, name, navigate) {
   return function (dispatch) {
     dispatch(startCreatingUser());
-    registerUser(email, password, name)
+    register(email, password, name)
       .then(res => {
         if (res.data.success) {
           dispatch(successCreatingUser());
-          setAccessToken(res.data.accessToken);
+          localStorage.setItem('accessToken', res.data.accessToken);
           setCookie('refreshToken', res.data.refreshToken);
           navigate(HOME_ROUTE);
         } else throw Error(res.message);
@@ -100,7 +104,7 @@ export function userLogin(email, password, navigate) {
     login(email, password)
       .then(res => {
         dispatch(successUserLogIn());
-        setAccessToken(res.data.accessToken);
+        localStorage.setItem('accessToken', res.data.accessToken);
         setCookie('refreshToken', res.data.refreshToken);
         navigate(HOME_ROUTE);
       })
@@ -121,9 +125,35 @@ export function userLogout() {
     // TODO dispatch user-profile actions
     logout()
       .then(_ => {
-        setAccessToken(null);
+        localStorage.removeItem('accessToken');
         deleteCookie('refreshToken');
       })
       .catch(err => console.error('Failed to logout', err));
+  };
+}
+
+export function updateUserPersonalInfo(name, email, password) {
+  return function (dispatch) {
+    const data = Object.assign(
+      {},
+      name && { name },
+      email && { email },
+      password && password
+    );
+    dispatch(startUpdatingUser());
+    updateUserProfileInfo(data)
+      .then(res => {
+        dispatch(successUpdatingUser());
+        const { name, email } = res.data.user;
+        dispatch(setPersonalInfo({ name, email }));
+      })
+      .catch(err => {
+        console.error('Unable to refresh user personal info', err);
+        dispatch(
+          failUpdatingUser({
+            errorText: 'Возникла ошибка при попытке обновления данных.',
+          })
+        );
+      });
   };
 }
