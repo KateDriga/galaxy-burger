@@ -1,19 +1,24 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import { PROFILE_TABS } from '../../utils/const-variables/app-variables';
 import profileTabsStyles from './profile-tabs.module.css';
 import cn from 'classnames';
 import { useDispatch } from 'react-redux';
-import { userLogout } from '../../services/thunks/user-admission';
+import { onLogout } from '../../services/thunks/user-admission';
 import { useState } from 'react';
+import { LOGIN_ROUTE } from '../../utils/const-variables/route-variables';
 
 export const ProfileTabs = () => {
   const [activeTab, setActiveTab] = useState();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleTabClick = value => {
     if (value === 'logout') {
-      dispatch(userLogout());
+      dispatch(onLogout()).then(_ =>
+        navigate(LOGIN_ROUTE, { state: { from: location } })
+      );
     }
   };
 

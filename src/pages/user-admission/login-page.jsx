@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormInputs } from '../../hooks/useFormInputs';
 import { AdmissionForm } from '../../components/admission-form/admission-form';
@@ -7,14 +7,16 @@ import {
   LOGIN_ACTIONS,
 } from '../../utils/const-variables/form-variables';
 import { selectUserLogInState } from '../../services/selectors/user-admission';
-import { userLogin } from '../../services/thunks/user-admission';
+import { onLogin } from '../../services/thunks/user-admission';
 import { clearUserLogInErrorMessage } from '../../services/slices/user-admission';
 import { Loader } from '../../components/loader/loader';
+import { HOME_ROUTE } from '../../utils/const-variables/route-variables';
 
 export const LoginPage = () => {
   const loginForm = useFormInputs({ email: '', password: '' });
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const { isLoading, errorMessage } = useSelector(selectUserLogInState);
 
   const emailInput = {
@@ -29,9 +31,11 @@ export const LoginPage = () => {
 
   const handleUserLogin = e => {
     e.preventDefault();
-    dispatch(
-      userLogin(loginForm.form.email, loginForm.form.password, navigate)
-    );
+    dispatch(onLogin(loginForm.form)).then(res => {
+      if (res.payload.success) {
+        navigate(location.state?.from ?? HOME_ROUTE);
+      }
+    });
   };
 
   const handleCloseModal = () => dispatch(clearUserLogInErrorMessage());
@@ -46,7 +50,7 @@ export const LoginPage = () => {
         buttons={[{ title: 'Войти', onClick: handleUserLogin }]}
         onFormChange={loginForm.handleFormChange}
         actions={LOGIN_ACTIONS}
-        errorInfo={{ errorMessage, handleCloseModal }}
+        errors={[{ errorMessage, handleCloseModal }]}
       />
     </div>
   );

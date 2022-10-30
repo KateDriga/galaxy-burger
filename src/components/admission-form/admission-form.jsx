@@ -5,6 +5,7 @@ import { Modal } from '../modal/modal';
 import { AdmissionError } from '../admission-error/admission-error';
 import admissionFormStyles from './admission-form.module.css';
 import cn from 'classnames';
+import { nanoid } from '@reduxjs/toolkit';
 
 export const AdmissionForm = ({
   title,
@@ -12,7 +13,7 @@ export const AdmissionForm = ({
   buttons,
   onFormChange,
   actions,
-  errorInfo,
+  errors,
 }) => {
   const windowWidth = useWindowWidth();
 
@@ -79,10 +80,13 @@ export const AdmissionForm = ({
           </div>
         )}
       </div>
-      {errorInfo?.errorMessage && (
-        <Modal onClose={errorInfo.handleCloseModal} title="">
-          <AdmissionError errorText={errorInfo.errorMessage} />
-        </Modal>
+      {errors?.map(
+        err =>
+          err.errorMessage && (
+            <Modal key={nanoid(5)} onClose={err.handleCloseModal} title="">
+              <AdmissionError errorText={err.errorMessage} />
+            </Modal>
+          )
       )}
     </>
   );

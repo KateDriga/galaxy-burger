@@ -7,9 +7,10 @@ import {
   FORM_INPUTS,
 } from '../../utils/const-variables/form-variables';
 import { selectSaveNewPasswordState } from '../../services/selectors/user-admission';
-import { saveNewPassword } from '../../services/thunks/user-admission';
+import { onPasswordReset } from '../../services/thunks/user-admission';
 import { clearSavePasswordErrorMessage } from '../../services/slices/user-admission';
 import { Loader } from '../../components/loader/loader';
+import { LOGIN_ROUTE } from '../../utils/const-variables/route-variables';
 
 export const ResetPasswordPage = () => {
   const resetPasswordForm = useFormInputs({ password: '', code: '' });
@@ -27,13 +28,11 @@ export const ResetPasswordPage = () => {
 
   const handleSavePassword = e => {
     e.preventDefault();
-    dispatch(
-      saveNewPassword(
-        resetPasswordForm.form.password,
-        resetPasswordForm.form.code,
-        navigate
-      )
-    );
+    dispatch(onPasswordReset(resetPasswordForm.form)).then(res => {
+      if (res.payload.success) {
+        navigate(LOGIN_ROUTE);
+      }
+    });
   };
 
   const handleCloseModal = () => dispatch(clearSavePasswordErrorMessage());
@@ -48,7 +47,7 @@ export const ResetPasswordPage = () => {
         buttons={[{ title: 'Сохранить', onClick: handleSavePassword }]}
         onFormChange={resetPasswordForm.handleFormChange}
         actions={FORGOT_RESET_PASSWORD_ACTIONS}
-        errorInfo={{ errorMessage, handleCloseModal }}
+        errors={[{ errorMessage, handleCloseModal }]}
       />
     </div>
   );

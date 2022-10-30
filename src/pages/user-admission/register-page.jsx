@@ -9,7 +9,8 @@ import {
 import { selectRegisterUserState } from '../../services/selectors/user-admission';
 import { clearRegisterUserErrorMessage } from '../../services/slices/user-admission';
 import { Loader } from '../../components/loader/loader';
-import { registerUser } from '../../services/thunks/user-admission';
+import { onUserRegister } from '../../services/thunks/user-admission';
+import { HOME_ROUTE } from '../../utils/const-variables/route-variables';
 
 export const RegisterPage = () => {
   const registerForm = useFormInputs({ name: '', email: '', password: '' });
@@ -34,14 +35,11 @@ export const RegisterPage = () => {
 
   const handleRegisterUser = e => {
     e.preventDefault();
-    dispatch(
-      registerUser(
-        registerForm.form.email,
-        registerForm.form.password,
-        registerForm.form.name,
-        navigate
-      )
-    );
+    dispatch(onUserRegister(registerForm.form)).then(res => {
+      if (res.payload.success) {
+        navigate(HOME_ROUTE);
+      }
+    });
   };
 
   const handleCloseModal = () => dispatch(clearRegisterUserErrorMessage());
@@ -56,7 +54,7 @@ export const RegisterPage = () => {
         buttons={[{ title: 'Зарегистрироваться', onClick: handleRegisterUser }]}
         onFormChange={registerForm.handleFormChange}
         actions={REGISTER_ACTIONS}
-        errorInfo={{ errorMessage, handleCloseModal }}
+        errors={[{ errorMessage, handleCloseModal }]}
       />
     </div>
   );

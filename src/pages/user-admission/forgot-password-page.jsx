@@ -6,10 +6,11 @@ import {
   FORGOT_RESET_PASSWORD_ACTIONS,
 } from '../../utils/const-variables/form-variables';
 import { AdmissionForm } from '../../components/admission-form/admission-form';
-import { resetUserPassword } from '../../services/thunks/user-admission';
 import { Loader } from '../../components/loader/loader';
 import { clearPasswordResetErrorMessage } from '../../services/slices/user-admission';
 import { selectUserPasswordResetState } from '../../services/selectors/user-admission';
+import { onPasswordForgot } from '../../services/thunks/user-admission';
+import { RESET_PASSWORD_ROUTE } from '../../utils/const-variables/route-variables';
 
 export const ForgotPasswordPage = () => {
   const forgotPasswordForm = useFormInputs({ email: '' });
@@ -25,7 +26,11 @@ export const ForgotPasswordPage = () => {
 
   const handleResetPassword = e => {
     e.preventDefault();
-    dispatch(resetUserPassword(forgotPasswordForm.form.email, navigate));
+    dispatch(onPasswordForgot(forgotPasswordForm.form)).then(res => {
+      if (res.payload.success) {
+        navigate(RESET_PASSWORD_ROUTE);
+      }
+    });
   };
 
   const handleCloseModal = () => dispatch(clearPasswordResetErrorMessage());
@@ -40,7 +45,7 @@ export const ForgotPasswordPage = () => {
         buttons={[{ title: 'Восстановить', onClick: handleResetPassword }]}
         onFormChange={forgotPasswordForm.handleFormChange}
         actions={FORGOT_RESET_PASSWORD_ACTIONS}
-        errorInfo={{ errorMessage, handleCloseModal }}
+        errors={[{ errorMessage, handleCloseModal }]}
       />
     </div>
   );

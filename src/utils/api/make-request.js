@@ -1,9 +1,12 @@
 import axios from 'axios';
 import { BASE_URL } from '../const-variables/app-variables';
-import { refreshToken } from './rest/auth';
-import { setCookie } from '../cookie';
+import { store } from '../../services/store';
+import { onTokenRefresh } from '../../services/thunks/user-admission';
 
 export const axiosInstance = axios.create({ baseURL: BASE_URL });
+
+let accessToken = '';
+export const setAccessToken = token => (accessToken = token);
 
 axiosInstance.interceptors.request.use(
   config => {
@@ -11,7 +14,7 @@ axiosInstance.interceptors.request.use(
       config.headers['Content-Type'] = 'application/json';
     }
     if (config.headers.authorization) {
-      config.headers.authorization = localStorage.getItem('accessToken');
+      config.headers.authorization = accessToken;
     }
     return config;
   },
@@ -28,17 +31,10 @@ axiosInstance.interceptors.response.use(
       !originalConfig._retry
     ) {
       originalConfig._retry = true;
-
-      try {
-        const { data: tokenInfo } = await refreshToken();
-        localStorage.setItem('accessToken', tokenInfo.accessToken);
-        setCookie('refreshToken', tokenInfo.refreshToken);
-        originalConfig.headers.authorization =
-          localStorage.getItem('accessToken');
-        return axiosInstance(originalConfig);
-      } catch (err) {
-        return Promise.reject(err);
-      }
+      store
+        .dispatch(onTokenRefresh())
+        .then(() => axiosInstance(originalConfig))
+        .catch(err => Promise.reject(err));
     }
     return Promise.reject(err);
   }

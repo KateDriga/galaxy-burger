@@ -1,34 +1,20 @@
-export const selectUserPasswordResetState = state => {
-  return {
-    isLoading: state.userAdmission.passwordReset.isLoading,
-    errorMessage: state.userAdmission.passwordReset.errorMessage,
-  };
-};
+export const selectIsLoggedIn = state => state.userAdmission.isLoggedIn;
 
-export const selectRegisterUserState = state => {
-  return {
-    isLoading: state.userAdmission.registerUser.isLoading,
-    errorMessage: state.userAdmission.registerUser.errorMessage,
-  };
-};
+export const selectTokenIsLoading = state => state.userAdmission.tokenIsLoading;
 
-export const selectSaveNewPasswordState = state => {
-  return {
-    isLoading: state.userAdmission.savePassword.isLoading,
-    errorMessage: state.userAdmission.savePassword.errorMessage,
-  };
-};
+export const selectUserPasswordResetState = state =>
+  state.userAdmission.passwordReset;
 
-export const selectUserLogInState = state => {
-  return {
-    isLoading: state.userAdmission.userLogin.isLoading,
-    errorMessage: state.userAdmission.userLogin.errorMessage,
-  };
-};
+export const selectRegisterUserState = state =>
+  state.userAdmission.registerUser;
 
-export const selectUpdateUserState = state => {
-  return {
-    isLoading: state.userAdmission.userUpdate.isLoading,
-    errorMessage: state.userAdmission.userUpdate.errorMessage,
-  };
-};
+export const selectSaveNewPasswordState = state =>
+  state.userAdmission.savePassword;
+
+export const selectUserLogInState = state => state.userAdmission.userLogin;
+
+export const selectGetUserState = state => state.userAdmission.getUser;
+
+export const selectUpdateUserState = state => state.userAdmission.userUpdate;
+
+export const selectUserLogoutState = state => state.userAdmission.userLogout;

@@ -5,27 +5,30 @@ import { useFormInputs } from '../../hooks/useFormInputs';
 import { FORM_INPUTS } from '../../utils/const-variables/form-variables';
 import { useSelector } from 'react-redux';
 import { selectUserPersonalInfo } from '../../services/selectors/user-profile';
-import { getUserPersonalInfo } from '../../services/thunks/user-profile';
-import { clearPersonalInfoErrorMessage } from '../../services/slices/user-profile';
+import { clearGetUserErrorMessage } from '../../services/slices/user-admission';
 import { Loader } from '../loader/loader';
-import { selectUpdateUserState } from '../../services/selectors/user-admission';
-import { AdmissionError } from '../admission-error/admission-error';
-import { Modal } from '../modal/modal';
+import {
+  selectGetUserState,
+  selectUpdateUserState,
+} from '../../services/selectors/user-admission';
 import { clearUserUpdateErrorMessage } from '../../services/slices/user-admission';
-import { updateUserPersonalInfo } from '../../services/thunks/user-admission';
+import { onUserInfoUpdate } from '../../services/thunks/user-admission';
+import { onGetUserInfo } from '../../services/thunks/user-admission';
 
 export const ProfileDetails = () => {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(getUserPersonalInfo());
-  }, [dispatch]);
-
-  const { name, email, isLoading, errorMessage } = useSelector(
-    selectUserPersonalInfo
-  );
-  const { isLoading: isLoadingUpdate, errorMessage: errorMessageUpdate } =
+  const { name, email } = useSelector(selectUserPersonalInfo);
+  const { isLoading, errorMessage: errorMessageGetInfo } =
+    useSelector(selectGetUserState);
+  const { isLoading: isLoadingUpdate, errorMessage: errorMessageUpdateInfo } =
     useSelector(selectUpdateUserState);
+
+  useEffect(() => {
+    if (!name || !email) {
+      dispatch(onGetUserInfo());
+    }
+  }, [dispatch, name, email]);
 
   const profileForm = useFormInputs({ name, email, password: '' });
 
@@ -54,13 +57,7 @@ export const ProfileDetails = () => {
 
   const handleUpdatePersonInfo = e => {
     e.preventDefault();
-    dispatch(
-      updateUserPersonalInfo(
-        profileForm.form.name,
-        profileForm.form.email,
-        profileForm.form.password
-      )
-    );
+    dispatch(onUserInfoUpdate(profileForm.form));
     profileForm.setForm({ name, email, password: '' });
   };
 
@@ -69,26 +66,30 @@ export const ProfileDetails = () => {
     profileForm.setForm({ name, email, password: '' });
   };
 
-  const handleCloseModal = () => dispatch(clearPersonalInfoErrorMessage());
+  const handleCloseModalGetInfo = () => dispatch(clearGetUserErrorMessage());
+  const handleCloseModalUpdateInfo = () =>
+    dispatch(clearUserUpdateErrorMessage());
 
   return isLoading || isLoadingUpdate ? (
     <Loader />
   ) : (
-    <>
-      <AdmissionForm
-        inputs={formInputs}
-        buttons={[
-          { title: 'Отменить', onClick: handleCancelEdit },
-          { title: 'Сохранить', onClick: handleUpdatePersonInfo },
-        ]}
-        onFormChange={profileForm.handleFormChange}
-        errorInfo={{ errorMessage, handleCloseModal }}
-      />
-      {errorMessageUpdate && (
-        <Modal onClose={() => dispatch(clearUserUpdateErrorMessage)} title="">
-          <AdmissionError errorText={errorMessageUpdate} />
-        </Modal>
-      )}
-    </>
+    <AdmissionForm
+      inputs={formInputs}
+      buttons={[
+        { title: 'Отменить', onClick: handleCancelEdit },
+        { title: 'Сохранить', onClick: handleUpdatePersonInfo },
+      ]}
+      onFormChange={profileForm.handleFormChange}
+      errors={[
+        {
+          errorMessage: errorMessageGetInfo,
+          handleCloseModal: handleCloseModalGetInfo,
+        },
+        {
+          errorMessage: errorMessageUpdateInfo,
+          handleCloseModal: handleCloseModalUpdateInfo,
+        },
+      ]}
+    />
   );
 };
