@@ -2,26 +2,20 @@ import {
   CurrencyIcon,
   Counter,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useDrag } from 'react-dnd';
 import { selectBurgerIngredientById } from '../../services/selectors/ingredients';
-import { setModalIngredientId } from '../../services/slices/modal';
 import burgerIngredientStyles from './burger-ingredient.module.css';
 import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
-import { INGREDIENTS_ROUTE } from '../../utils/const-variables/route-variables';
+import { INGREDIENT_ROUTE } from '../../utils/const-variables/route-variables';
 
 export const BurgerIngredient = ({ ingredientId }) => {
-  const dispatch = useDispatch();
   const location = useLocation();
 
   const ingredient = useSelector(state =>
     selectBurgerIngredientById(state, ingredientId)
   );
-
-  const handleOpenModal = () => {
-    dispatch(setModalIngredientId({ id: ingredient._id }));
-  };
 
   const [{ opacity }, dragRef] = useDrag({
     type: 'ingredient',
@@ -35,9 +29,8 @@ export const BurgerIngredient = ({ ingredientId }) => {
     <Link
       style={{ opacity }}
       className={burgerIngredientStyles.burger_ingredient}
-      onClick={handleOpenModal}
       ref={dragRef}
-      to={`${INGREDIENTS_ROUTE}/${ingredientId}`}
+      to={INGREDIENT_ROUTE.replace(':id', ingredientId)}
       state={{ background: location }}
     >
       {ingredient.count > 0 && (
