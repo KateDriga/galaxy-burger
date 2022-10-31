@@ -8,9 +8,12 @@ import { selectBurgerIngredientById } from '../../services/selectors/ingredients
 import { setModalIngredientId } from '../../services/slices/modal';
 import burgerIngredientStyles from './burger-ingredient.module.css';
 import PropTypes from 'prop-types';
+import { Link, useLocation } from 'react-router-dom';
+import { INGREDIENTS_ROUTE } from '../../utils/const-variables/route-variables';
 
 export const BurgerIngredient = ({ ingredientId }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const ingredient = useSelector(state =>
     selectBurgerIngredientById(state, ingredientId)
@@ -29,11 +32,13 @@ export const BurgerIngredient = ({ ingredientId }) => {
   });
 
   return (
-    <div
+    <Link
       style={{ opacity }}
       className={burgerIngredientStyles.burger_ingredient}
       onClick={handleOpenModal}
       ref={dragRef}
+      to={`${INGREDIENTS_ROUTE}/${ingredientId}`}
+      state={{ background: location }}
     >
       {ingredient.count > 0 && (
         <Counter count={ingredient.count} size="default" />
@@ -54,7 +59,7 @@ export const BurgerIngredient = ({ ingredientId }) => {
       >
         {ingredient.name}
       </p>
-    </div>
+    </Link>
   );
 };
 

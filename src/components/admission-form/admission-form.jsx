@@ -43,7 +43,7 @@ export const AdmissionForm = ({
               <Button
                 key={btn.title}
                 htmlType="submit"
-                type="primary"
+                type={btn.type ?? 'primary'}
                 size={windowWidth > 1000 ? 'medium' : 'small'}
                 onClick={btn.onClick}
               >

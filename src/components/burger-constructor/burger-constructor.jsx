@@ -21,10 +21,16 @@ import { selectOrderState } from '../../services/selectors/order';
 import { BUN_INGREDIENT_PLACEHOLDER } from '../../utils/const-variables/ingredient-variables';
 import burgerConstructorStyles from './burger-constructor.module.css';
 import cn from 'classnames';
+import { selectIsLoggedIn } from '../../services/selectors/user-admission';
+import { useNavigate } from 'react-router-dom';
+import { LOGIN_ROUTE } from '../../utils/const-variables/route-variables';
 
 export const BurgerConstructor = () => {
   const dispatch = useDispatch();
-  const { isOrderLoading, isOrderFailed } = useSelector(selectOrderState);
+  const navigate = useNavigate();
+
+  const { isLoading: isOrderLoading, isFailed: isOrderFailed } =
+    useSelector(selectOrderState);
   const [modalIsVisible, setModalIsVisible] = useState(false);
 
   const bunIngredient =
@@ -32,6 +38,8 @@ export const BurgerConstructor = () => {
   const midIngredientsIds =
     useSelector(selectConstructorMiddleIngredientIds) || [];
   const totalPrice = useSelector(selectTotalPrice) ?? 0;
+
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const [, dropTarget] = useDrop({
     accept: 'ingredient',
@@ -41,8 +49,12 @@ export const BurgerConstructor = () => {
   });
 
   const placeOrder = () => {
-    dispatch(placeNewOrder());
-    setModalIsVisible(true);
+    if (!isLoggedIn) {
+      navigate(LOGIN_ROUTE);
+    } else {
+      dispatch(placeNewOrder());
+      setModalIsVisible(true);
+    }
   };
   const handleCloseModal = () => {
     setModalIsVisible(false);
@@ -101,7 +113,7 @@ export const BurgerConstructor = () => {
         </Button>
       </div>
       {modalIsVisible && (
-        <Modal onClose={handleCloseModal} title="">
+        <Modal onClose={handleCloseModal}>
           {isOrderFailed ? <OrderError /> : <OrderDetails />}
         </Modal>
       )}

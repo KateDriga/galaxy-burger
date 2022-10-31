@@ -4,7 +4,11 @@ import {
   LOGIN_ROUTE,
 } from '../../utils/const-variables/route-variables';
 import { useSelector } from 'react-redux';
-import { selectIsLoggedIn } from '../../services/selectors/user-admission';
+import {
+  selectIsLoggedIn,
+  selectTokenIsLoading,
+} from '../../services/selectors/user-admission';
+import { Loader } from '../loader/loader';
 
 export const ProtectedRoute = ({ children }) => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
@@ -18,8 +22,11 @@ export const ProtectedRoute = ({ children }) => {
 
 export const ProtectedAuthRoute = ({ children }) => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
+  const tokenIsLoading = useSelector(selectTokenIsLoading);
   const location = useLocation();
-  return isLoggedIn ? (
+  return tokenIsLoading ? (
+    <Loader />
+  ) : isLoggedIn ? (
     <Navigate to={location.state?.from ?? HOME_ROUTE} replace={true} />
   ) : (
     children

@@ -21,18 +21,11 @@
     overflow-x: auto;
 }
 
-.modal_header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-}
-
 .modal_close_icon {
     fill: var(--text-inactive-color);
     min-width: 24px;
     cursor: pointer;
+    align-self: flex-end;
 }
 
 .modal_close_icon:hover, .modal_close_icon:focus {

@@ -7,7 +7,7 @@ import modalStyles from './modal.module.css';
 import cn from 'classnames';
 import PropTypes from 'prop-types';
 
-export const Modal = ({ children, title, onClose }) => {
+export const Modal = ({ children, onClose }) => {
   useEffect(() => {
     const closeOnEscapeKey = e => (e.key === 'Escape' ? onClose() : null);
     document.body.addEventListener('keydown', closeOnEscapeKey);
@@ -20,14 +20,11 @@ export const Modal = ({ children, title, onClose }) => {
     <div className={modalStyles.modal}>
       <ModalOverlay onClose={onClose} />
       <div className={cn(modalStyles.modal_content, 'p-10', 'custom-scroll')}>
-        <div className={modalStyles.modal_header}>
-          <h2 className="text text_type_main-large">{title}</h2>
-          <CloseIcon
-            className={modalStyles.modal_close_icon}
-            onClick={onClose}
-            tabIndex="0"
-          />
-        </div>
+        <CloseIcon
+          className={modalStyles.modal_close_icon}
+          onClick={onClose}
+          tabIndex="0"
+        />
         <div className={modalStyles.modal_info}>{children}</div>
       </div>
     </div>,
@@ -37,6 +34,5 @@ export const Modal = ({ children, title, onClose }) => {
 
 Modal.propTypes = {
   children: PropTypes.any,
-  title: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
 };

@@ -1,12 +1,14 @@
 import axios from 'axios';
 import { BASE_URL } from '../const-variables/app-variables';
-import { store } from '../../services/store';
 import { onTokenRefresh } from '../../services/thunks/user-admission';
 
 export const axiosInstance = axios.create({ baseURL: BASE_URL });
 
 let accessToken = '';
 export const setAccessToken = token => (accessToken = token);
+
+let store;
+export const injectStore = _store => (store = _store);
 
 axiosInstance.interceptors.request.use(
   config => {
@@ -32,6 +34,7 @@ axiosInstance.interceptors.response.use(
     ) {
       originalConfig._retry = true;
       store
+        .getState()
         .dispatch(onTokenRefresh())
         .then(() => axiosInstance(originalConfig))
         .catch(err => Promise.reject(err));

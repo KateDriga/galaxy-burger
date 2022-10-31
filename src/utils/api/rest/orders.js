@@ -5,5 +5,6 @@ export const createOrder = ingredientIds => {
     url: '/orders',
     method: 'post',
     data: { ingredients: ingredientIds },
+    headers: { authorization: true },
   });
 };

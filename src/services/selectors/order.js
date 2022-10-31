@@ -1,7 +1,7 @@
 export const selectOrderState = state => {
   return {
-    isOrderLoading: state.order.isLoading,
-    isOrderFailed: state.order.isFailed,
+    isLoading: state.order.isLoading,
+    isFailed: state.order.isFailed,
   };
 };
 

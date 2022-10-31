@@ -1,8 +1,16 @@
+.ingredient_details_page {
+    max-width: 500px;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .ingredient_image {
     width: 100%;
 }
 
-.ingredient_name {
+.ingredient_name, .ingredient_header {
     text-align: center;
 }
 

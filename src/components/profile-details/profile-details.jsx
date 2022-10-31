@@ -76,7 +76,7 @@ export const ProfileDetails = () => {
     <AdmissionForm
       inputs={formInputs}
       buttons={[
-        { title: 'Отменить', onClick: handleCancelEdit },
+        { title: 'Отменить', onClick: handleCancelEdit, type: 'secondary' },
         { title: 'Сохранить', onClick: handleUpdatePersonInfo },
       ]}
       onFormChange={profileForm.handleFormChange}

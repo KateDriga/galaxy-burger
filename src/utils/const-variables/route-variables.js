@@ -6,3 +6,5 @@ export const RESET_PASSWORD_ROUTE = '/reset-password';
 export const PROFILE_ROOT = '/profile';
 export const PROFILE_ORDERS_ROOT = '/profile/orders';
 export const ORDERS_ROOT = '/orders';
+export const INGREDIENTS_ROUTE = '/ingredients';
+export const INGREDIENT_ROOT = '/ingredients/:id';
