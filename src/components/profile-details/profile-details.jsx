@@ -79,8 +79,18 @@ export const ProfileDetails = () => {
       profileForm.form.password !== '';
     return isFormEdited
       ? [
-          { title: 'Отмена', onClick: handleCancelEdit, type: 'secondary' },
-          { title: 'Сохранить', onClick: handleUpdatePersonInfo },
+          {
+            title: 'Отмена',
+            onClick: handleCancelEdit,
+            type: 'secondary',
+            htmlType: 'reset',
+          },
+          {
+            title: 'Сохранить',
+            onClick: handleUpdatePersonInfo,
+            type: 'primary',
+            htmlType: 'submit',
+          },
         ]
       : null;
   }, [profileForm.form, handleCancelEdit, handleUpdatePersonInfo, email, name]);

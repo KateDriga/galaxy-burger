@@ -50,7 +50,7 @@ export const AdmissionForm = ({
               {buttons.map(btn => (
                 <Button
                   key={btn.title}
-                  htmlType="submit"
+                  htmlType={btn.htmlType ?? 'submit'}
                   type={btn.type ?? 'primary'}
                   size={windowWidth > 1000 ? 'medium' : 'small'}
                   onClick={btn.onClick}

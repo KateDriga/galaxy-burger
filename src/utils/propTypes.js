@@ -31,6 +31,7 @@ export const FORM_BUTTON_PROP_TYPES = PropTypes.shape({
   title: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   type: PropTypes.string,
+  htmlType: PropTypes.oneOf(['button', 'submit', 'reset']),
 });
 
 export const FORM_ACTION_PROP_TYPES = PropTypes.shape({
