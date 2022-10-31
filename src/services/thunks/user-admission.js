@@ -79,7 +79,7 @@ export const onUserInfoUpdate = createAsyncThunk(
       {},
       name && { name },
       email && { email },
-      password && password
+      password && { password }
     );
     try {
       const { data } = await updateUserProfileInfo(requestBody);
