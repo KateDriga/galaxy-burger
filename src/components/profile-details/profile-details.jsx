@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { AdmissionForm } from '../admission-form/admission-form';
 import { useFormInputs } from '../../hooks/useFormInputs';
@@ -55,16 +55,35 @@ export const ProfileDetails = () => {
     profileForm.form.password,
   ]);
 
-  const handleUpdatePersonInfo = e => {
-    e.preventDefault();
-    dispatch(onUserInfoUpdate(profileForm.form));
-    profileForm.setForm({ name, email, password: '' });
-  };
+  const handleCancelEdit = useCallback(
+    e => {
+      e.preventDefault();
+      profileForm.setForm({ name, email, password: '' });
+    },
+    [profileForm, name, email]
+  );
 
-  const handleCancelEdit = e => {
-    e.preventDefault();
-    profileForm.setForm({ name, email, password: '' });
-  };
+  const handleUpdatePersonInfo = useCallback(
+    e => {
+      e.preventDefault();
+      dispatch(onUserInfoUpdate(profileForm.form));
+      profileForm.setForm({ name, email, password: '' });
+    },
+    [dispatch, profileForm, name, email]
+  );
+
+  const formButtons = useMemo(() => {
+    const isFormEdited =
+      profileForm.form.name !== name ||
+      profileForm.form.email !== email ||
+      profileForm.form.password !== '';
+    return isFormEdited
+      ? [
+          { title: 'Отмена', onClick: handleCancelEdit, type: 'secondary' },
+          { title: 'Сохранить', onClick: handleUpdatePersonInfo },
+        ]
+      : null;
+  }, [profileForm.form, handleCancelEdit, handleUpdatePersonInfo, email, name]);
 
   const handleCloseModalGetInfo = () => dispatch(clearGetUserErrorMessage());
   const handleCloseModalUpdateInfo = () =>
@@ -75,10 +94,7 @@ export const ProfileDetails = () => {
   ) : (
     <AdmissionForm
       inputs={formInputs}
-      buttons={[
-        { title: 'Отменить', onClick: handleCancelEdit, type: 'secondary' },
-        { title: 'Сохранить', onClick: handleUpdatePersonInfo },
-      ]}
+      buttons={formButtons}
       onFormChange={profileForm.handleFormChange}
       errors={[
         {

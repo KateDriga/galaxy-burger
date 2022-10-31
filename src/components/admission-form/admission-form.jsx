@@ -45,19 +45,21 @@ export const AdmissionForm = ({
               />
             );
           })}
-          <div className={admissionFormStyles.admission_buttons}>
-            {buttons.map(btn => (
-              <Button
-                key={btn.title}
-                htmlType="submit"
-                type={btn.type ?? 'primary'}
-                size={windowWidth > 1000 ? 'medium' : 'small'}
-                onClick={btn.onClick}
-              >
-                {btn.title}
-              </Button>
-            ))}
-          </div>
+          {buttons && (
+            <div className={admissionFormStyles.admission_buttons}>
+              {buttons.map(btn => (
+                <Button
+                  key={btn.title}
+                  htmlType="submit"
+                  type={btn.type ?? 'primary'}
+                  size={windowWidth > 1000 ? 'medium' : 'small'}
+                  onClick={btn.onClick}
+                >
+                  {btn.title}
+                </Button>
+              ))}
+            </div>
+          )}
         </form>
         {actions && (
           <div
@@ -102,7 +104,7 @@ export const AdmissionForm = ({
 AdmissionForm.propTypes = {
   title: PropTypes.string,
   inputs: PropTypes.arrayOf(FORM_INPUT_PROP_TYPES).isRequired,
-  buttons: PropTypes.arrayOf(FORM_BUTTON_PROP_TYPES).isRequired,
+  buttons: PropTypes.arrayOf(FORM_BUTTON_PROP_TYPES),
   onFormChange: PropTypes.func.isRequired,
   actions: PropTypes.arrayOf(FORM_ACTION_PROP_TYPES),
   errors: PropTypes.arrayOf(FORM_ERROR_PROP_TYPES),
