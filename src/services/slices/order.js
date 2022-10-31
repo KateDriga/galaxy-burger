@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { onNewOrder } from '../thunks/order';
 
 const initialState = {
   orderNumber: null,
@@ -9,31 +10,24 @@ const initialState = {
 const orderSlice = createSlice({
   name: 'order',
   initialState,
-  reducers: {
-    startCreatingOrder: _ => {
-      return {
-        isLoading: true,
-        isFailed: false,
-        orderNumber: null,
-      };
-    },
-    failCreatingOrder: _ => {
-      return {
-        isLoading: false,
-        isFailed: true,
-        orderNumber: null,
-      };
-    },
-    saveOrderNumber: (state, { payload: { orderNumber } }) => {
-      return {
-        isLoading: false,
-        isFailed: false,
-        orderNumber: orderNumber,
-      };
-    },
+  extraReducers: builder => {
+    builder
+      .addCase(onNewOrder.fulfilled, (state, { payload: data }) => {
+        state.orderNumber = data.order.number;
+        state.isLoading = false;
+        state.isFailed = false;
+      })
+      .addCase(onNewOrder.pending, state => {
+        state.orderNumber = null;
+        state.isLoading = true;
+        state.isFailed = false;
+      })
+      .addCase(onNewOrder.rejected, state => {
+        state.orderNumber = null;
+        state.isLoading = false;
+        state.isFailed = true;
+      });
   },
 });
 
-export const { startCreatingOrder, failCreatingOrder, saveOrderNumber } =
-  orderSlice.actions;
 export const orderReducer = orderSlice.reducer;

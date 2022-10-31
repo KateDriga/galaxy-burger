@@ -1,4 +1,5 @@
 import { createSlice, nanoid } from '@reduxjs/toolkit';
+import { onNewOrder } from '../thunks/order';
 
 const initialState = {
   bunIngredientId: null,
@@ -49,16 +50,12 @@ const constructorSlice = createSlice({
         middleIngredientIds: updatedMiddleIngredientIds,
       };
     },
-    clearConstructor: _ => {
-      return initialState;
-    },
+  },
+  extraReducers: builder => {
+    builder.addCase(onNewOrder.fulfilled, _ => initialState);
   },
 });
 
-export const {
-  addIngredient,
-  removeIngredient,
-  changeIngredientsOrder,
-  clearConstructor,
-} = constructorSlice.actions;
+export const { addIngredient, removeIngredient, changeIngredientsOrder } =
+  constructorSlice.actions;
 export const constructorReducer = constructorSlice.reducer;

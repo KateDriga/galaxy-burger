@@ -15,7 +15,7 @@ import {
   selectConstructorMiddleIngredientIds,
 } from '../../services/selectors/constructor';
 import { selectTotalPrice } from '../../services/selectors/ingredients';
-import { placeNewOrder } from '../../services/thunks/order';
+import { onNewOrder } from '../../services/thunks/order';
 import { addIngredientToConstructor } from '../../services/thunks/constructor';
 import { selectOrderState } from '../../services/selectors/order';
 import { BUN_INGREDIENT_PLACEHOLDER } from '../../utils/const-variables/ingredient-variables';
@@ -52,7 +52,7 @@ export const BurgerConstructor = () => {
     if (!isLoggedIn) {
       navigate(LOGIN_ROUTE);
     } else {
-      dispatch(placeNewOrder());
+      dispatch(onNewOrder());
       setModalIsVisible(true);
     }
   };
