@@ -6,6 +6,13 @@ import { AdmissionError } from '../admission-error/admission-error';
 import admissionFormStyles from './admission-form.module.css';
 import cn from 'classnames';
 import { nanoid } from '@reduxjs/toolkit';
+import PropTypes from 'prop-types';
+import {
+  FORM_ACTION_PROP_TYPES,
+  FORM_BUTTON_PROP_TYPES,
+  FORM_ERROR_PROP_TYPES,
+  FORM_INPUT_PROP_TYPES,
+} from '../../utils/propTypes';
 
 export const AdmissionForm = ({
   title,
@@ -90,4 +97,13 @@ export const AdmissionForm = ({
       )}
     </>
   );
+};
+
+AdmissionForm.propTypes = {
+  title: PropTypes.string,
+  inputs: PropTypes.arrayOf(FORM_INPUT_PROP_TYPES).isRequired,
+  buttons: PropTypes.arrayOf(FORM_BUTTON_PROP_TYPES).isRequired,
+  onFormChange: PropTypes.func.isRequired,
+  actions: PropTypes.arrayOf(FORM_ACTION_PROP_TYPES),
+  errors: PropTypes.arrayOf(FORM_ERROR_PROP_TYPES),
 };

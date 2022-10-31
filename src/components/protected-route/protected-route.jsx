@@ -9,6 +9,7 @@ import {
   selectTokenIsLoading,
 } from '../../services/selectors/user-admission';
 import { Loader } from '../loader/loader';
+import PropTypes from 'prop-types';
 
 export const ProtectedRoute = ({ children }) => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
@@ -31,4 +32,12 @@ export const ProtectedAuthRoute = ({ children }) => {
   ) : (
     children
   );
+};
+
+ProtectedRoute.propTypes = {
+  children: PropTypes.any,
+};
+
+ProtectedAuthRoute.propTypes = {
+  children: PropTypes.any,
 };
