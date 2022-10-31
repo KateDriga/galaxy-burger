@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormInputs } from '../../hooks/useFormInputs';
 import {
@@ -15,6 +15,7 @@ import { RESET_PASSWORD_ROUTE } from '../../utils/const-variables/route-variable
 export const ForgotPasswordPage = () => {
   const forgotPasswordForm = useFormInputs({ email: '' });
   const dispatch = useDispatch();
+  const location = useLocation();
   const navigate = useNavigate();
   const { isLoading, errorMessage } = useSelector(selectUserPasswordResetState);
 
@@ -28,7 +29,7 @@ export const ForgotPasswordPage = () => {
     e.preventDefault();
     dispatch(onPasswordForgot(forgotPasswordForm.form)).then(res => {
       if (res.payload.success) {
-        navigate(RESET_PASSWORD_ROUTE);
+        navigate(RESET_PASSWORD_ROUTE, { state: { from: location } });
       }
     });
   };

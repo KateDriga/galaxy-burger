@@ -19,8 +19,11 @@ export const INGREDIENT_PROP_TYPES = PropTypes.shape({
 export const FORM_INPUT_PROP_TYPES = PropTypes.shape({
   name: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
-  tagType: PropTypes.instanceOf(HTMLInputElement).isRequired,
-  value: PropTypes.string.isRequired,
+  tagType: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ value: PropTypes.instanceOf(HTMLInputElement) }),
+  ]),
+  value: PropTypes.string,
   icon: PropTypes.string,
 });
 
@@ -37,6 +40,6 @@ export const FORM_ACTION_PROP_TYPES = PropTypes.shape({
 });
 
 export const FORM_ERROR_PROP_TYPES = PropTypes.shape({
-  errorMessage: PropTypes.string.isRequired,
+  errorMessage: PropTypes.string,
   handleCloseModal: PropTypes.func.isRequired,
 });
