@@ -10,6 +10,7 @@ import {
   FORM_ACTION_PROP_TYPES,
   FORM_BUTTON_PROP_TYPES,
   FORM_ERROR_PROP_TYPES,
+  FORM_EVENTS_PROP_TYPES,
   FORM_INPUT_PROP_TYPES,
 } from '../../utils/propTypes';
 
@@ -17,7 +18,7 @@ export const AdmissionForm = ({
   title,
   inputs,
   buttons,
-  onFormChange,
+  formEvents,
   actions,
   errors,
 }) => {
@@ -28,7 +29,11 @@ export const AdmissionForm = ({
       <div
         className={cn(admissionFormStyles.admission_container, 'custom-scroll')}
       >
-        <form className={cn(admissionFormStyles.admission_form, 'pb-20')}>
+        <form
+          className={cn(admissionFormStyles.admission_form, 'pb-20')}
+          onSubmit={formEvents.onFormSubmit}
+          onReset={formEvents.onFormReset}
+        >
           {title && <h2 className="text text_type_main-medium">{title}</h2>}
           {inputs.map(i => {
             const InputTag = i.tagType;
@@ -36,7 +41,7 @@ export const AdmissionForm = ({
               <InputTag
                 key={i.name}
                 value={i.value ?? ''}
-                onChange={onFormChange}
+                onChange={formEvents.onFormChange}
                 name={i.name}
                 placeholder={i.placeholder}
                 size={windowWidth > 1000 ? 'default' : 'small'}
@@ -52,7 +57,6 @@ export const AdmissionForm = ({
                   htmlType={btn.htmlType ?? 'submit'}
                   type={btn.type ?? 'primary'}
                   size={windowWidth > 1000 ? 'medium' : 'small'}
-                  onClick={btn.onClick}
                 >
                   {btn.title}
                 </Button>
@@ -105,7 +109,7 @@ AdmissionForm.propTypes = {
   title: PropTypes.string,
   inputs: PropTypes.arrayOf(FORM_INPUT_PROP_TYPES).isRequired,
   buttons: PropTypes.arrayOf(FORM_BUTTON_PROP_TYPES),
-  onFormChange: PropTypes.func.isRequired,
+  formEvents: FORM_EVENTS_PROP_TYPES,
   actions: PropTypes.arrayOf(FORM_ACTION_PROP_TYPES),
   errors: PropTypes.arrayOf(FORM_ERROR_PROP_TYPES),
 };

@@ -4,21 +4,13 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import ingredientsConstructorPageStyles from './ingredients-constructor-page.module.css';
 import cn from 'classnames';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { selectBurgerIngredientsState } from '../../services/selectors/ingredients';
 import { ErrorMessage } from '../../components/error-message/error-message';
 import { Loader } from '../../components/loader/loader';
 import { selectUserLogoutState } from '../../services/selectors/user-admission';
-import { useEffect } from 'react';
-import { loadIngredients } from '../../services/thunks/ingredients';
 
 export const IngredientsConstructorPage = () => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(loadIngredients());
-  }, [dispatch]);
-
   const { isLoading, isFailed } = useSelector(selectBurgerIngredientsState);
   const { isLoading: isLogoutLoading } = useSelector(selectUserLogoutState);
 

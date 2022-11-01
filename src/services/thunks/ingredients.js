@@ -4,18 +4,13 @@ import {
   addBurgerIngredients,
 } from '../slices/ingredients';
 import { getIngredients } from '../../utils/api/rest/ingredients';
-import {
-  selectBurgerIngredients,
-  selectBurgerIngredientsState,
-} from '../selectors/ingredients';
+import { selectBurgerIngredients } from '../selectors/ingredients';
 
 export function loadIngredients() {
   return function (dispatch, getState) {
     const state = getState();
     const burgerIngredients = selectBurgerIngredients(state);
-    const { isLoading: ingredientsLoading } =
-      selectBurgerIngredientsState(state);
-    if (burgerIngredients || ingredientsLoading) {
+    if (burgerIngredients) {
       return;
     }
     dispatch(startLoadingIngredients());

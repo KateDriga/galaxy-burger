@@ -47,8 +47,11 @@ export const LoginPage = () => {
       <AdmissionForm
         title="Вход"
         inputs={[emailInput, passwordInput]}
-        buttons={[{ title: 'Войти', onClick: handleUserLogin }]}
-        onFormChange={loginForm.handleFormChange}
+        buttons={[{ title: 'Войти' }]}
+        formEvents={{
+          onFormChange: loginForm.handleFormChange,
+          onFormSubmit: handleUserLogin,
+        }}
         actions={LOGIN_ACTIONS}
         errors={[{ errorMessage, handleCloseModal }]}
       />

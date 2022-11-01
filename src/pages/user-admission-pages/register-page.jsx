@@ -51,8 +51,11 @@ export const RegisterPage = () => {
       <AdmissionForm
         title="Регистрация"
         inputs={[nameInput, emailInput, passwordInput]}
-        buttons={[{ title: 'Зарегистрироваться', onClick: handleRegisterUser }]}
-        onFormChange={registerForm.handleFormChange}
+        buttons={[{ title: 'Зарегистрироваться' }]}
+        formEvents={{
+          onFormChange: registerForm.handleFormChange,
+          onFormSubmit: handleRegisterUser,
+        }}
         actions={REGISTER_ACTIONS}
         errors={[{ errorMessage, handleCloseModal }]}
       />

@@ -71,13 +71,11 @@ export const ProfileDetails = () => {
       ? [
           {
             title: 'Отмена',
-            onClick: handleCancelEdit,
             type: 'secondary',
             htmlType: 'reset',
           },
           {
             title: 'Сохранить',
-            onClick: handleUpdatePersonInfo,
             type: 'primary',
             htmlType: 'submit',
           },
@@ -85,9 +83,29 @@ export const ProfileDetails = () => {
       : null;
   };
 
-  const handleCloseModalGetInfo = () => dispatch(clearGetUserErrorMessage());
-  const handleCloseModalUpdateInfo = () =>
-    dispatch(clearUserUpdateErrorMessage());
+  const getFormEvents = () => {
+    return {
+      onFormChange: profileForm.handleFormChange,
+      onFormSubmit: handleUpdatePersonInfo,
+      onFormReset: handleCancelEdit,
+    };
+  };
+
+  const getErrors = () => {
+    const handleCloseModalGetInfo = () => dispatch(clearGetUserErrorMessage());
+    const handleCloseModalUpdateInfo = () =>
+      dispatch(clearUserUpdateErrorMessage());
+    return [
+      {
+        errorMessage: errorMessageGetInfo,
+        handleCloseModal: handleCloseModalGetInfo,
+      },
+      {
+        errorMessage: errorMessageUpdateInfo,
+        handleCloseModal: handleCloseModalUpdateInfo,
+      },
+    ];
+  };
 
   return isLoading || isLoadingUpdate ? (
     <Loader />
@@ -95,17 +113,8 @@ export const ProfileDetails = () => {
     <AdmissionForm
       inputs={getFormInputs()}
       buttons={getFormButtons()}
-      onFormChange={profileForm.handleFormChange}
-      errors={[
-        {
-          errorMessage: errorMessageGetInfo,
-          handleCloseModal: handleCloseModalGetInfo,
-        },
-        {
-          errorMessage: errorMessageUpdateInfo,
-          handleCloseModal: handleCloseModalUpdateInfo,
-        },
-      ]}
+      formEvents={getFormEvents()}
+      errors={getErrors()}
     />
   );
 };

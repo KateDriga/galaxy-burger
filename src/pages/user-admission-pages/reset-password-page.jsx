@@ -61,8 +61,11 @@ export const ResetPasswordPage = () => {
       <AdmissionForm
         title="Восстановление пароля"
         inputs={[emailInput, codeInput]}
-        buttons={[{ title: 'Сохранить', onClick: handleSavePassword }]}
-        onFormChange={resetPasswordForm.handleFormChange}
+        buttons={[{ title: 'Сохранить' }]}
+        formEvents={{
+          onFormChange: resetPasswordForm.handleFormChange,
+          onFormSubmit: handleSavePassword,
+        }}
         actions={FORGOT_RESET_PASSWORD_ACTIONS}
         errors={[{ errorMessage, handleCloseModal }]}
       />
