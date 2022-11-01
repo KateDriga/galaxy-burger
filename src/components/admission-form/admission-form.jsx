@@ -5,7 +5,6 @@ import { Modal } from '../modal/modal';
 import { AdmissionError } from '../admission-error/admission-error';
 import admissionFormStyles from './admission-form.module.css';
 import cn from 'classnames';
-import { nanoid } from '@reduxjs/toolkit';
 import PropTypes from 'prop-types';
 import {
   FORM_ACTION_PROP_TYPES,
@@ -90,9 +89,10 @@ export const AdmissionForm = ({
         )}
       </div>
       {errors?.map(
-        err =>
+        (err, idx) =>
           err.errorMessage && (
-            <Modal key={nanoid(5)} onClose={err.handleCloseModal} title="">
+            // order of errors is stable
+            <Modal key={idx} onClose={err.handleCloseModal} title="">
               <AdmissionError errorText={err.errorMessage} />
             </Modal>
           )
