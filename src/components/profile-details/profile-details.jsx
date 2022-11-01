@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { AdmissionForm } from '../admission-form/admission-form';
 import { useFormInputs } from '../../hooks/useFormInputs';
@@ -32,7 +32,7 @@ export const ProfileDetails = () => {
 
   const profileForm = useFormInputs({ name, email, password: '' });
 
-  const formInputs = useMemo(() => {
+  const getFormInputs = () => {
     const nameInput = {
       ...FORM_INPUTS.name,
       value: profileForm.form.name,
@@ -49,30 +49,20 @@ export const ProfileDetails = () => {
       icon: 'EditIcon',
     };
     return [nameInput, emailInput, passwordInput];
-  }, [
-    profileForm.form.name,
-    profileForm.form.email,
-    profileForm.form.password,
-  ]);
+  };
 
-  const handleCancelEdit = useCallback(
-    e => {
-      e.preventDefault();
-      profileForm.setForm({ name, email, password: '' });
-    },
-    [profileForm, name, email]
-  );
+  const handleCancelEdit = e => {
+    e.preventDefault();
+    profileForm.setForm({ name, email, password: '' });
+  };
 
-  const handleUpdatePersonInfo = useCallback(
-    e => {
-      e.preventDefault();
-      dispatch(onUserInfoUpdate(profileForm.form));
-      profileForm.setForm({ name, email, password: '' });
-    },
-    [dispatch, profileForm, name, email]
-  );
+  const handleUpdatePersonInfo = e => {
+    e.preventDefault();
+    dispatch(onUserInfoUpdate(profileForm.form));
+    profileForm.setForm({ name, email, password: '' });
+  };
 
-  const formButtons = useMemo(() => {
+  const getFormButtons = () => {
     const isFormEdited =
       profileForm.form.name !== name ||
       profileForm.form.email !== email ||
@@ -93,7 +83,7 @@ export const ProfileDetails = () => {
           },
         ]
       : null;
-  }, [profileForm.form, handleCancelEdit, handleUpdatePersonInfo, email, name]);
+  };
 
   const handleCloseModalGetInfo = () => dispatch(clearGetUserErrorMessage());
   const handleCloseModalUpdateInfo = () =>
@@ -103,8 +93,8 @@ export const ProfileDetails = () => {
     <Loader />
   ) : (
     <AdmissionForm
-      inputs={formInputs}
-      buttons={formButtons}
+      inputs={getFormInputs()}
+      buttons={getFormButtons()}
       onFormChange={profileForm.handleFormChange}
       errors={[
         {
