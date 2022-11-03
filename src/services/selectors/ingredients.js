@@ -1,4 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit';
+import {
+  selectConstructorBunIngredientId,
+  selectConstructorMiddleIngredientIds,
+} from './constructor';
 
 export const selectBurgerIngredients = state =>
   state.ingredients.burgerIngredients &&
@@ -14,8 +18,32 @@ export const selectBurgerIngredientsState = state => {
 export const selectBurgerIngredientById = (state, id) =>
   state.ingredients.burgerIngredients?.[id];
 
+export const selectBurgerIngredientWithCountById = createSelector(
+  (state, id) => [state, selectBurgerIngredientById(state, id)],
+  ([state, ingredient]) => {
+    const count =
+      ingredient.type === 'bun'
+        ? selectConstructorBunIngredientId(state) === ingredient._id
+          ? 2
+          : 0
+        : selectConstructorMiddleIngredientIds(state)?.filter(
+            i => i.ingredientId === ingredient._id
+          )?.length ?? 0;
+    return { ...ingredient, count };
+  }
+);
+
 export const selectTotalPrice = createSelector(
-  selectBurgerIngredients,
-  ingredients =>
-    ingredients?.reduce((acc, ing) => acc + ing.price * ing.count, 0)
+  state => state.ingredients.burgerIngredients,
+  selectConstructorBunIngredientId,
+  selectConstructorMiddleIngredientIds,
+  (ingredients, bunId, midIds) => {
+    return (
+      (ingredients?.[bunId]?.price || 0) * 2 +
+      (midIds?.reduce(
+        (acc, id) => acc + ingredients[id.ingredientId].price,
+        0
+      ) || 0)
+    );
+  }
 );

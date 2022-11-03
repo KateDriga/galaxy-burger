@@ -13,7 +13,6 @@ export const INGREDIENT_PROP_TYPES = PropTypes.shape({
   image_mobile: PropTypes.string.isRequired,
   image_large: PropTypes.string,
   __v: PropTypes.number,
-  count: PropTypes.number.isRequired,
 });
 
 export const FORM_INPUT_PROP_TYPES = PropTypes.shape({

@@ -4,7 +4,7 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useSelector } from 'react-redux';
 import { useDrag } from 'react-dnd';
-import { selectBurgerIngredientById } from '../../services/selectors/ingredients';
+import { selectBurgerIngredientWithCountById } from '../../services/selectors/ingredients';
 import burgerIngredientStyles from './burger-ingredient.module.css';
 import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
@@ -14,7 +14,7 @@ export const BurgerIngredient = ({ ingredientId }) => {
   const location = useLocation();
 
   const ingredient = useSelector(state =>
-    selectBurgerIngredientById(state, ingredientId)
+    selectBurgerIngredientWithCountById(state, ingredientId)
   );
 
   const [{ opacity }, dragRef] = useDrag({

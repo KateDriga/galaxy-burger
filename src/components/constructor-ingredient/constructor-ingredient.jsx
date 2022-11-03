@@ -29,13 +29,13 @@ export const ConstructorIngredient = ({
 
   const removeIngredient = () => {
     if (!isBunIng) {
-      dispatch(removeIngredientFromConstructor(id, index));
+      dispatch(removeIngredientFromConstructor(index));
     }
   };
 
   const [{ opacity }, dragRef] = useDrag({
     type: 'constructor',
-    item: { id, index },
+    item: { index },
     collect: monitor => ({
       opacity: monitor.isDragging() ? 0 : 1,
     }),

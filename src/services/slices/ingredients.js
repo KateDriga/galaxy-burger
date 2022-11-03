@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { onNewOrder } from '../thunks/order';
 
 const initialState = {
   isLoading: false,
@@ -35,39 +34,6 @@ const ingredientsSlice = createSlice({
         burgerIngredients: ingredients,
       };
     },
-    incrementIngredientAmount: (state, { payload: { id } }) => {
-      const ingredient = state.burgerIngredients[id];
-      const updatedIngredient = {
-        ...ingredient,
-        count: ingredient.count + (ingredient.type === 'bun' ? 2 : 1),
-      };
-      return {
-        ...state,
-        burgerIngredients: {
-          ...state.burgerIngredients,
-          [id]: updatedIngredient,
-        },
-      };
-    },
-    decrementIngredientAmount: (state, { payload: { id } }) => {
-      const ingredient = state.burgerIngredients[id];
-      const updatedIngredient = {
-        ...ingredient,
-        count: ingredient.count - (ingredient.type === 'bun' ? 2 : 1),
-      };
-      return {
-        ...state,
-        burgerIngredients: {
-          ...state.burgerIngredients,
-          [id]: updatedIngredient,
-        },
-      };
-    },
-  },
-  extraReducers: builder => {
-    builder.addCase(onNewOrder.fulfilled, state => {
-      Object.values(state.burgerIngredients).forEach(i => (i.count = 0));
-    });
   },
 });
 
@@ -75,7 +41,5 @@ export const {
   startLoadingIngredients,
   failLoadingIngredients,
   addBurgerIngredients,
-  incrementIngredientAmount,
-  decrementIngredientAmount,
 } = ingredientsSlice.actions;
 export const ingredientsReducer = ingredientsSlice.reducer;
