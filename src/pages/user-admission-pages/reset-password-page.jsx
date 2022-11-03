@@ -23,11 +23,9 @@ export const ResetPasswordPage = () => {
   const fromPath = location.state?.from?.pathname;
 
   useEffect(() => {
-    if (location.state?.from?.pathname !== FORGOT_PASSWORD_ROUTE) {
+    if (fromPath !== FORGOT_PASSWORD_ROUTE) {
       navigate(FORGOT_PASSWORD_ROUTE, { replace: true });
     }
-    // dependency is included (fromPath)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate, fromPath]);
 
   const resetPasswordForm = useFormInputs({ password: '', code: '' });
