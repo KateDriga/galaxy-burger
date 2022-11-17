@@ -13,10 +13,7 @@ import {
 import { AxiosResponse } from 'axios';
 import { IIngredientsData } from '../../utils/ts-types/api-types';
 
-export function loadIngredients(): (
-  dispatch: AppDispatch,
-  getState: () => RootState
-) => void {
+export function loadIngredients() {
   return function (dispatch: AppDispatch, getState: () => RootState) {
     const state: RootState = getState();
     const burgerIngredients: Array<IBurgerIngredient> | null =
@@ -28,7 +25,7 @@ export function loadIngredients(): (
     getIngredients()
       .then((res: AxiosResponse<IIngredientsData>) => {
         const ingredientsObj: TIngredientsObj = res.data.data.reduce(
-          (acc, ing: IBurgerIngredient) => ({ ...acc, [ing._id]: ing }),
+          (acc: object, ing: IBurgerIngredient) => ({ ...acc, [ing._id]: ing }),
           {}
         );
         dispatch(addBurgerIngredients(ingredientsObj));

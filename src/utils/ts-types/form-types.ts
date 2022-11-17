@@ -3,7 +3,6 @@ import { ChangeEvent, FormEvent } from 'react';
 
 type TChangeFormInput = (e: ChangeEvent<HTMLInputElement>) => void;
 type TSubmitForm = (e: FormEvent<HTMLFormElement>) => void;
-type TResetForm = (e: FormEvent<HTMLFormElement>) => void;
 type TSetFormState<IFormState> = React.Dispatch<
   React.SetStateAction<IFormState>
 >;
@@ -39,7 +38,7 @@ export interface IFormButton {
 export interface IFormEvents {
   readonly onFormChange: TChangeFormInput;
   readonly onFormSubmit: TSubmitForm;
-  readonly onFormReset?: TResetForm;
+  readonly onFormReset?: TSubmitForm;
 }
 
 export interface IFormAction {

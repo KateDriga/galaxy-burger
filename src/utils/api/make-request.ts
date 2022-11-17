@@ -54,9 +54,12 @@ axiosInstance.interceptors.response.use(
     ) {
       originalConfig._retry = true;
       const dispatch: AppDispatch = store.dispatch;
-      dispatch(onTokenRefresh())
-        .then(() => axiosInstance(originalConfig))
-        .catch((err: any) => Promise.reject(err));
+      try {
+        await dispatch(onTokenRefresh());
+        return axiosInstance(originalConfig);
+      } catch (err: any) {
+        return Promise.reject(err);
+      }
     }
     return Promise.reject(err);
   }

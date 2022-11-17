@@ -7,12 +7,10 @@ import {
   IBurgerIngredient,
 } from '../../utils/ts-types/ingredient-types';
 
-export function addIngredientToConstructor(
-  id: string
-): (dispatch: AppDispatch, getState: RootState) => void {
-  return function (dispatch: AppDispatch, getState: RootState) {
+export function addIngredientToConstructor(id: string) {
+  return function (dispatch: AppDispatch, getState: () => RootState) {
     const state: RootState = getState();
-    const currentBunId: string | null = selectConstructorBunIngredientId(state);
+    const currentBunId: string = selectConstructorBunIngredientId(state)!;
     if (currentBunId === id) {
       return;
     }
@@ -28,9 +26,7 @@ export function addIngredientToConstructor(
   };
 }
 
-export function removeIngredientFromConstructor(
-  index: number
-): (dispatch: AppDispatch) => void {
+export function removeIngredientFromConstructor(index: number) {
   return function (dispatch: AppDispatch) {
     dispatch(removeIngredient(index));
   };
