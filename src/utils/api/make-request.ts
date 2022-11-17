@@ -8,6 +8,7 @@ import { AUTH_URLS, BASE_URL } from '../const-variables/app-variables';
 import { onTokenRefresh } from '../../services/thunks/user-admission';
 import { EnhancedStore } from '@reduxjs/toolkit';
 import { ApiMethodsEnum } from '../ts-types/api-types';
+import { AppDispatch } from '../../services/store';
 
 export const axiosInstance: AxiosInstance = axios.create({ baseURL: BASE_URL });
 
@@ -52,9 +53,8 @@ axiosInstance.interceptors.response.use(
       !originalConfig._retry
     ) {
       originalConfig._retry = true;
-      store
-        .getState()
-        .dispatch(onTokenRefresh())
+      const dispatch: AppDispatch = store.dispatch;
+      dispatch(onTokenRefresh())
         .then(() => axiosInstance(originalConfig))
         .catch((err: any) => Promise.reject(err));
     }
