@@ -1,14 +1,14 @@
 import { FC } from 'react';
-import { IngredientDetails } from '../../components/ingredient-details/ingredient-details';
 import { Modal } from '../../components/modal/modal';
 import { useNavigateBack } from '../../hooks/useNavigateBack';
+import { FeedOrderDetails } from '../../components/feed-order-details/feed-order-details';
 
-export const IngredientPage: FC = () => {
+export const FeedOrderPage: FC = () => {
   const handleCloseModal: () => void = useNavigateBack();
 
   return (
     <Modal onClose={handleCloseModal}>
-      <IngredientDetails />
+      <FeedOrderDetails />
     </Modal>
   );
 };

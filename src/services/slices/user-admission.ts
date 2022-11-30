@@ -126,7 +126,6 @@ const userAdmissionSlice = createSlice({
         state.registerUser.errorMessage = null;
       })
       .addCase(onUserRegister.rejected, (state, action) => {
-        console.log(action);
         state.registerUser.isLoading = false;
         state.registerUser.errorMessage = action.payload!;
       });

@@ -7,6 +7,7 @@ export enum NavRoutesEnum {
   PROFILE_ROUTE = '/profile',
   PROFILE_ORDERS_ROUTE = '/profile/orders',
   PROFILE_ORDER_ROUTE = '/profile/orders/:id',
-  ORDERS_ROUTE = '/orders',
+  FEED_ROUTE = '/feed',
+  FEED_ORDER_ROUTE = '/feed/:id',
   INGREDIENT_ROUTE = '/ingredients/:id',
 }

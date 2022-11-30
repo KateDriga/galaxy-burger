@@ -8,7 +8,10 @@ import { IMenuItem } from '../ts-types/menu-types';
 import { ProfileTabsEnum, TProfileTabs } from '../ts-types/profile-types';
 import { AppUrlsEnum } from '../ts-types/api-types';
 
-export const BASE_URL: string = 'https://norma.nomoreparties.space/api';
+const URL: string = 'norma.nomoreparties.space';
+export const BASE_URL: string = `https://${URL}/api`;
+export const WS_URL_ALL: string = `wss://${URL}/orders/all`;
+export const WS_URL_PROFILE: string = `wss://${URL}/orders`;
 
 export const AUTH_URLS: Array<string> = [
   AppUrlsEnum.AUTH_USER,
@@ -27,8 +30,8 @@ export const MENU_ITEMS: Array<IMenuItem> = [
   {
     label: 'Лента заказов',
     iconTag: ListIcon,
-    route: NavRoutesEnum.ORDERS_ROUTE,
-    end: false,
+    route: NavRoutesEnum.FEED_ROUTE,
+    end: true,
   },
   {
     label: 'Личный кабинет',

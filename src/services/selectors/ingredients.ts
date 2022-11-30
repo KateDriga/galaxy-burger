@@ -5,14 +5,20 @@ import {
 } from './constructor';
 import { RootState } from '../store';
 import {
+  BurgerIngredient,
   IBurgerIngredient,
   IBurgerIngredientWithAmount,
   IConstructorId,
   IngredientTypesEnum,
-  TIngredientsObj,
+  IIngredientsObj,
 } from '../../utils/ts-types/ingredient-types';
 import { IFetchState } from '../../utils/ts-types/fetch-state-types';
 import { BUN_INGREDIENT_PLACEHOLDER } from '../../utils/const-variables/ingredient-variables';
+import unknownIngImage from '../../images/unknown-ingredient.png';
+import {
+  IOrderIngredient,
+  OrderIngredient,
+} from '../../utils/ts-types/order-types';
 
 export const selectBurgerIngredients = (
   state: RootState
@@ -31,6 +37,12 @@ export const selectBurgerIngredientById = (
   state: RootState,
   id: string
 ): IBurgerIngredient | undefined => state.ingredients.burgerIngredients?.[id];
+
+export const selectBurgerIngredientsByIds = (
+  state: RootState,
+  ids: Array<string>
+): Array<IBurgerIngredient | undefined> =>
+  ids.map((id: string) => state.ingredients.burgerIngredients?.[id]);
 
 export const selectBurgerIngredientWithCountById = createSelector(
   (state: RootState, id: string) =>
@@ -59,7 +71,7 @@ export const selectTotalPrice = createSelector(
   selectConstructorBunIngredientId,
   selectConstructorMiddleIngredientIds,
   (
-    ingredients: TIngredientsObj | null,
+    ingredients: IIngredientsObj | null,
     bunId: string | null,
     midIds: Array<IConstructorId> | null
   ): number => {
@@ -72,4 +84,43 @@ export const selectTotalPrice = createSelector(
       ) || 0)
     );
   }
+);
+
+export const selectOrderImagesByIngIds = createSelector(
+  (state: RootState, ids: Array<string>) =>
+    selectBurgerIngredientsByIds(state, ids),
+  (ingredients: Array<IBurgerIngredient | undefined>): Array<string> =>
+    ingredients.map(
+      (ing: IBurgerIngredient | undefined) =>
+        ing?.image_mobile || unknownIngImage
+    )
+);
+
+const selectOrderIngredientIdsWithCount = (
+  state: RootState,
+  ids: Array<string>
+): Array<IBurgerIngredientWithAmount> => {
+  const groupedIds: Record<string, number> = ids.reduce(
+    (acc: Record<string, number>, ing: string) => {
+      return { ...acc, [ing]: (acc[ing] || 0) + 1 };
+    },
+    {}
+  );
+  return Object.keys(groupedIds).map((id: string) => {
+    const ingredient: IBurgerIngredient =
+      selectBurgerIngredientById(state, id) || new BurgerIngredient(id);
+    return { ...ingredient, count: groupedIds[id] };
+  });
+};
+
+export const selectOrderIngredientDetails = createSelector(
+  (state: RootState, ids: Array<string> | undefined) =>
+    !ids ? null : selectOrderIngredientIdsWithCount(state, ids),
+  (
+    ingredients: Array<IBurgerIngredientWithAmount> | null
+  ): Array<IOrderIngredient> | null =>
+    ingredients?.map(
+      (ing: IBurgerIngredientWithAmount) =>
+        new OrderIngredient(ing._id, ing.name, ing.image, ing.price, ing.count)
+    ) ?? null
 );

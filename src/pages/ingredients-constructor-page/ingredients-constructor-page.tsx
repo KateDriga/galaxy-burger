@@ -3,7 +3,7 @@ import { BurgerIngredients } from '../../components/burger-ingredients/burger-in
 import { BurgerConstructor } from '../../components/burger-constructor/burger-constructor';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../../hooks/useStore';
 import { selectBurgerIngredientsState } from '../../services/selectors/ingredients';
 import { ErrorMessage } from '../../components/error-message/error-message';
 import { Loader } from '../../components/loader/loader';
@@ -12,35 +12,34 @@ import {
   IFetchState,
   IFetchUserAdmissionState,
 } from '../../utils/ts-types/fetch-state-types';
-import ingredientsConstructorPageStyles from './ingredients-constructor-page.module.css';
+import mainAreaCommonStyles from '../common-styles/main-area.module.css';
 import cn from 'classnames';
 
 export const IngredientsConstructorPage: FC = () => {
-  const { isLoading, isFailed }: IFetchState = useSelector(
+  const { isLoading, isFailed }: IFetchState = useAppSelector(
     selectBurgerIngredientsState
   );
-  const { isLoading: isLogoutLoading }: IFetchUserAdmissionState = useSelector(
-    selectUserLogoutState
-  );
+  const { isLoading: isLogoutLoading }: IFetchUserAdmissionState =
+    useAppSelector(selectUserLogoutState);
 
   return isFailed ? (
     <ErrorMessage />
   ) : isLoading || isLogoutLoading ? (
     <Loader />
   ) : (
-    <main className={cn(ingredientsConstructorPageStyles.main_area, 'p-10')}>
-      <div className={ingredientsConstructorPageStyles.section_container}>
-        <DndProvider backend={HTML5Backend}>
-          <section className={ingredientsConstructorPageStyles.section}>
-            <h2 className="text text_type_main-large pb-5">Соберите бургер</h2>
-            <BurgerIngredients />
-          </section>
-          <section
-            className={cn(ingredientsConstructorPageStyles.section, 'pt-15')}
-          >
-            <BurgerConstructor />
-          </section>
-        </DndProvider>
+    <main className={cn(mainAreaCommonStyles.main_area, 'p-10')}>
+      <div className={mainAreaCommonStyles.layout}>
+        <h2 className="text text_type_main-large pb-5">Соберите бургер</h2>
+        <div className={mainAreaCommonStyles.section_container}>
+          <DndProvider backend={HTML5Backend}>
+            <section className={mainAreaCommonStyles.section}>
+              <BurgerIngredients />
+            </section>
+            <section className={mainAreaCommonStyles.section}>
+              <BurgerConstructor />
+            </section>
+          </DndProvider>
+        </div>
       </div>
     </main>
   );

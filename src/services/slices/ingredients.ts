@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IFetchState } from '../../utils/ts-types/fetch-state-types';
-import { TIngredientsObj } from '../../utils/ts-types/ingredient-types';
+import { IIngredientsObj } from '../../utils/ts-types/ingredient-types';
 
 interface IInitialState extends IFetchState {
-  burgerIngredients: TIngredientsObj | null;
+  burgerIngredients: IIngredientsObj | null;
 }
 
 const initialState: IInitialState = {
@@ -32,7 +32,7 @@ const ingredientsSlice = createSlice({
         burgerIngredients: null,
       };
     },
-    addBurgerIngredients: (state, action: PayloadAction<TIngredientsObj>) => {
+    addBurgerIngredients: (state, action: PayloadAction<IIngredientsObj>) => {
       return {
         ...state,
         isLoading: false,

@@ -2,6 +2,7 @@ import { FC } from 'react';
 import doneImage from '../../images/done.png';
 import { useAppSelector } from '../../hooks/useStore';
 import { selectOrderNumber } from '../../services/selectors/order';
+import { formatOrderNumber } from '../../utils/util-functions';
 import orderDetailsStyles from './order-details.module.css';
 import cn from 'classnames';
 
@@ -13,7 +14,7 @@ export const OrderDetails: FC = () => {
       <h1
         className={cn(orderDetailsStyles.order, 'text text_type_digits-large')}
       >
-        {orderNumber.toString().padStart(6, '0')}
+        {formatOrderNumber(orderNumber)}
       </h1>
       <p
         className={cn(

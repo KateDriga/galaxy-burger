@@ -8,7 +8,7 @@ import {
 } from '../../services/selectors/user-admission';
 import { Loader } from '../loader/loader';
 
-interface IRouteProps {
+export interface IRouteProps {
   children: JSX.Element;
 }
 

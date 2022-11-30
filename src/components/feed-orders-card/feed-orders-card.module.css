@@ -1,0 +1,40 @@
+.card {
+    background-color: var(--background);
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    cursor: pointer;
+    margin-right: 8px;
+}
+
+.card_header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.order_title {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.images {
+    display: flex;
+    flex-direction: row;
+}
+
+.order_details {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.price {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px
+}

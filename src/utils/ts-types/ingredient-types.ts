@@ -1,9 +1,11 @@
 import { RefObject } from 'react';
+import unknownIngImage from '../../images/unknown-ingredient.png';
 
 export enum IngredientTypesEnum {
   BUN = 'bun',
   SAUCE = 'sauce',
   MAIN = 'main',
+  UNKNOWN = 'unknown',
 }
 
 export interface IBurgerIngredient {
@@ -25,6 +27,18 @@ export interface IBurgerIngredientWithAmount extends IBurgerIngredient {
   readonly count: number;
 }
 
+export class BurgerIngredient implements IBurgerIngredientWithAmount {
+  constructor(
+    public _id: string,
+    public name: string = 'Секретный ингредиент',
+    public type: IngredientTypesEnum = IngredientTypesEnum.UNKNOWN,
+    public price: number = 0,
+    public image: string = unknownIngImage,
+    public image_mobile: string = unknownIngImage,
+    public count: number = 0
+  ) {}
+}
+
 export type TCategoryRef = RefObject<HTMLDivElement>;
 
 export interface IIngredientsCategory {
@@ -34,7 +48,7 @@ export interface IIngredientsCategory {
 }
 
 export type TIngredientCategories = {
-  readonly [type in IngredientTypesEnum]: IIngredientsCategory;
+  readonly [type in IngredientTypesEnum as string]: IIngredientsCategory;
 };
 
 export interface IConstructorId {
@@ -42,7 +56,7 @@ export interface IConstructorId {
   readonly ingredientId: string;
 }
 
-export interface TIngredientsObj {
+export interface IIngredientsObj {
   readonly [key: string]: IBurgerIngredient;
 }
 

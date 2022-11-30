@@ -1,0 +1,37 @@
+.status {
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+}
+
+.status_progress {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 56px;
+}
+
+.orders_done, .orders_in_progress {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.order_numbers {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(8, 1fr);
+    row-gap: 8px;
+    column-gap: 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    list-style-type: none;
+}
+
+.order_numbers_success {
+    color: var(--colors-interface-success);
+}
+
+.status_count {
+    display: flex;
+    flex-direction: column;
+}

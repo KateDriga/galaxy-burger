@@ -1,5 +1,5 @@
 import { useEffect, FC } from 'react';
-import { useAppDispatch } from '../../hooks/useStore';
+import { useAppDispatch, useAppSelector } from '../../hooks/useStore';
 import { AppDispatch } from '../../services/store';
 import { AppHeader } from '../app-header/app-header';
 import { ErrorBoundary } from '../error-boundary/error-boundary';
@@ -9,6 +9,7 @@ import {
   Navigate,
   useLocation,
   Location,
+  useMatch,
 } from 'react-router-dom';
 import { NavRoutesEnum } from '../../utils/ts-types/route-types';
 import { LoginPage } from '../../pages/user-admission-pages/login-page';
@@ -17,10 +18,7 @@ import { ForgotPasswordPage } from '../../pages/user-admission-pages/forgot-pass
 import { ResetPasswordPage } from '../../pages/user-admission-pages/reset-password-page';
 import { ProfilePage } from '../../pages/profile-page/profile-page';
 import { ProfileDetails } from '../profile-details/profile-details';
-import {
-  ProtectedRoute,
-  ProtectedAuthRoute,
-} from '../protected-route/protected-route';
+import { ProtectedRoute, ProtectedAuthRoute } from '../routes/protected-routes';
 import { getCookie } from '../../utils/cookie';
 import { onTokenRefresh } from '../../services/thunks/user-admission';
 import { IngredientsConstructorPage } from '../../pages/ingredients-constructor-page/ingredients-constructor-page';
@@ -28,12 +26,28 @@ import { loadIngredients } from '../../services/thunks/ingredients';
 import { IngredientDetails } from '../ingredient-details/ingredient-details';
 import { NotFoundPage } from '../../pages/not-found-page/not-found-page';
 import { IngredientPage } from '../../pages/ingredient-page/ingredient-page';
+import { FeedPage } from '../../pages/feed-page/feed-page';
+import { FeedOrderPage } from '../../pages/feed-order-page/feed-order-page';
+import { FeedOrderDetails } from '../feed-order-details/feed-order-details';
+import { FeedOrdersList } from '../feed-orders-list/feed-orders-list';
+import { WebSocketRoute } from '../routes/web-socket-route';
+import { Modal } from '../modal/modal';
+import { OrderError } from '../order-error/order-error';
+import { OrderDetails } from '../order-details/order-details';
+import {
+  selectOrderState,
+  selectShowOrderModal,
+} from '../../services/selectors/order';
+import { IFetchState } from '../../utils/ts-types/fetch-state-types';
+import { closeOrderModal } from '../../services/slices/order';
 
 export const App: FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
   const location: Location = useLocation();
-
   const background: Location | undefined = location.state?.background;
+
+  const isFeedOrderRoute: boolean =
+    useMatch(NavRoutesEnum.FEED_ORDER_ROUTE) !== null;
 
   useEffect(() => {
     dispatch(loadIngredients());
@@ -41,6 +55,21 @@ export const App: FC = () => {
       dispatch(onTokenRefresh());
     }
   }, [dispatch]);
+
+  useEffect(() => {
+    return () => {
+      // TODO apply for profile feed
+      if (isFeedOrderRoute) {
+        location.state = null;
+      }
+    };
+  }, [location, isFeedOrderRoute]);
+
+  // order modal window
+  const showOrderModal: boolean = useAppSelector(selectShowOrderModal);
+  const { isFailed: orderFailed }: IFetchState =
+    useAppSelector(selectOrderState);
+  const handleCloseOrderModal = () => dispatch(closeOrderModal());
 
   return (
     <>
@@ -52,10 +81,22 @@ export const App: FC = () => {
             element={<IngredientsConstructorPage />}
           />
 
-          {/*TODO implement orders component*/}
           <Route
-            path={NavRoutesEnum.ORDERS_ROUTE}
-            element={<p>Лента заказов</p>}
+            path={NavRoutesEnum.FEED_ROUTE}
+            element={
+              <WebSocketRoute>
+                <FeedPage />
+              </WebSocketRoute>
+            }
+          />
+
+          <Route
+            path={NavRoutesEnum.FEED_ORDER_ROUTE}
+            element={
+              <WebSocketRoute>
+                <FeedOrderDetails />
+              </WebSocketRoute>
+            }
           />
 
           <Route
@@ -107,12 +148,13 @@ export const App: FC = () => {
                 </ProtectedRoute>
               }
             />
-            {/*TODO implement user orders component*/}
             <Route
               path={NavRoutesEnum.PROFILE_ORDERS_ROUTE}
               element={
                 <ProtectedRoute>
-                  <p>Orders</p>
+                  <WebSocketRoute>
+                    <FeedOrdersList />
+                  </WebSocketRoute>
                 </ProtectedRoute>
               }
             />
@@ -125,12 +167,14 @@ export const App: FC = () => {
               }
             />
           </Route>
-          {/*TODO implement order details*/}
+
           <Route
             path={NavRoutesEnum.PROFILE_ORDER_ROUTE}
             element={
               <ProtectedRoute>
-                <p>Order Details</p>
+                <WebSocketRoute>
+                  <FeedOrderDetails />
+                </WebSocketRoute>
               </ProtectedRoute>
             }
           />
@@ -149,7 +193,24 @@ export const App: FC = () => {
               path={NavRoutesEnum.INGREDIENT_ROUTE}
               element={<IngredientPage />}
             />
+            <Route
+              path={NavRoutesEnum.FEED_ORDER_ROUTE}
+              element={<FeedOrderPage />}
+            />
+            <Route
+              path={NavRoutesEnum.PROFILE_ORDER_ROUTE}
+              element={
+                <ProtectedRoute>
+                  <FeedOrderPage />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
+        )}
+        {showOrderModal && (
+          <Modal onClose={handleCloseOrderModal}>
+            {orderFailed ? <OrderError /> : <OrderDetails />}
+          </Modal>
         )}
       </ErrorBoundary>
     </>

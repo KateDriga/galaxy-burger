@@ -46,6 +46,15 @@ export interface IOrderData extends IResponse {
   readonly order: IOrder;
 }
 
+export interface IFeedOrdersTotal {
+  readonly total: number;
+  readonly totalToday: number;
+}
+
+export interface IFeedData extends IResponse, IFeedOrdersTotal {
+  readonly orders: Array<IOrder>;
+}
+
 export interface IIngredientsData extends IResponse {
-  data: Array<IBurgerIngredient>;
+  readonly data: Array<IBurgerIngredient>;
 }

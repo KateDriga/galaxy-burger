@@ -1,0 +1,9 @@
+.list {
+    list-style-type: none;
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    overflow-y: auto;
+    width: 100%;
+}

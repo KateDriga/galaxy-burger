@@ -3,12 +3,8 @@ import {
   Button,
   CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { Modal } from '../modal/modal';
-import { OrderDetails } from '../order-details/order-details';
-import { OrderError } from '../order-error/order-error';
 import { ConstructorIngredient } from '../constructor-ingredient/constructor-ingredient';
 import { Loader } from '../loader/loader';
-import { useState } from 'react';
 import { useDrop } from 'react-dnd';
 import { useAppDispatch, useAppSelector } from '../../hooks/useStore';
 import { AppDispatch } from '../../services/store';
@@ -42,9 +38,8 @@ export const BurgerConstructor: FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
   const navigate: NavigateFunction = useNavigate();
 
-  const { isLoading: isOrderLoading, isFailed: isOrderFailed }: IFetchState =
+  const { isLoading: isOrderLoading }: IFetchState =
     useAppSelector(selectOrderState);
-  const [modalIsVisible, setModalIsVisible] = useState<boolean>(false);
 
   const bunIngredient: IBurgerIngredient =
     useAppSelector(selectConstructorBunIngredient) ||
@@ -67,15 +62,7 @@ export const BurgerConstructor: FC = () => {
   });
 
   const placeOrder = (): void => {
-    if (!isLoggedIn) {
-      navigate(NavRoutesEnum.LOGIN_ROUTE);
-    } else {
-      dispatch(onNewOrder());
-      setModalIsVisible(true);
-    }
-  };
-  const handleCloseModal = (): void => {
-    setModalIsVisible(false);
+    isLoggedIn ? dispatch(onNewOrder()) : navigate(NavRoutesEnum.LOGIN_ROUTE);
   };
 
   return isOrderLoading ? (
@@ -135,11 +122,6 @@ export const BurgerConstructor: FC = () => {
           Оформить заказ
         </Button>
       </div>
-      {modalIsVisible && (
-        <Modal onClose={handleCloseModal}>
-          {isOrderFailed ? <OrderError /> : <OrderDetails />}
-        </Modal>
-      )}
     </div>
   );
 };

@@ -8,7 +8,7 @@ import { selectBurgerIngredients } from '../selectors/ingredients';
 import { AppDispatch, RootState } from '../store';
 import {
   IBurgerIngredient,
-  TIngredientsObj,
+  IIngredientsObj,
 } from '../../utils/ts-types/ingredient-types';
 import { AxiosResponse } from 'axios';
 import { IIngredientsData } from '../../utils/ts-types/api-types';
@@ -24,8 +24,11 @@ export function loadIngredients() {
     dispatch(startLoadingIngredients());
     getIngredients()
       .then((res: AxiosResponse<IIngredientsData>) => {
-        const ingredientsObj: TIngredientsObj = res.data.data.reduce(
-          (acc: object, ing: IBurgerIngredient) => ({ ...acc, [ing._id]: ing }),
+        const ingredientsObj: IIngredientsObj = res.data.data.reduce(
+          (acc: Record<string, IBurgerIngredient>, ing: IBurgerIngredient) => ({
+            ...acc,
+            [ing._id]: ing,
+          }),
           {}
         );
         dispatch(addBurgerIngredients(ingredientsObj));

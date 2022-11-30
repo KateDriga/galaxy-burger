@@ -4,18 +4,24 @@ import { orderReducer } from './slices/order';
 import { constructorReducer } from './slices/constructor';
 import { userAdmissionReducer } from './slices/user-admission';
 import { userProfileReducer } from './slices/user-profile';
+import { feedReducer } from './slices/feed';
+import { wsMiddleware } from './middlewares/ws-middleware';
+
+const rootReducer = combineReducers({
+  ingredients: ingredientsReducer,
+  order: orderReducer,
+  burgerConstructor: constructorReducer,
+  userAdmission: userAdmissionReducer,
+  userProfile: userProfileReducer,
+  feed: feedReducer,
+});
 
 export const store = configureStore({
-  reducer: combineReducers({
-    ingredients: ingredientsReducer,
-    order: orderReducer,
-    burgerConstructor: constructorReducer,
-    userAdmission: userAdmissionReducer,
-    userProfile: userProfileReducer,
-  }),
-  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(),
+  reducer: rootReducer,
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware().concat(wsMiddleware()),
   devTools: process.env.NODE_ENV !== 'production',
 });
 
-export type RootState = ReturnType<typeof store.getState>;
+export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch;

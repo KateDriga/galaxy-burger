@@ -5,24 +5,32 @@ import { IOrder } from '../../utils/ts-types/order-types';
 
 interface IInitialState extends IFetchState {
   orderNumber: number | null;
+  showModal: boolean;
 }
 
 const initialState: IInitialState = {
   orderNumber: null,
   isLoading: false,
   isFailed: false,
+  showModal: false,
 };
 
 const orderSlice = createSlice({
   name: 'order',
   initialState,
-  reducers: {},
+  reducers: {
+    closeOrderModal: state => {
+      state.showModal = false;
+      return state;
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(onNewOrder.fulfilled, (state, action: PayloadAction<IOrder>) => {
         state.orderNumber = action.payload.number;
         state.isLoading = false;
         state.isFailed = false;
+        state.showModal = true;
       })
       .addCase(onNewOrder.pending, state => {
         state.orderNumber = null;
@@ -33,8 +41,10 @@ const orderSlice = createSlice({
         state.orderNumber = null;
         state.isLoading = false;
         state.isFailed = true;
+        state.showModal = true;
       });
   },
 });
 
+export const { closeOrderModal } = orderSlice.actions;
 export const orderReducer = orderSlice.reducer;
