@@ -2,14 +2,16 @@ import { FC, useMemo } from 'react';
 import { Location, useLocation, useParams } from 'react-router-dom';
 import { IOrder, IOrderIngredient } from '../../utils/ts-types/order-types';
 import {
-  FeedOrderDate,
   FeedOrderImage,
   FeedOrderNumber,
   FeedOrderTitle,
 } from '../feed-order-common/feed-order-common';
 import { useAppSelector } from '../../hooks/useStore';
 import { selectOrderIngredientDetails } from '../../services/selectors/ingredients';
-import { CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
+import {
+  CurrencyIcon,
+  FormattedDate,
+} from '@ya.praktikum/react-developer-burger-ui-components';
 import { selectFeedOrderById } from '../../services/selectors/feed';
 import { FeedTypesEnum } from '../../utils/ts-types/feed-types';
 import { NotFoundPage } from '../../pages/not-found-page/not-found-page';
@@ -83,7 +85,10 @@ export const FeedOrderDetails: FC = () => {
           </div>
         </div>
         <div className={feedOrderDetailsStyles.card_footer}>
-          <FeedOrderDate date={order.createdAt} />
+          <FormattedDate
+            date={new Date(order.createdAt)}
+            className={'text text_type_main-default text_color_inactive'}
+          />
           <div className={feedOrderDetailsStyles.total_price}>
             <span className="text text_type_digits-default">{totalPrice}</span>
             <CurrencyIcon type="primary" />

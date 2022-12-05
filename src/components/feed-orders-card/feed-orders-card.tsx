@@ -3,10 +3,12 @@ import { IOrder } from '../../utils/ts-types/order-types';
 import { useAppSelector } from '../../hooks/useStore';
 import { selectOrderImagesByIngIds } from '../../services/selectors/ingredients';
 import { selectOrderPrice } from '../../services/selectors/order';
-import { CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
+import {
+  CurrencyIcon,
+  FormattedDate,
+} from '@ya.praktikum/react-developer-burger-ui-components';
 import { MAX_CARD_INGREDIENTS } from '../../utils/const-variables/order-variables';
 import {
-  FeedOrderDate,
   FeedOrderImage,
   FeedOrderNumber,
   FeedOrderTitle,
@@ -41,7 +43,10 @@ export const FeedOrdersCard: FC<IOrder> = order => {
     >
       <div className={feedOrdersCardStyles.card_header}>
         <FeedOrderNumber orderNumber={order.number} />
-        <FeedOrderDate date={order.createdAt} />
+        <FormattedDate
+          date={new Date(order.createdAt)}
+          className={'text text_type_main-default text_color_inactive'}
+        />
       </div>
       <div className={feedOrdersCardStyles.order_title}>
         <FeedOrderTitle

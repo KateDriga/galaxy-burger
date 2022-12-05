@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { formatOrderDate, formatOrderNumber } from '../../utils/util-functions';
+import { formatOrderNumber } from '../../utils/util-functions';
 import { OrderStatusEnum } from '../../utils/ts-types/order-types';
 import { ORDER_STATUS_DESCRIPTION } from '../../utils/const-variables/order-variables';
 import feedOrderCommonStyles from './feed-order-common.module.css';
@@ -11,14 +11,6 @@ export const FeedOrderNumber: FC<{ orderNumber: number }> = ({
   return (
     <span className="text text_type_digits-default">
       #{formatOrderNumber(orderNumber)}
-    </span>
-  );
-};
-
-export const FeedOrderDate: FC<{ date: string }> = ({ date }) => {
-  return (
-    <span className={'text text_type_main-default text_color_inactive'}>
-      {formatOrderDate(new Date(date))}
     </span>
   );
 };
