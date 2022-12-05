@@ -40,6 +40,7 @@ import {
 } from '../../services/selectors/order';
 import { IFetchState } from '../../utils/ts-types/fetch-state-types';
 import { closeOrderModal } from '../../services/slices/order';
+import { Delayed } from '../delayed/delayed';
 
 export const App: FC = () => {
   const dispatch: AppDispatch = useAppDispatch();
@@ -58,7 +59,6 @@ export const App: FC = () => {
 
   useEffect(() => {
     return () => {
-      // TODO apply for profile feed
       if (isFeedOrderRoute) {
         location.state = null;
       }
@@ -74,145 +74,147 @@ export const App: FC = () => {
   return (
     <>
       <AppHeader />
-      <ErrorBoundary>
-        <Routes location={background || location}>
-          <Route
-            path={NavRoutesEnum.HOME_ROUTE}
-            element={<IngredientsConstructorPage />}
-          />
+      <Delayed>
+        <ErrorBoundary>
+          <Routes location={background || location}>
+            <Route
+              path={NavRoutesEnum.HOME_ROUTE}
+              element={<IngredientsConstructorPage />}
+            />
 
-          <Route
-            path={NavRoutesEnum.FEED_ROUTE}
-            element={
-              <WebSocketRoute>
-                <FeedPage />
-              </WebSocketRoute>
-            }
-          />
+            <Route
+              path={NavRoutesEnum.FEED_ROUTE}
+              element={
+                <WebSocketRoute>
+                  <FeedPage />
+                </WebSocketRoute>
+              }
+            />
 
-          <Route
-            path={NavRoutesEnum.FEED_ORDER_ROUTE}
-            element={
-              <WebSocketRoute>
-                <FeedOrderDetails />
-              </WebSocketRoute>
-            }
-          />
+            <Route
+              path={NavRoutesEnum.FEED_ORDER_ROUTE}
+              element={
+                <WebSocketRoute>
+                  <FeedOrderDetails />
+                </WebSocketRoute>
+              }
+            />
 
-          <Route
-            path={NavRoutesEnum.LOGIN_ROUTE}
-            element={
-              <ProtectedAuthRoute>
-                <LoginPage />
-              </ProtectedAuthRoute>
-            }
-          />
-          <Route
-            path={NavRoutesEnum.REGISTER_ROUTE}
-            element={
-              <ProtectedAuthRoute>
-                <RegisterPage />
-              </ProtectedAuthRoute>
-            }
-          />
-          <Route
-            path={NavRoutesEnum.FORGOT_PASSWORD_ROUTE}
-            element={
-              <ProtectedAuthRoute>
-                <ForgotPasswordPage />
-              </ProtectedAuthRoute>
-            }
-          />
-          <Route
-            path={NavRoutesEnum.RESET_PASSWORD_ROUTE}
-            element={
-              <ProtectedAuthRoute>
-                <ResetPasswordPage />
-              </ProtectedAuthRoute>
-            }
-          />
+            <Route
+              path={NavRoutesEnum.LOGIN_ROUTE}
+              element={
+                <ProtectedAuthRoute>
+                  <LoginPage />
+                </ProtectedAuthRoute>
+              }
+            />
+            <Route
+              path={NavRoutesEnum.REGISTER_ROUTE}
+              element={
+                <ProtectedAuthRoute>
+                  <RegisterPage />
+                </ProtectedAuthRoute>
+              }
+            />
+            <Route
+              path={NavRoutesEnum.FORGOT_PASSWORD_ROUTE}
+              element={
+                <ProtectedAuthRoute>
+                  <ForgotPasswordPage />
+                </ProtectedAuthRoute>
+              }
+            />
+            <Route
+              path={NavRoutesEnum.RESET_PASSWORD_ROUTE}
+              element={
+                <ProtectedAuthRoute>
+                  <ResetPasswordPage />
+                </ProtectedAuthRoute>
+              }
+            />
 
-          <Route
-            path={NavRoutesEnum.PROFILE_ROUTE}
-            element={
-              <ProtectedRoute>
-                <ProfilePage />
-              </ProtectedRoute>
-            }
-          >
             <Route
               path={NavRoutesEnum.PROFILE_ROUTE}
               element={
                 <ProtectedRoute>
-                  <ProfileDetails />
+                  <ProfilePage />
                 </ProtectedRoute>
               }
-            />
-            <Route
-              path={NavRoutesEnum.PROFILE_ORDERS_ROUTE}
-              element={
-                <ProtectedRoute>
-                  <WebSocketRoute>
-                    <FeedOrdersList />
-                  </WebSocketRoute>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path={`${NavRoutesEnum.PROFILE_ROUTE}/*`}
-              element={
-                <ProtectedRoute>
-                  <Navigate to={NavRoutesEnum.PROFILE_ROUTE} replace={true} />
-                </ProtectedRoute>
-              }
-            />
-          </Route>
+            >
+              <Route
+                path={NavRoutesEnum.PROFILE_ROUTE}
+                element={
+                  <ProtectedRoute>
+                    <ProfileDetails />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path={NavRoutesEnum.PROFILE_ORDERS_ROUTE}
+                element={
+                  <ProtectedRoute>
+                    <WebSocketRoute>
+                      <FeedOrdersList />
+                    </WebSocketRoute>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path={`${NavRoutesEnum.PROFILE_ROUTE}/*`}
+                element={
+                  <ProtectedRoute>
+                    <Navigate to={NavRoutesEnum.PROFILE_ROUTE} replace={true} />
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
 
-          <Route
-            path={NavRoutesEnum.PROFILE_ORDER_ROUTE}
-            element={
-              <ProtectedRoute>
-                <WebSocketRoute>
-                  <FeedOrderDetails />
-                </WebSocketRoute>
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path={NavRoutesEnum.INGREDIENT_ROUTE}
-            element={<IngredientDetails />}
-          />
-
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-
-        {background && (
-          <Routes>
-            <Route
-              path={NavRoutesEnum.INGREDIENT_ROUTE}
-              element={<IngredientPage />}
-            />
-            <Route
-              path={NavRoutesEnum.FEED_ORDER_ROUTE}
-              element={<FeedOrderPage />}
-            />
             <Route
               path={NavRoutesEnum.PROFILE_ORDER_ROUTE}
               element={
                 <ProtectedRoute>
-                  <FeedOrderPage />
+                  <WebSocketRoute>
+                    <FeedOrderDetails />
+                  </WebSocketRoute>
                 </ProtectedRoute>
               }
             />
+
+            <Route
+              path={NavRoutesEnum.INGREDIENT_ROUTE}
+              element={<IngredientDetails />}
+            />
+
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
-        )}
-        {showOrderModal && (
-          <Modal onClose={handleCloseOrderModal}>
-            {orderFailed ? <OrderError /> : <OrderDetails />}
-          </Modal>
-        )}
-      </ErrorBoundary>
+
+          {background && (
+            <Routes>
+              <Route
+                path={NavRoutesEnum.INGREDIENT_ROUTE}
+                element={<IngredientPage />}
+              />
+              <Route
+                path={NavRoutesEnum.FEED_ORDER_ROUTE}
+                element={<FeedOrderPage />}
+              />
+              <Route
+                path={NavRoutesEnum.PROFILE_ORDER_ROUTE}
+                element={
+                  <ProtectedRoute>
+                    <FeedOrderPage />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          )}
+          {showOrderModal && (
+            <Modal onClose={handleCloseOrderModal}>
+              {orderFailed ? <OrderError /> : <OrderDetails />}
+            </Modal>
+          )}
+        </ErrorBoundary>
+      </Delayed>
     </>
   );
 };

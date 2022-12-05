@@ -4,6 +4,7 @@ export enum OrderStatusEnum {
   DONE = 'done',
   PENDING = 'pending',
   CREATED = 'created',
+  CANCELLED = 'cancelled',
 }
 
 export interface IOrder {

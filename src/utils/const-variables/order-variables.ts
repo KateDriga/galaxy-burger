@@ -6,4 +6,5 @@ export const ORDER_STATUS_DESCRIPTION: Record<OrderStatusEnum, string> = {
   [OrderStatusEnum.DONE]: 'Выполнен',
   [OrderStatusEnum.CREATED]: 'Создан',
   [OrderStatusEnum.PENDING]: 'Готовится',
+  [OrderStatusEnum.CANCELLED]: 'Отменён',
 };

@@ -12,6 +12,7 @@ import {
 } from '../../utils/ts-types/ingredient-types';
 import { AxiosResponse } from 'axios';
 import { IIngredientsData } from '../../utils/ts-types/api-types';
+import { generateObjFromArray } from '../../utils/util-functions';
 
 export function loadIngredients() {
   return function (dispatch: AppDispatch, getState: () => RootState) {
@@ -24,13 +25,8 @@ export function loadIngredients() {
     dispatch(startLoadingIngredients());
     getIngredients()
       .then((res: AxiosResponse<IIngredientsData>) => {
-        const ingredientsObj: IIngredientsObj = res.data.data.reduce(
-          (acc: Record<string, IBurgerIngredient>, ing: IBurgerIngredient) => ({
-            ...acc,
-            [ing._id]: ing,
-          }),
-          {}
-        );
+        const ingredientsObj: IIngredientsObj =
+          generateObjFromArray<IBurgerIngredient>(res.data.data);
         dispatch(addBurgerIngredients(ingredientsObj));
       })
       .catch(error => {

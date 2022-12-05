@@ -11,7 +11,14 @@ export const formatOrderDate = (date: Date): string => {
   const diff: number = dateDiffDays(date, new Date());
   const day: string =
     diff > 1
-      ? `${diff} ${diff > 4 ? 'дней' : 'дня'} назад`
+      ? `${diff} ${
+          diff < 5 ||
+          (diff > 20 && (diff % 10 === 2 || diff % 10 === 3 || diff % 10 === 4))
+            ? 'дня'
+            : diff > 20 && diff % 10 === 1
+            ? 'день'
+            : 'дней'
+        } назад`
       : diff === 1
       ? 'Вчера'
       : 'Сегодня';
@@ -23,3 +30,15 @@ export const formatOrderDate = (date: Date): string => {
 
 export const formatOrderNumber = (orderNumber: number): string =>
   orderNumber.toString().padStart(6, '0');
+
+export const generateObjFromArray = <T extends { _id: string }>(
+  array: Array<T>
+): Record<string, T> => {
+  return array.reduce(
+    (acc: Record<string, T>, item: T) => ({
+      ...acc,
+      [item._id]: item,
+    }),
+    {}
+  );
+};

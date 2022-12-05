@@ -16,6 +16,7 @@ let accessToken: string = '';
 export const setAccessToken = (token: string): void => {
   accessToken = token;
 };
+export const getAccessToken = (): string => accessToken.replace('Bearer ', '');
 
 let store: EnhancedStore;
 export const injectStore = (_store: EnhancedStore): void => {

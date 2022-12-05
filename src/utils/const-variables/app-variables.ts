@@ -54,3 +54,5 @@ export const PROFILE_TABS: TProfileTabs = {
   },
   [ProfileTabsEnum.LOGOUT]: { label: 'Выход', route: NavRoutesEnum.HOME_ROUTE },
 };
+
+export const MAX_RECONNECT_FAILURE = 3;

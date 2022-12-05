@@ -3,6 +3,10 @@
     color: var(--colors-interface-success);
 }
 
+.order_cancelled {
+    color: var(--colors-interface-error);
+}
+
 /*=====FeedOrderImage=====*/
 .image_container {
     position: relative;

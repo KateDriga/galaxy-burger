@@ -3,10 +3,13 @@ import { Logo } from '@ya.praktikum/react-developer-burger-ui-components';
 import { MENU_ITEMS } from '../../utils/const-variables/app-variables';
 import { NavLink } from 'react-router-dom';
 import { NavRoutesEnum } from '../../utils/ts-types/route-types';
+import { useIsProfileOrderFeed } from '../../hooks/useIsProfileFeed';
 import appHeaderStyles from './app-header.module.css';
 import cn from 'classnames';
 
 export const AppHeader: FC = () => {
+  const isProfileOrderFeed: boolean = useIsProfileOrderFeed();
+
   return (
     <header className={cn(appHeaderStyles.header, 'p-10')}>
       <nav className={appHeaderStyles.nav}>
@@ -25,7 +28,7 @@ export const AppHeader: FC = () => {
               <li key={i.label} className={appHeaderStyles.nav_item}>
                 <NavLink
                   to={i.route}
-                  end={i.end}
+                  end={i.end || isProfileOrderFeed}
                   className={({ isActive }) =>
                     cn(appHeaderStyles.nav_item_link, {
                       [appHeaderStyles.nav_item_link_selected]: isActive,

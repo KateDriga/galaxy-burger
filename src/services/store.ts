@@ -6,6 +6,8 @@ import { userAdmissionReducer } from './slices/user-admission';
 import { userProfileReducer } from './slices/user-profile';
 import { feedReducer } from './slices/feed';
 import { wsMiddleware } from './middlewares/ws-middleware';
+import { wsFeedActions } from './actions/ws-feed';
+import { wsFeedProfileActions } from './actions/ws-profile-feed';
 
 const rootReducer = combineReducers({
   ingredients: ingredientsReducer,
@@ -19,7 +21,10 @@ const rootReducer = combineReducers({
 export const store = configureStore({
   reducer: rootReducer,
   middleware: getDefaultMiddleware =>
-    getDefaultMiddleware().concat(wsMiddleware()),
+    getDefaultMiddleware().concat(
+      wsMiddleware(wsFeedActions),
+      wsMiddleware(wsFeedProfileActions)
+    ),
   devTools: process.env.NODE_ENV !== 'production',
 });
 

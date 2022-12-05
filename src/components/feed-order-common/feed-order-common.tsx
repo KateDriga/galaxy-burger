@@ -37,6 +37,8 @@ export const FeedOrderTitle: FC<IOrderTitle> = ({ name, status }) => {
           className={cn('text text_type_main-small', {
             [feedOrderCommonStyles.order_success]:
               status === OrderStatusEnum.DONE,
+            [feedOrderCommonStyles.order_cancelled]:
+              status === OrderStatusEnum.CANCELLED,
           })}
         >
           {ORDER_STATUS_DESCRIPTION[status]}

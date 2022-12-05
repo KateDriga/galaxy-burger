@@ -2,76 +2,148 @@ import type { Middleware, MiddlewareAPI } from 'redux';
 import type { AppDispatch, RootState } from '../store';
 import { PayloadAction } from '@reduxjs/toolkit';
 import {
-  onConnectionCloseFeed,
-  onConnectionCloseProfileFeed,
-  onConnectionErrorFeed,
-  onConnectionStartFeed,
-  onConnectionStartProfileFeed,
-  onConnectionSuccessFeed,
-  onMessageReceiveFeed,
-} from '../slices/feed';
-import {
-  WS_URL_ALL,
-  WS_URL_PROFILE,
-} from '../../utils/const-variables/app-variables';
-import { IFeedData } from '../../utils/ts-types/api-types';
+  IFeedData,
+  isWsMessage,
+  IWSMessage,
+} from '../../utils/ts-types/api-types';
+import { IWSActions } from '../../utils/ts-types/ws-types';
+import { onTokenRefresh } from '../thunks/user-admission';
+import { getAccessToken } from '../../utils/api/make-request';
 
-export const wsMiddleware = (): Middleware<{}, RootState> => {
+export const wsMiddleware = (
+  wsActions: IWSActions
+): Middleware<{}, RootState> => {
   return ((store: MiddlewareAPI<AppDispatch, RootState>) => {
-    let socketAll: WebSocket | null = null;
-    // TODO: implement feed profile actions
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    let socketProfile: WebSocket | null = null;
+    let socket: WebSocket | null = null;
+    let shouldRefreshToken: boolean = false;
+    let tokenRefreshed: boolean = false;
+    let url: string = '';
+    let withAuth: boolean = false;
+    let isConnected: boolean = false;
+    let reconnectTimer: number = 0;
 
-    return next => (action: PayloadAction) => {
+    return next => async (action: PayloadAction) => {
       const { dispatch } = store;
 
-      if (onConnectionStartFeed.match(action)) {
-        socketAll = new WebSocket(WS_URL_ALL);
-      }
-      if (onConnectionStartProfileFeed.match(action)) {
-        // TODO add access token
-        socketProfile = new WebSocket(WS_URL_PROFILE);
-      }
-      if (onConnectionCloseFeed.match(action)) {
-        if (socketAll?.readyState === 1) {
-          socketAll.close(1000);
-        }
-      }
-      if (onConnectionCloseProfileFeed.match(action)) {
-        if (socketProfile?.readyState === 1) {
-          socketProfile?.close(1000);
-        }
+      if (wsActions.onShouldConnect.match(action)) {
+        socket?.close(1000);
+        url = action.payload.url;
+        withAuth = action.payload.withAuth;
+        isConnected = true;
+        dispatch(wsActions.onConnecting());
+        socket = new WebSocket(
+          withAuth ? `${url}?token=${getAccessToken()}` : url
+        );
       }
 
-      if (socketAll) {
-        socketAll.onopen = () => {
-          dispatch(onConnectionSuccessFeed());
+      if (wsActions.onShouldClose.match(action)) {
+        shouldRefreshToken = false;
+        tokenRefreshed = false;
+        isConnected = false;
+        clearTimeout(reconnectTimer);
+        reconnectTimer = 0;
+        socket?.close(1000);
+        dispatch(wsActions.onClose());
+        dispatch(wsActions.onClearReconnectAttempts());
+      }
+
+      if (socket) {
+        socket.onopen = () => {
+          clearTimeout(reconnectTimer);
+          dispatch(wsActions.onOpen());
         };
 
-        socketAll.onerror = () => {
-          dispatch(onConnectionErrorFeed());
+        socket.onerror = (err: Event) => {
+          console.error('Web Socket connection error:', err);
+          dispatch(wsActions.onError());
         };
 
-        socketAll.onmessage = (event: MessageEvent) => {
+        socket.onmessage = (event: MessageEvent) => {
           try {
-            const { data }: { data: string } = event;
-            const feedData: IFeedData = JSON.parse(data);
-            feedData.success
-              ? dispatch(onMessageReceiveFeed(feedData))
-              : dispatch(onConnectionErrorFeed());
+            const data: IWSMessage | IFeedData = JSON.parse(event.data);
+            if (data.success) {
+              shouldRefreshToken = false;
+              tokenRefreshed = false;
+              dispatch(wsActions.onMessageReceive(data as IFeedData));
+            } else if (
+              isWsMessage(data) &&
+              !tokenRefreshed &&
+              data.message === 'Invalid or missing token'
+            ) {
+              shouldRefreshToken = true;
+            } else {
+              dispatch(wsActions.onError());
+              dispatch(wsActions.onMessageReceive(null));
+            }
           } catch (err: any) {
             console.error('Error parsing feed data:', err);
-            dispatch(onConnectionErrorFeed());
+            dispatch(wsActions.onError());
+            dispatch(wsActions.onMessageReceive(null));
           }
         };
 
-        socketAll.onclose = () => {
-          dispatch(onConnectionCloseFeed());
+        socket.onclose = async (event: CloseEvent) => {
+          if (event.code !== 1000) {
+            console.error(`Connection closed, error code ${event.code}`);
+            dispatch(wsActions.onError());
+          }
+          if (isConnected) {
+            dispatch(wsActions.onConnecting());
+            if (shouldRefreshToken && !tokenRefreshed) {
+              tokenRefreshed = true;
+              await dispatch(onTokenRefresh());
+            }
+            reconnectTimer = window.setTimeout(() => {
+              if (isConnected) {
+                dispatch(wsActions.onIncrementReconnectAttempts());
+                dispatch(wsActions.onShouldConnect({ url, withAuth }));
+              }
+            }, 3000);
+          } else {
+            dispatch(wsActions.onShouldClose());
+          }
         };
+
+        if (wsActions.onMessageSend.match(action)) {
+          try {
+            await waitForWsOpenWithCallback(socket, () =>
+              socket!.send(JSON.stringify(action.payload))
+            );
+          } catch (err: any) {
+            dispatch(wsActions.onError());
+            console.error('Message was not sent:', err);
+          }
+        }
       }
 
       next(action);
     };
   }) as Middleware;
 };
+
+function waitForWsOpenWithCallback(socket: WebSocket, callback: () => void) {
+  return new Promise<void>((resolve, reject) => {
+    const intervalTime = 50;
+    const maxNumberOfAttempts = 50;
+    let attempts = 0;
+    const interval = window.setInterval(() => {
+      attempts++;
+      if (socket.readyState === WebSocket.OPEN) {
+        clearInterval(interval);
+        callback();
+        resolve();
+      }
+      if (
+        socket.readyState === WebSocket.CLOSING ||
+        socket.readyState === WebSocket.CLOSED
+      ) {
+        clearInterval(interval);
+        reject(new Error('Web socket connection is closed'));
+      }
+      if (attempts > maxNumberOfAttempts) {
+        clearInterval(interval);
+        reject(new Error('Unable to open web socket connection'));
+      }
+    }, intervalTime);
+  });
+}

@@ -24,14 +24,14 @@ enum AdmissionEnum {
   GET_USER = 'getUser',
 }
 
-type IInitialState = {
+type TInitialState = {
   [key in AdmissionEnum]: IFetchUserAdmissionState;
 } & {
   isLoggedIn: boolean;
   tokenIsLoading: boolean;
 };
 
-const initialState: IInitialState = {
+const initialState: TInitialState = {
   isLoggedIn: false,
   tokenIsLoading: false,
   [AdmissionEnum.PASSWORD_RESET]: {

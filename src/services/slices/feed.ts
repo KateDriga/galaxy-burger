@@ -2,6 +2,8 @@ import { IOrder, IOrdersObj } from '../../utils/ts-types/order-types';
 import { IFeedData, IFeedOrdersTotal } from '../../utils/ts-types/api-types';
 import { FeedTypesEnum, IFeedStatus } from '../../utils/ts-types/feed-types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { generateObjFromArray } from '../../utils/util-functions';
+import { WSStatusEnum } from '../../utils/ts-types/ws-types';
 
 type TFeedOrders = {
   [key in FeedTypesEnum]: {
@@ -12,10 +14,10 @@ type TFeedOrders = {
 };
 
 const initialStatus: IFeedStatus = {
-  isConnecting: false,
-  isConnected: false,
+  wsStatus: WSStatusEnum.OFFLINE,
   hasError: false,
   messageReceived: false,
+  reconnectAttempts: 0,
 };
 
 const initialState: TFeedOrders = {
@@ -28,74 +30,97 @@ const feedSlice = createSlice({
   initialState,
   reducers: {
     // feed
-    onConnectionStartFeed: state => {
-      state[FeedTypesEnum.ALL].state.isConnecting = true;
-      state[FeedTypesEnum.ALL].state.isConnected = false;
+    onWsConnectingFeed: state => {
+      state[FeedTypesEnum.ALL].state.wsStatus = WSStatusEnum.CONNECTING;
+      state[FeedTypesEnum.ALL].state.messageReceived = false;
+    },
+    onWsOpenFeed: state => {
+      state[FeedTypesEnum.ALL].state.wsStatus = WSStatusEnum.ONLINE;
       state[FeedTypesEnum.ALL].state.hasError = false;
     },
-    onConnectionSuccessFeed: state => {
-      state[FeedTypesEnum.ALL].state.isConnected = true;
-      state[FeedTypesEnum.ALL].state.isConnecting = false;
-      state[FeedTypesEnum.ALL].state.hasError = false;
-    },
-    onConnectionErrorFeed: state => {
-      state[FeedTypesEnum.ALL].state.isConnected = false;
-      state[FeedTypesEnum.ALL].state.isConnecting = false;
+    onWsErrorFeed: state => {
       state[FeedTypesEnum.ALL].state.hasError = true;
     },
-    onConnectionCloseFeed: state => {
-      state[FeedTypesEnum.ALL].state = initialStatus;
+    onWsCloseFeed: state => {
+      state[FeedTypesEnum.ALL].state.wsStatus = WSStatusEnum.OFFLINE;
+      state[FeedTypesEnum.ALL].state.messageReceived = false;
     },
-    onMessageReceiveFeed: (state, action: PayloadAction<IFeedData>) => {
-      const orders: IOrdersObj = action.payload.orders.reduce(
-        (acc: Record<string, IOrder>, order: IOrder) => ({
-          ...acc,
-          [order._id]: order,
-        }),
-        {}
-      );
-      state[FeedTypesEnum.ALL].orders = orders;
-      state[FeedTypesEnum.ALL].aggregate = {
-        total: action.payload.total,
-        totalToday: action.payload.totalToday,
-      };
+    onWsMessageReceiveFeed: (
+      state,
+      action: PayloadAction<IFeedData | null>
+    ) => {
       state[FeedTypesEnum.ALL].state.messageReceived = true;
+      if (action.payload) {
+        const orders: IOrdersObj = generateObjFromArray<IOrder>(
+          action.payload.orders
+        );
+        state[FeedTypesEnum.ALL].orders = orders;
+        state[FeedTypesEnum.ALL].aggregate = {
+          total: action.payload.total,
+          totalToday: action.payload.totalToday,
+        };
+        state[FeedTypesEnum.ALL].state.hasError = false;
+        state[FeedTypesEnum.ALL].state.reconnectAttempts = 0;
+      }
+    },
+    onIncrementReconnectAttemptsFeed: state => {
+      state[FeedTypesEnum.ALL].state.reconnectAttempts++;
+    },
+    onClearReconnectAttemptsFeed: state => {
+      state[FeedTypesEnum.ALL].state.reconnectAttempts = 0;
     },
     // profile feed
-    onConnectionStartProfileFeed: state => {
-      state[FeedTypesEnum.PROFILE].state.isConnecting = true;
-      state[FeedTypesEnum.PROFILE].state.isConnected = false;
+    onWsConnectingProfileFeed: state => {
+      state[FeedTypesEnum.PROFILE].state.wsStatus = WSStatusEnum.CONNECTING;
+      state[FeedTypesEnum.PROFILE].state.messageReceived = false;
+    },
+    onWsOpenProfileFeed: state => {
+      state[FeedTypesEnum.PROFILE].state.wsStatus = WSStatusEnum.ONLINE;
       state[FeedTypesEnum.PROFILE].state.hasError = false;
     },
-    onConnectionSuccessProfileFeed: state => {
-      state[FeedTypesEnum.PROFILE].state.isConnected = true;
-      state[FeedTypesEnum.PROFILE].state.isConnecting = false;
-      state[FeedTypesEnum.PROFILE].state.hasError = false;
-    },
-    onConnectionErrorProfileFeed: state => {
-      state[FeedTypesEnum.PROFILE].state.isConnected = false;
-      state[FeedTypesEnum.PROFILE].state.isConnecting = false;
+    onWsErrorProfileFeed: state => {
       state[FeedTypesEnum.PROFILE].state.hasError = true;
     },
-    onConnectionCloseProfileFeed: state => {
-      state[FeedTypesEnum.PROFILE].state = initialStatus;
+    onWsCloseProfileFeed: state => {
+      state[FeedTypesEnum.PROFILE].state.wsStatus = WSStatusEnum.OFFLINE;
+      state[FeedTypesEnum.PROFILE].state.messageReceived = false;
     },
-    onMessageReceiveProfileFeed: (state, action: PayloadAction<IOrdersObj>) => {
-      state[FeedTypesEnum.PROFILE].orders = action.payload;
+    onWsMessageReceiveProfileFeed: (
+      state,
+      action: PayloadAction<IFeedData | null>
+    ) => {
+      state[FeedTypesEnum.PROFILE].state.messageReceived = true;
+      if (action.payload) {
+        state[FeedTypesEnum.PROFILE].orders = generateObjFromArray<IOrder>(
+          action.payload.orders
+        );
+        state[FeedTypesEnum.PROFILE].state.hasError = false;
+        state[FeedTypesEnum.PROFILE].state.reconnectAttempts = 0;
+      }
+    },
+    onIncrementReconnectAttemptsProfileFeed: state => {
+      state[FeedTypesEnum.PROFILE].state.reconnectAttempts++;
+    },
+    onClearReconnectAttemptsProfileFeed: state => {
+      state[FeedTypesEnum.PROFILE].state.reconnectAttempts = 0;
     },
   },
 });
 
 export const {
-  onConnectionStartFeed,
-  onConnectionSuccessFeed,
-  onConnectionErrorFeed,
-  onConnectionCloseFeed,
-  onMessageReceiveFeed,
-  onConnectionStartProfileFeed,
-  onConnectionSuccessProfileFeed,
-  onConnectionErrorProfileFeed,
-  onConnectionCloseProfileFeed,
-  onMessageReceiveProfileFeed,
+  onWsConnectingFeed,
+  onWsOpenFeed,
+  onWsErrorFeed,
+  onWsCloseFeed,
+  onWsMessageReceiveFeed,
+  onIncrementReconnectAttemptsFeed,
+  onClearReconnectAttemptsFeed,
+  onWsConnectingProfileFeed,
+  onWsOpenProfileFeed,
+  onWsErrorProfileFeed,
+  onWsCloseProfileFeed,
+  onWsMessageReceiveProfileFeed,
+  onIncrementReconnectAttemptsProfileFeed,
+  onClearReconnectAttemptsProfileFeed,
 } = feedSlice.actions;
 export const feedReducer = feedSlice.reducer;

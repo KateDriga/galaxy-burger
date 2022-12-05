@@ -13,7 +13,7 @@ import { CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components
 import { selectFeedOrderById } from '../../services/selectors/feed';
 import { FeedTypesEnum } from '../../utils/ts-types/feed-types';
 import { NotFoundPage } from '../../pages/not-found-page/not-found-page';
-import { useIsProfileFeed } from '../../hooks/useIsProfileFeed';
+import { useIsProfileOrderFeed } from '../../hooks/useIsProfileFeed';
 import feedOrderDetailsStyles from './feed-order-details.module.css';
 import cn from 'classnames';
 
@@ -21,12 +21,12 @@ export const FeedOrderDetails: FC = () => {
   const location: Location = useLocation();
   const background: Location | undefined = location.state?.background;
   const { id } = useParams<{ id: string }>();
-  const isProfileFeed: boolean = useIsProfileFeed();
+  const isProfileOrderFeed: boolean = useIsProfileOrderFeed();
 
   const order: IOrder | null = useAppSelector(state =>
     selectFeedOrderById(
       state,
-      isProfileFeed ? FeedTypesEnum.PROFILE : FeedTypesEnum.ALL,
+      isProfileOrderFeed ? FeedTypesEnum.PROFILE : FeedTypesEnum.ALL,
       id!
     )
   );

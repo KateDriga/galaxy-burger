@@ -55,6 +55,14 @@ export interface IFeedData extends IResponse, IFeedOrdersTotal {
   readonly orders: Array<IOrder>;
 }
 
+export interface IWSMessage extends IResponse {
+  readonly message: string;
+}
+
 export interface IIngredientsData extends IResponse {
   readonly data: Array<IBurgerIngredient>;
 }
+
+export const isWsMessage = (obj: IWSMessage | IFeedData): obj is IWSMessage => {
+  return (obj as IWSMessage).message !== undefined;
+};

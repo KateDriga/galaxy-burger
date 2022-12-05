@@ -88,7 +88,10 @@ export const selectTotalPrice = createSelector(
 
 export const selectOrderImagesByIngIds = createSelector(
   (state: RootState, ids: Array<string>) =>
-    selectBurgerIngredientsByIds(state, ids),
+    selectBurgerIngredientsByIds(
+      state,
+      ids.filter((id, idx, arr) => arr.indexOf(id) === idx)
+    ),
   (ingredients: Array<IBurgerIngredient | undefined>): Array<string> =>
     ingredients.map(
       (ing: IBurgerIngredient | undefined) =>

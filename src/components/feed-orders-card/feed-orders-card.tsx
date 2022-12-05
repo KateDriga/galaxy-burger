@@ -22,11 +22,10 @@ export const FeedOrdersCard: FC<IOrder> = order => {
   const isProfileFeed: boolean = useIsProfileFeed();
 
   const images: Array<string> = useAppSelector(state =>
-    selectOrderImagesByIngIds(state, order.ingredients).slice(
-      0,
-      MAX_CARD_INGREDIENTS
-    )
+    selectOrderImagesByIngIds(state, order.ingredients)
   );
+  const cardImages = images.slice(0, MAX_CARD_INGREDIENTS);
+
   const price: number = useAppSelector(state =>
     selectOrderPrice(state, order.ingredients)
   );
@@ -52,7 +51,7 @@ export const FeedOrdersCard: FC<IOrder> = order => {
       </div>
       <div className={feedOrdersCardStyles.order_details}>
         <div className={feedOrdersCardStyles.images}>
-          {images.map((img: string, idx: number) => (
+          {cardImages.map((img: string, idx: number) => (
             // order of images is stable
             <FeedOrderImage
               key={idx}
@@ -60,8 +59,8 @@ export const FeedOrdersCard: FC<IOrder> = order => {
               shiftIndex={idx}
               extraText={
                 idx + 1 === MAX_CARD_INGREDIENTS &&
-                order.ingredients.length > MAX_CARD_INGREDIENTS
-                  ? `+${order.ingredients.length - (idx + 1)}`
+                images.length > MAX_CARD_INGREDIENTS
+                  ? `+${images.length - (idx + 1)}`
                   : undefined
               }
             />
