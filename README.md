@@ -1,12 +1,20 @@
 # Project overview
 
-Stellar Burgers - burger at the edge of the Universe. 
-Create an order from any menu items with Drag'n'Drop.
-Order feed is updated in real time and allows to review all the receipts and details of the orders.
+**Stellar Burgers** - an application used to build your own burger with a great variety of ingredients and toppings to choose from, implemented with **React**, **Redux**, **Typescript** and **CSS**.  
+Create an order from any menu items with Drag'n'Drop.  
+Order feed is updated in real time and allows to review all the receipts and details of the orders.  
+Use personal account to view your order history or edit personal data.  
+
+![burger](https://user-images.githubusercontent.com/114503332/206132901-efb65f46-1c08-49c8-8443-4d860fac800c.gif)
 
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+# Installation and Setup Instructions
+
+Clone down this repository. You will need `node` and `npm` installed on your machine.
+Run `npm install`
 
 ## Available Scripts
 
