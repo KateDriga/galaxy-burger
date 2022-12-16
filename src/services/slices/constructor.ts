@@ -27,8 +27,8 @@ const constructorSlice = createSlice({
         state,
         action: PayloadAction<IAddIngredientWithConstructorId>
       ) => {
-        const newIngredientId: IConstructorId = action.payload;
-        if (action.payload.type === IngredientTypesEnum.BUN) {
+        const { type, ...newIngredientId } = action.payload;
+        if (type === IngredientTypesEnum.BUN) {
           state.bunIngredientId = newIngredientId;
           return state;
         }

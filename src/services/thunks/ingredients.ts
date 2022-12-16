@@ -15,7 +15,7 @@ import { IIngredientsData } from '../../utils/ts-types/api-types';
 import { generateObjFromArray } from '../../utils/util-functions';
 
 export function loadIngredients() {
-  return function (dispatch: AppDispatch, getState: () => RootState) {
+  return async function (dispatch: AppDispatch, getState: () => RootState) {
     const state: RootState = getState();
     const burgerIngredients: Array<IBurgerIngredient> | null =
       selectBurgerIngredients(state);
@@ -23,15 +23,14 @@ export function loadIngredients() {
       return;
     }
     dispatch(startLoadingIngredients());
-    getIngredients()
-      .then((res: AxiosResponse<IIngredientsData>) => {
-        const ingredientsObj: IIngredientsObj =
-          generateObjFromArray<IBurgerIngredient>(res.data.data);
-        dispatch(addBurgerIngredients(ingredientsObj));
-      })
-      .catch(error => {
-        console.error('Loading ingredients error', error);
-        dispatch(failLoadingIngredients());
-      });
+    try {
+      const res: AxiosResponse<IIngredientsData> = await getIngredients();
+      const ingredientsObj: IIngredientsObj =
+        generateObjFromArray<IBurgerIngredient>(res.data.data);
+      dispatch(addBurgerIngredients(ingredientsObj));
+    } catch (error) {
+      console.error('Loading ingredients error', error);
+      dispatch(failLoadingIngredients());
+    }
   };
 }
