@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/galaxy-burger/static/css/main.2e6ae2ab.css",
-    "main.js": "/galaxy-burger/static/js/main.c855baff.js",
+    "main.js": "/galaxy-burger/static/js/main.ad58330b.js",
     "static/js/787.2b4cbca8.chunk.js": "/galaxy-burger/static/js/787.2b4cbca8.chunk.js",
     "static/media/not-found.png": "/galaxy-burger/static/media/not-found.649648724005a15fd8a8.png",
     "static/media/unknown-ingredient.png": "/galaxy-burger/static/media/unknown-ingredient.174a3415312c797d04bb.png",
@@ -15,11 +15,11 @@
     "index.html": "/galaxy-burger/index.html",
     "static/media/close.svg": "/galaxy-burger/static/media/close.d515507d6269cd1432b6596f9e006ea6.svg",
     "main.2e6ae2ab.css.map": "/galaxy-burger/static/css/main.2e6ae2ab.css.map",
-    "main.c855baff.js.map": "/galaxy-burger/static/js/main.c855baff.js.map",
+    "main.ad58330b.js.map": "/galaxy-burger/static/js/main.ad58330b.js.map",
     "787.2b4cbca8.chunk.js.map": "/galaxy-burger/static/js/787.2b4cbca8.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.2e6ae2ab.css",
-    "static/js/main.c855baff.js"
+    "static/js/main.ad58330b.js"
   ]
 }
