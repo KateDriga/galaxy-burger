@@ -58,7 +58,8 @@ export const BurgerIngredient: FC<{ readonly ingredientId: string }> = ({
       <p
         className={`${burgerIngredientStyles.burger_price} text text_type_digits-default p-1`}
       >
-        {ingredient.price} <CurrencyIcon type="primary" />
+        <span>{ingredient.price}</span>
+        <CurrencyIcon type="primary" />
       </p>
       <p
         className={`${burgerIngredientStyles.burger_name} text text_type_main-default`}

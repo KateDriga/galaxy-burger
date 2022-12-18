@@ -9,7 +9,7 @@ export const IngredientsCategory: FC<IIngredientsCategory> = ({
   categoryRef,
 }) => {
   return (
-    <div ref={categoryRef}>
+    <div ref={categoryRef} className="ingredients_category">
       <h3 className="text text_type_main-medium pt-10">{title}</h3>
       <div className={ingredientsCategoryStyles.ingredients}>
         {ingredientIds.map(i => (
