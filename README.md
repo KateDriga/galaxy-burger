@@ -7,6 +7,8 @@ Use personal account to view your order history or edit personal data.
 
 ![burger](https://user-images.githubusercontent.com/114503332/206132901-efb65f46-1c08-49c8-8443-4d860fac800c.gif)
 
+This application was developed as part of the [React Developer](https://practicum.yandex.ru/react/) course and is available [here](https://galaxy-burger.nomoredomains.club/).
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
