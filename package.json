@@ -1,5 +1,6 @@
 {
   "name": "react-burger",
+  "homepage": "/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -33,7 +34,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "cypress:open": "./node_modules/.bin/cypress open"
+    "cypress:open": "./node_modules/.bin/cypress open",
+    "deploy-yandex-cloud": "npm run build && scp -r ./build/* kate_driga@158.160.50.34:/home/kate_driga/galaxy-burger"
   },
   "eslintConfig": {
     "extends": [

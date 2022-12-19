@@ -58,11 +58,9 @@ export const App: FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    return () => {
-      if (isFeedOrderRoute) {
-        location.state = null;
-      }
-    };
+    if (isFeedOrderRoute) {
+      location.state = null;
+    }
   }, [location, isFeedOrderRoute]);
 
   // order modal window
