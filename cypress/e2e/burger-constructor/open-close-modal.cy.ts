@@ -1,6 +1,6 @@
 describe('Open and close ingredient details', () => {
   before(() => {
-    cy.visit('http://localhost:3000');
+    cy.visit('/');
   });
   it('should open modal', () => {
     cy.get('.ingredients_category:first > div > a:first').click();

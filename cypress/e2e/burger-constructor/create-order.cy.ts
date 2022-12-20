@@ -18,7 +18,7 @@ describe('Create new order', () => {
     }
   };
   before(() => {
-    cy.visit('http://localhost:3000');
+    cy.visit('/');
     interceptTokenRefresh();
   });
   it('should add several ingredients', () => {

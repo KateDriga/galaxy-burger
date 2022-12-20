@@ -1,8 +1,8 @@
 import { WSStatusEnum } from '../../../utils/ts-types/ws-types';
 import { store } from '../../store';
-import { FeedTypesEnum } from '../../../utils/ts-types/feed-types';
 import {
   feedReducer,
+  initialState,
   onClearReconnectAttemptsFeed,
   onClearReconnectAttemptsProfileFeed,
   onIncrementReconnectAttemptsFeed,
@@ -17,220 +17,295 @@ import {
   onWsMessageReceiveProfileFeed,
   onWsOpenFeed,
   onWsOpenProfileFeed,
+  TFeedOrders,
 } from '../feed';
 import { generateObjFromArray } from '../../../utils/util-functions';
+import { OrderStatusEnum } from '../../../utils/ts-types/order-types';
+import { IFeedData } from '../../../utils/ts-types/api-types';
 
 describe('Feed redux slice test', () => {
   it('should return initial state without feed data', () => {
     const state = store.getState().feed;
-    expect(state).toEqual(TEST_DEFAULT_FEED_STATE);
+    expect(state).toEqual(initialState);
   });
 
   // feed
   it('should set connecting state (feed)', () => {
-    const reducer = feedReducer(TEST_DEFAULT_FEED_STATE, {
+    const reducer = feedReducer(initialState, {
       type: onWsConnectingFeed,
     });
-    expect(reducer.feedAll.state).toEqual({
-      ...TEST_DEFAULT_FEED_STATUS,
-      wsStatus: WSStatusEnum.CONNECTING,
+    expect(reducer).toEqual({
+      ...initialState,
+      feedAll: {
+        ...initialState.feedAll,
+        state: {
+          ...initialState.feedAll.state,
+          wsStatus: WSStatusEnum.CONNECTING,
+        },
+      },
     });
   });
   it('should set open state (feed)', () => {
-    const reducer = feedReducer(TEST_DEFAULT_FEED_STATE, {
+    const reducer = feedReducer(initialState, {
       type: onWsOpenFeed,
     });
-    expect(reducer.feedAll.state).toEqual({
-      ...TEST_DEFAULT_FEED_STATUS,
-      wsStatus: WSStatusEnum.ONLINE,
+    expect(reducer).toEqual({
+      ...initialState,
+      feedAll: {
+        ...initialState.feedAll,
+        state: {
+          ...initialState.feedAll.state,
+          wsStatus: WSStatusEnum.ONLINE,
+        },
+      },
     });
   });
   it('should set error (feed)', () => {
-    const reducer = feedReducer(TEST_DEFAULT_FEED_STATE, {
+    const reducer = feedReducer(initialState, {
       type: onWsErrorFeed,
     });
-    expect(reducer.feedAll.state).toEqual({
-      ...TEST_DEFAULT_FEED_STATUS,
-      hasError: true,
+    expect(reducer).toEqual({
+      ...initialState,
+      feedAll: {
+        ...initialState.feedAll,
+        state: {
+          ...initialState.feedAll.state,
+          hasError: true,
+        },
+      },
     });
   });
   it('should set offline state (feed)', () => {
-    const reducer = feedReducer(TEST_DEFAULT_FEED_STATE, {
+    const reducer = feedReducer(initialState, {
       type: onWsCloseFeed,
     });
-    expect(reducer.feedAll.state).toEqual({
-      ...TEST_DEFAULT_FEED_STATUS,
-      wsStatus: WSStatusEnum.OFFLINE,
+    expect(reducer).toEqual({
+      ...initialState,
+      feedAll: {
+        ...initialState.feedAll,
+        state: {
+          ...initialState.feedAll.state,
+          wsStatus: WSStatusEnum.OFFLINE,
+        },
+      },
     });
   });
   it('should set feed data on message received (feed)', () => {
-    const reducer = feedReducer(
-      {
-        ...TEST_DEFAULT_FEED_STATE,
-        feedAll: {
-          ...TEST_DEFAULT_FEED_STATE[FeedTypesEnum.ALL],
-          state: TEST_FEED_STATUS,
+    const testInitialState: TFeedOrders = {
+      ...initialState,
+      feedAll: {
+        ...initialState.feedAll,
+        state: {
+          ...initialState.feedAll.state,
+          wsStatus: WSStatusEnum.ONLINE,
+          reconnectAttempts: 3,
         },
       },
-      {
-        type: onWsMessageReceiveFeed,
-        payload: TEST_FEED_DATA,
-      }
-    );
-    const expectedOrders = generateObjFromArray(TEST_FEED_DATA.orders);
-    const expectedStatus = {
-      ...TEST_DEFAULT_FEED_STATUS,
-      messageReceived: true,
-      wsStatus: WSStatusEnum.ONLINE,
     };
-    const expectedAggregate = {
-      total: TEST_FEED_DATA.total,
-      totalToday: TEST_FEED_DATA.totalToday,
+    const reducer = feedReducer(testInitialState, {
+      type: onWsMessageReceiveFeed,
+      payload: TEST_FEED_DATA_RESPONSE,
+    });
+    const expectedState: TFeedOrders = {
+      ...testInitialState,
+      feedAll: {
+        state: {
+          ...testInitialState.feedAll.state,
+          messageReceived: true,
+          reconnectAttempts: 0,
+        },
+        orders: generateObjFromArray(TEST_FEED_DATA_RESPONSE.orders),
+        aggregate: {
+          total: TEST_FEED_DATA_RESPONSE.total,
+          totalToday: TEST_FEED_DATA_RESPONSE.totalToday,
+        },
+      },
     };
-
-    expect(reducer.feedAll.orders).toEqual(expectedOrders);
-    expect(reducer.feedAll.state).toEqual(expectedStatus);
-    expect(reducer.feedAll.aggregate).toEqual(expectedAggregate);
+    expect(reducer).toEqual(expectedState);
   });
   it('should increment reconnect attempts (feed)', () => {
-    const reducer = feedReducer(TEST_DEFAULT_FEED_STATE, {
+    const reducer = feedReducer(initialState, {
       type: onIncrementReconnectAttemptsFeed,
     });
-    expect(reducer.feedAll.state.reconnectAttempts).toEqual(
-      TEST_DEFAULT_FEED_STATE[FeedTypesEnum.ALL].state.reconnectAttempts + 1
-    );
-  });
-  it('should clear reconnect attempts (feed)', () => {
-    const reducer = feedReducer(
-      {
-        ...TEST_DEFAULT_FEED_STATE,
-        feedAll: {
-          ...TEST_DEFAULT_FEED_STATE[FeedTypesEnum.ALL],
-          state: TEST_FEED_STATUS,
+    expect(reducer).toEqual({
+      ...initialState,
+      feedAll: {
+        ...initialState.feedAll,
+        state: {
+          ...initialState.feedAll.state,
+          reconnectAttempts: initialState.feedAll.state.reconnectAttempts + 1,
         },
       },
-      {
-        type: onClearReconnectAttemptsFeed,
-      }
-    );
-    expect(reducer.feedAll.state.reconnectAttempts).toEqual(0);
+    });
+  });
+  it('should clear reconnect attempts (feed)', () => {
+    const testInitialState: TFeedOrders = {
+      ...initialState,
+      feedAll: {
+        ...initialState.feedAll,
+        state: {
+          ...initialState.feedAll.state,
+          wsStatus: WSStatusEnum.ONLINE,
+          reconnectAttempts: 1,
+        },
+      },
+    };
+    const reducer = feedReducer(testInitialState, {
+      type: onClearReconnectAttemptsFeed,
+    });
+    expect(reducer).toEqual({
+      ...testInitialState,
+      feedAll: {
+        ...testInitialState.feedAll,
+        state: {
+          ...testInitialState.feedAll.state,
+          reconnectAttempts: 0,
+        },
+      },
+    });
   });
 
   // profile feed
   it('should set connecting state (profile feed)', () => {
-    const reducer = feedReducer(TEST_DEFAULT_FEED_STATE, {
+    const reducer = feedReducer(initialState, {
       type: onWsConnectingProfileFeed,
     });
-    expect(reducer.feedProfile.state).toEqual({
-      ...TEST_DEFAULT_FEED_STATUS,
-      wsStatus: WSStatusEnum.CONNECTING,
+    expect(reducer).toEqual({
+      ...initialState,
+      feedProfile: {
+        ...initialState.feedProfile,
+        state: {
+          ...initialState.feedProfile.state,
+          wsStatus: WSStatusEnum.CONNECTING,
+        },
+      },
     });
   });
   it('should set open state (profile feed)', () => {
-    const reducer = feedReducer(TEST_DEFAULT_FEED_STATE, {
+    const reducer = feedReducer(initialState, {
       type: onWsOpenProfileFeed,
     });
-    expect(reducer.feedProfile.state).toEqual({
-      ...TEST_DEFAULT_FEED_STATUS,
-      wsStatus: WSStatusEnum.ONLINE,
+    expect(reducer).toEqual({
+      ...initialState,
+      feedProfile: {
+        ...initialState.feedProfile,
+        state: {
+          ...initialState.feedProfile.state,
+          wsStatus: WSStatusEnum.ONLINE,
+        },
+      },
     });
   });
   it('should set error (profile feed)', () => {
-    const reducer = feedReducer(TEST_DEFAULT_FEED_STATE, {
+    const reducer = feedReducer(initialState, {
       type: onWsErrorProfileFeed,
     });
-    expect(reducer.feedProfile.state).toEqual({
-      ...TEST_DEFAULT_FEED_STATUS,
-      hasError: true,
+    expect(reducer).toEqual({
+      ...initialState,
+      feedProfile: {
+        ...initialState.feedProfile,
+        state: {
+          ...initialState.feedProfile.state,
+          hasError: true,
+        },
+      },
     });
   });
   it('should set offline state (profile feed)', () => {
-    const reducer = feedReducer(TEST_DEFAULT_FEED_STATE, {
+    const reducer = feedReducer(initialState, {
       type: onWsCloseProfileFeed,
     });
-    expect(reducer.feedProfile.state).toEqual({
-      ...TEST_DEFAULT_FEED_STATUS,
-      wsStatus: WSStatusEnum.OFFLINE,
+    expect(reducer).toEqual({
+      ...initialState,
+      feedProfile: {
+        ...initialState.feedProfile,
+        state: {
+          ...initialState.feedProfile.state,
+          wsStatus: WSStatusEnum.OFFLINE,
+        },
+      },
     });
   });
   it('should set feed data on message received (profile feed)', () => {
-    const reducer = feedReducer(
-      {
-        ...TEST_DEFAULT_FEED_STATE,
-        [FeedTypesEnum.PROFILE]: {
-          ...TEST_DEFAULT_FEED_STATE[FeedTypesEnum.PROFILE],
-          state: TEST_FEED_STATUS,
+    const testInitialState: TFeedOrders = {
+      ...initialState,
+      feedProfile: {
+        ...initialState.feedProfile,
+        state: {
+          ...initialState.feedProfile.state,
+          wsStatus: WSStatusEnum.ONLINE,
+          reconnectAttempts: 5,
         },
       },
-      {
-        type: onWsMessageReceiveProfileFeed,
-        payload: TEST_FEED_DATA,
-      }
-    );
-    const expectedOrders = generateObjFromArray(TEST_FEED_DATA.orders);
-    const expectedStatus = {
-      ...TEST_DEFAULT_FEED_STATUS,
-      messageReceived: true,
-      wsStatus: WSStatusEnum.ONLINE,
     };
-
-    expect(reducer.feedProfile.orders).toEqual(expectedOrders);
-    expect(reducer.feedProfile.state).toEqual(expectedStatus);
+    const reducer = feedReducer(testInitialState, {
+      type: onWsMessageReceiveProfileFeed,
+      payload: TEST_FEED_DATA_RESPONSE,
+    });
+    const expectedState: TFeedOrders = {
+      ...testInitialState,
+      feedProfile: {
+        state: {
+          ...testInitialState.feedProfile.state,
+          messageReceived: true,
+          reconnectAttempts: 0,
+        },
+        orders: generateObjFromArray(TEST_FEED_DATA_RESPONSE.orders),
+      },
+    };
+    expect(reducer).toEqual(expectedState);
   });
   it('should increment reconnect attempts (profile feed)', () => {
-    const reducer = feedReducer(TEST_DEFAULT_FEED_STATE, {
+    const reducer = feedReducer(initialState, {
       type: onIncrementReconnectAttemptsProfileFeed,
     });
-    expect(reducer.feedProfile.state.reconnectAttempts).toEqual(
-      TEST_DEFAULT_FEED_STATE[FeedTypesEnum.PROFILE].state.reconnectAttempts + 1
-    );
-  });
-  it('should clear reconnect attempts (profile feed)', () => {
-    const reducer = feedReducer(
-      {
-        ...TEST_DEFAULT_FEED_STATE,
-        [FeedTypesEnum.PROFILE]: {
-          ...TEST_DEFAULT_FEED_STATE[FeedTypesEnum.PROFILE],
-          state: TEST_FEED_STATUS,
+    expect(reducer).toEqual({
+      ...initialState,
+      feedProfile: {
+        ...initialState.feedProfile,
+        state: {
+          ...initialState.feedProfile.state,
+          reconnectAttempts:
+            initialState.feedProfile.state.reconnectAttempts + 1,
         },
       },
-      {
-        type: onClearReconnectAttemptsProfileFeed,
-      }
-    );
-    expect(reducer.feedProfile.state.reconnectAttempts).toEqual(0);
+    });
+  });
+  it('should clear reconnect attempts (profile feed)', () => {
+    const testInitialState: TFeedOrders = {
+      ...initialState,
+      feedProfile: {
+        ...initialState.feedProfile,
+        state: {
+          ...initialState.feedProfile.state,
+          wsStatus: WSStatusEnum.ONLINE,
+          reconnectAttempts: 2,
+        },
+      },
+    };
+    const reducer = feedReducer(testInitialState, {
+      type: onClearReconnectAttemptsProfileFeed,
+    });
+    expect(reducer).toEqual({
+      ...testInitialState,
+      feedProfile: {
+        ...testInitialState.feedProfile,
+        state: {
+          ...testInitialState.feedProfile.state,
+          reconnectAttempts: 0,
+        },
+      },
+    });
   });
 });
 
-const TEST_DEFAULT_FEED_STATUS = {
-  wsStatus: WSStatusEnum.OFFLINE,
-  hasError: false,
-  messageReceived: false,
-  reconnectAttempts: 0,
-};
-
-const TEST_FEED_STATUS = {
-  ...TEST_DEFAULT_FEED_STATUS,
-  wsStatus: WSStatusEnum.ONLINE,
-  reconnectAttempts: 3,
-};
-
-const TEST_DEFAULT_FEED_STATE = {
-  [FeedTypesEnum.ALL]: {
-    state: TEST_DEFAULT_FEED_STATUS,
-    orders: null,
-    aggregate: null,
-  },
-  [FeedTypesEnum.PROFILE]: { state: TEST_DEFAULT_FEED_STATUS, orders: null },
-};
-
-const TEST_FEED_DATA = {
+const TEST_FEED_DATA_RESPONSE: IFeedData = {
   success: true,
   orders: [
     {
       _id: '639c451c99a25c001cd69d62',
       ingredients: ['60d3b41abdacab0026a733c7', '60d3b41abdacab0026a733cd'],
-      status: 'done',
+      status: OrderStatusEnum.DONE,
       name: 'Space флюоресцентный бургер',
       createdAt: '2022-12-16T10:14:52.597Z',
       updatedAt: '2022-12-16T10:14:52.987Z',
@@ -239,7 +314,7 @@ const TEST_FEED_DATA = {
     {
       _id: '639c449d99a25c001cd69d5c',
       ingredients: ['60d3b41abdacab0026a733c6', '60d3b41abdacab0026a733c6'],
-      status: 'done',
+      status: OrderStatusEnum.DONE,
       name: 'Краторный бургер',
       createdAt: '2022-12-16T10:12:45.393Z',
       updatedAt: '2022-12-16T10:12:45.777Z',
@@ -252,7 +327,7 @@ const TEST_FEED_DATA = {
         '60d3b41abdacab0026a733c7',
         '60d3b41abdacab0026a733c7',
       ],
-      status: 'done',
+      status: OrderStatusEnum.DONE,
       name: 'Space флюоресцентный бургер',
       createdAt: '2022-12-16T10:08:04.535Z',
       updatedAt: '2022-12-16T10:08:04.939Z',
@@ -267,7 +342,7 @@ const TEST_FEED_DATA = {
         '60d3b41abdacab0026a733cd',
         '60d3b41abdacab0026a733c7',
       ],
-      status: 'done',
+      status: OrderStatusEnum.DONE,
       name: 'Флюоресцентный space антарианский био-марсианский традиционный-галактический бургер',
       createdAt: '2022-12-15T20:54:29.885Z',
       updatedAt: '2022-12-15T20:54:30.292Z',
@@ -281,7 +356,7 @@ const TEST_FEED_DATA = {
         '60d3b41abdacab0026a733cd',
         '60d3b41abdacab0026a733c7',
       ],
-      status: 'done',
+      status: OrderStatusEnum.DONE,
       name: 'Space люминесцентный флюоресцентный антарианский бургер',
       createdAt: '2022-12-15T20:11:33.749Z',
       updatedAt: '2022-12-15T20:11:34.178Z',
@@ -290,7 +365,7 @@ const TEST_FEED_DATA = {
     {
       _id: '639b7f4c99a25c001cd69ab9',
       ingredients: ['60d3b41abdacab0026a733c6', '60d3b41abdacab0026a733cc'],
-      status: 'done',
+      status: OrderStatusEnum.DONE,
       name: 'Spicy краторный бургер',
       createdAt: '2022-12-15T20:10:52.719Z',
       updatedAt: '2022-12-15T20:10:53.118Z',

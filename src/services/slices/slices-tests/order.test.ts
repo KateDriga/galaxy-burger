@@ -1,5 +1,5 @@
 import { store } from '../../store';
-import { closeOrderModal, orderReducer } from '../order';
+import { closeOrderModal, initialState, orderReducer } from '../order';
 import { onNewOrder } from '../../thunks/order';
 import { mockStore } from './mock-store-config';
 import MockAdapter from 'axios-mock-adapter';
@@ -15,73 +15,67 @@ describe('Order redux slice test', () => {
 
   it('should return initial state without order data', () => {
     const state = store.getState().order;
-    expect(state).toEqual(TEST_DEFAULT_ORDER_STATE);
+    expect(state).toEqual(initialState);
   });
   it('should set showModal to false', () => {
-    const reducer = orderReducer(TEST_ORDER_STATE, {
-      type: closeOrderModal,
-    });
-    expect(reducer.showModal).toEqual(false);
+    const orderNumber = 3518;
+    const reducer = orderReducer(
+      { ...initialState, orderNumber, showModal: true },
+      {
+        type: closeOrderModal,
+      }
+    );
+    expect(reducer).toEqual({ ...initialState, orderNumber });
   });
   it('should set order number and show modal on fulfilled', () => {
-    const initialState = {
-      orderNumber: null,
-      isLoading: true,
-      isFailed: false,
-      showModal: false,
-    };
-    const reducer = orderReducer(initialState, {
-      type: onNewOrder.fulfilled,
-      payload: TEST_ORDER_RESPONSE_DATA.order,
-    });
-    const expectedState = {
-      orderNumber: TEST_ORDER_RESPONSE_DATA.order.number,
-      isLoading: false,
-      isFailed: false,
+    const reducer = orderReducer(
+      { ...initialState, isLoading: true },
+      {
+        type: onNewOrder.fulfilled,
+        payload: TEST_ORDER_DATA_RESPONSE.order,
+      }
+    );
+    expect(reducer).toEqual({
+      ...initialState,
+      orderNumber: TEST_ORDER_DATA_RESPONSE.order.number,
       showModal: true,
-    };
-
-    expect(reducer).toEqual(expectedState);
+    });
   });
   it('should reset order number, error and set is loading on pending', () => {
-    const initialState = {
-      orderNumber: 8749,
-      isLoading: false,
-      isFailed: true,
-      showModal: false,
-    };
-    const reducer = orderReducer(initialState, {
-      type: onNewOrder.pending,
-    });
-
-    expect(reducer).toEqual(TEST_DEFAULT_ORDER_PENDING_STATE);
+    const reducer = orderReducer(
+      { ...initialState, orderNumber: 2555, isFailed: true },
+      {
+        type: onNewOrder.pending,
+      }
+    );
+    expect(reducer).toEqual({ ...initialState, isLoading: true });
   });
   it('should reset state and set is failed on rejected', () => {
-    const initialState = {
-      orderNumber: null,
-      isLoading: true,
-      isFailed: false,
-      showModal: false,
-    };
-    const reducer = orderReducer(initialState, {
-      type: onNewOrder.rejected,
+    const reducer = orderReducer(
+      { ...initialState, isLoading: true },
+      {
+        type: onNewOrder.rejected,
+      }
+    );
+    expect(reducer).toEqual({
+      ...initialState,
+      isFailed: true,
+      showModal: true,
     });
-
-    expect(reducer).toEqual(TEST_DEFAULT_ORDER_FAILED_STATE);
   });
   it('should fire pending and fulfilled actions', async () => {
     const mockedOrderStore = mockStore({
-      order: TEST_DEFAULT_ORDER_STATE,
+      order: initialState,
       burgerConstructor: TEST_CONSTRUCTOR_STATE,
     });
     mock
       .onPost(`${BASE_URL}${AppUrlsEnum.ORDERS}`)
-      .reply(200, TEST_ORDER_RESPONSE_DATA);
+      .reply(200, TEST_ORDER_DATA_RESPONSE);
     const expectedActions = [
-      { type: onNewOrder.pending.type },
+      { type: onNewOrder.pending.type, payload: undefined },
       {
         type: onNewOrder.fulfilled.type,
-        payload: TEST_ORDER_RESPONSE_DATA.order,
+        payload: TEST_ORDER_DATA_RESPONSE.order,
       },
     ];
 
@@ -95,7 +89,7 @@ describe('Order redux slice test', () => {
   });
   it('should fire pending and rejected actions', async () => {
     const mockedOrderStore = mockStore({
-      order: TEST_DEFAULT_ORDER_STATE,
+      order: initialState,
       burgerConstructor: TEST_CONSTRUCTOR_STATE,
     });
     mock.onPost(`${BASE_URL}${AppUrlsEnum.ORDERS}`).reply(404);
@@ -112,32 +106,7 @@ describe('Order redux slice test', () => {
   });
 });
 
-const TEST_DEFAULT_ORDER_STATE = {
-  orderNumber: null,
-  isLoading: false,
-  isFailed: false,
-  showModal: false,
-};
-
-const TEST_DEFAULT_ORDER_PENDING_STATE = {
-  ...TEST_DEFAULT_ORDER_STATE,
-  isLoading: true,
-};
-
-const TEST_DEFAULT_ORDER_FAILED_STATE = {
-  ...TEST_DEFAULT_ORDER_STATE,
-  isFailed: true,
-  showModal: true,
-};
-
-const TEST_ORDER_STATE = {
-  orderNumber: 3518,
-  isLoading: false,
-  isFailed: false,
-  showModal: true,
-};
-
-const TEST_ORDER_RESPONSE_DATA = {
+const TEST_ORDER_DATA_RESPONSE = {
   success: true,
   name: 'Space люминесцентный краторный бургер',
   order: {

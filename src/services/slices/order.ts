@@ -8,7 +8,7 @@ interface IInitialState extends IFetchState {
   showModal: boolean;
 }
 
-const initialState: IInitialState = {
+export const initialState: IInitialState = {
   orderNumber: null,
   isLoading: false,
   isFailed: false,

@@ -6,6 +6,8 @@ import {
   clearSavePasswordErrorMessage,
   clearUserLogInErrorMessage,
   clearUserUpdateErrorMessage,
+  initialState,
+  TInitialState,
   userAdmissionReducer,
 } from '../user-admission';
 import {
@@ -21,7 +23,11 @@ import { mockStore } from './mock-store-config';
 import MockAdapter from 'axios-mock-adapter';
 import { axiosInstance } from '../../../utils/api/make-request';
 import { BASE_URL } from '../../../utils/const-variables/app-variables';
-import { AppUrlsEnum } from '../../../utils/ts-types/api-types';
+import {
+  AppUrlsEnum,
+  IRegisterData,
+  IToken,
+} from '../../../utils/ts-types/api-types';
 
 describe('User admission redux slice test', () => {
   let mock: MockAdapter;
@@ -30,117 +36,103 @@ describe('User admission redux slice test', () => {
 
   it('should return initial state', () => {
     const state = store.getState().userAdmission;
-    expect(state).toEqual(TEST_DEFAULT_USER_ADMISSION_STATE);
+    expect(state).toEqual(initialState);
   });
   it('should clear password reset error message', () => {
     const reducer = userAdmissionReducer(
       {
-        ...TEST_DEFAULT_USER_ADMISSION_STATE,
+        ...initialState,
         passwordReset: {
-          isLoading: false,
-          errorMessage: 'Some error message text',
+          ...initialState.passwordReset,
+          errorMessage: 'Some password reset error message text',
         },
       },
       { type: clearPasswordResetErrorMessage }
     );
-    expect(reducer.passwordReset).toEqual(
-      TEST_DEFAULT_USER_ADMISSION_STATE.passwordReset
-    );
+    expect(reducer).toEqual(initialState);
   });
   it('should clear save password error message', () => {
     const reducer = userAdmissionReducer(
       {
-        ...TEST_DEFAULT_USER_ADMISSION_STATE,
+        ...initialState,
         savePassword: {
-          isLoading: false,
-          errorMessage: 'Some error message text',
+          ...initialState.savePassword,
+          errorMessage: 'Some save password error message text',
         },
       },
       { type: clearSavePasswordErrorMessage }
     );
-    expect(reducer.savePassword).toEqual(
-      TEST_DEFAULT_USER_ADMISSION_STATE.savePassword
-    );
+    expect(reducer).toEqual(initialState);
   });
   it('should clear register user error message', () => {
     const reducer = userAdmissionReducer(
       {
-        ...TEST_DEFAULT_USER_ADMISSION_STATE,
+        ...initialState,
         registerUser: {
-          isLoading: false,
-          errorMessage: 'Some error message text',
+          ...initialState.registerUser,
+          errorMessage: 'Some register user error message text',
         },
       },
       { type: clearRegisterUserErrorMessage }
     );
-    expect(reducer.registerUser).toEqual(
-      TEST_DEFAULT_USER_ADMISSION_STATE.registerUser
-    );
+    expect(reducer).toEqual(initialState);
   });
   it('should clear user login error message', () => {
     const reducer = userAdmissionReducer(
       {
-        ...TEST_DEFAULT_USER_ADMISSION_STATE,
+        ...initialState,
         userLogin: {
-          isLoading: false,
-          errorMessage: 'Some error message text',
+          ...initialState.userLogin,
+          errorMessage: 'Some user login error message text',
         },
       },
       { type: clearUserLogInErrorMessage }
     );
-    expect(reducer.userLogin).toEqual(
-      TEST_DEFAULT_USER_ADMISSION_STATE.userLogin
-    );
+    expect(reducer).toEqual(initialState);
   });
   it('should clear user update error message', () => {
     const reducer = userAdmissionReducer(
       {
-        ...TEST_DEFAULT_USER_ADMISSION_STATE,
+        ...initialState,
         userUpdate: {
-          isLoading: false,
-          errorMessage: 'Some error message text',
+          ...initialState.userUpdate,
+          errorMessage: 'Some user update error message text',
         },
       },
       { type: clearUserUpdateErrorMessage }
     );
-    expect(reducer.userUpdate).toEqual(
-      TEST_DEFAULT_USER_ADMISSION_STATE.userUpdate
-    );
+    expect(reducer).toEqual(initialState);
   });
   it('should clear get user error message', () => {
     const reducer = userAdmissionReducer(
       {
-        ...TEST_DEFAULT_USER_ADMISSION_STATE,
+        ...initialState,
         getUser: {
-          isLoading: false,
-          errorMessage: 'Some error message text',
+          ...initialState.getUser,
+          errorMessage: 'Some get user error message text',
         },
       },
       { type: clearGetUserErrorMessage }
     );
-    expect(reducer.getUser).toEqual(TEST_DEFAULT_USER_ADMISSION_STATE.getUser);
+    expect(reducer).toEqual(initialState);
   });
   it('should set logged in state on token refresh fulfilled', () => {
-    const reducer = userAdmissionReducer(TEST_DEFAULT_USER_ADMISSION_STATE, {
+    const reducer = userAdmissionReducer(initialState, {
       type: onTokenRefresh.fulfilled.type,
-      payload: {
-        success: true,
-        accessToken: 'some access token',
-        refreshToken: 'some refresh token',
-      },
+      payload: TEST_TOKEN_REFRESHED_RESPONSE,
     });
-    expect(reducer.isLoggedIn).toEqual(true);
+    expect(reducer).toEqual({ ...initialState, isLoggedIn: true });
   });
   it('should set loading state on token refresh pending', () => {
-    const reducer = userAdmissionReducer(TEST_DEFAULT_USER_ADMISSION_STATE, {
+    const reducer = userAdmissionReducer(initialState, {
       type: onTokenRefresh.pending.type,
     });
-    expect(reducer.tokenIsLoading).toEqual(true);
+    expect(reducer).toEqual({ ...initialState, tokenIsLoading: true });
   });
   it('should reset logged in state on token refresh rejected', () => {
     const reducer = userAdmissionReducer(
       {
-        ...TEST_DEFAULT_USER_ADMISSION_STATE,
+        ...initialState,
         isLoggedIn: true,
         tokenIsLoading: true,
       },
@@ -148,12 +140,15 @@ describe('User admission redux slice test', () => {
         type: onTokenRefresh.rejected.type,
       }
     );
-    expect(reducer.isLoggedIn).toEqual(false);
-    expect(reducer.tokenIsLoading).toEqual(false);
+    expect(reducer).toEqual({
+      ...initialState,
+      isLoggedIn: false,
+      tokenIsLoading: false,
+    });
   });
   it('should fire pending and fulfilled on token refresh actions', async () => {
     const mockedOrderStore = mockStore({
-      userAdmission: TEST_DEFAULT_USER_ADMISSION_STATE,
+      userAdmission: initialState,
     });
     mock
       .onPost(`${BASE_URL}${AppUrlsEnum.AUTH_TOKEN}`)
@@ -175,7 +170,7 @@ describe('User admission redux slice test', () => {
   });
   it('should fire pending and rejected on token refresh actions', async () => {
     const mockedOrderStore = mockStore({
-      userAdmission: TEST_DEFAULT_USER_ADMISSION_STATE,
+      userAdmission: initialState,
     });
     mock.onPost(`${BASE_URL}${AppUrlsEnum.AUTH_TOKEN}`).reply(401);
     const expectedActions = [
@@ -190,250 +185,258 @@ describe('User admission redux slice test', () => {
     expect(actions[1].type).toEqual(expectedActions[1].type);
   });
   it('should set logged in state on user register fulfilled', () => {
-    const reducer = userAdmissionReducer(TEST_DEFAULT_USER_ADMISSION_STATE, {
-      type: onUserRegister.fulfilled.type,
-      payload: TEST_REGISTER_LOGIN_USER_RESPONSE,
-    });
-    expect(reducer.isLoggedIn).toEqual(true);
-    expect(reducer.registerUser.isLoading).toEqual(false);
-    expect(reducer.registerUser.errorMessage).toBeNull();
-  });
-  it('should set loading state on user register pending', () => {
-    const reducer = userAdmissionReducer(TEST_DEFAULT_USER_ADMISSION_STATE, {
-      type: onUserRegister.pending.type,
-    });
-    expect(reducer.registerUser.isLoading).toEqual(true);
-  });
-  it('should set error message on user register rejected', () => {
-    const expectedError: string = 'some error text';
     const reducer = userAdmissionReducer(
       {
-        ...TEST_DEFAULT_USER_ADMISSION_STATE,
-        registerUser: { isLoading: true, errorMessage: null },
+        ...initialState,
+        registerUser: { isLoading: true, errorMessage: 'error' },
+      },
+      {
+        type: onUserRegister.fulfilled.type,
+        payload: TEST_REGISTER_USER_RESPONSE,
+      }
+    );
+    expect(reducer).toEqual({ ...initialState, isLoggedIn: true });
+  });
+  it('should set loading state on user register pending', () => {
+    const reducer = userAdmissionReducer(initialState, {
+      type: onUserRegister.pending.type,
+    });
+    expect(reducer).toEqual({
+      ...initialState,
+      registerUser: { ...initialState.registerUser, isLoading: true },
+    });
+  });
+  it('should set error message on user register rejected', () => {
+    const expectedError: string = 'some register user error text';
+    const reducer = userAdmissionReducer(
+      {
+        ...initialState,
+        registerUser: { ...initialState.registerUser, isLoading: true },
       },
       {
         type: onUserRegister.rejected.type,
         payload: expectedError,
       }
     );
-    expect(reducer.registerUser.isLoading).toEqual(false);
-    expect(reducer.registerUser.errorMessage).toEqual(expectedError);
-    expect(reducer.isLoggedIn).toEqual(false);
+    expect(reducer).toEqual({
+      ...initialState,
+      registerUser: {
+        ...initialState.registerUser,
+        errorMessage: expectedError,
+      },
+    });
   });
   it('should set logged in state on user login fulfilled', () => {
-    const reducer = userAdmissionReducer(TEST_DEFAULT_USER_ADMISSION_STATE, {
-      type: onLogin.fulfilled.type,
-      payload: TEST_REGISTER_LOGIN_USER_RESPONSE,
-    });
-    expect(reducer.isLoggedIn).toEqual(true);
-    expect(reducer.userLogin.isLoading).toEqual(false);
-    expect(reducer.userLogin.errorMessage).toBeNull();
-  });
-  it('should set loading state on user login pending', () => {
-    const reducer = userAdmissionReducer(TEST_DEFAULT_USER_ADMISSION_STATE, {
-      type: onLogin.pending.type,
-    });
-    expect(reducer.userLogin.isLoading).toEqual(true);
-  });
-  it('should set error message on user login rejected', () => {
     const reducer = userAdmissionReducer(
       {
-        ...TEST_DEFAULT_USER_ADMISSION_STATE,
-        userLogin: { isLoading: true, errorMessage: null },
+        ...initialState,
+        userLogin: { isLoading: true, errorMessage: 'error' },
+      },
+      {
+        type: onLogin.fulfilled.type,
+        payload: TEST_TOKEN_REFRESHED_RESPONSE,
+      }
+    );
+    expect(reducer).toEqual({ ...initialState, isLoggedIn: true });
+  });
+  it('should set loading state on user login pending', () => {
+    const reducer = userAdmissionReducer(
+      {
+        ...initialState,
+        userLogin: { ...initialState.userLogin, errorMessage: 'login error' },
+      },
+      {
+        type: onLogin.pending.type,
+      }
+    );
+    expect(reducer).toEqual({
+      ...initialState,
+      userLogin: { ...initialState.userLogin, isLoading: true },
+    });
+  });
+  it('should set error message on user login rejected', () => {
+    const expectedErrorMessage = 'incorrect email or password';
+    const reducer = userAdmissionReducer(
+      {
+        ...initialState,
+        userLogin: { ...initialState.userLogin, isLoading: true },
       },
       {
         type: onLogin.rejected.type,
-        payload: { success: false, message: 'incorrect email or password' },
+        payload: expectedErrorMessage,
       }
     );
-    expect(reducer.userLogin.isLoading).toEqual(false);
-    expect(reducer.userLogin.errorMessage).not.toBeNull();
-    expect(reducer.isLoggedIn).toEqual(false);
+    expect(reducer).toEqual({
+      ...initialState,
+      userLogin: {
+        ...initialState.userLogin,
+        errorMessage: expectedErrorMessage,
+      },
+    });
   });
   it('should set logged in state to false on user logout fulfilled', () => {
     const reducer = userAdmissionReducer(
-      { ...TEST_DEFAULT_USER_ADMISSION_STATE, isLoggedIn: true },
+      { ...initialState, isLoggedIn: true },
       {
         type: onLogout.fulfilled.type,
       }
     );
-    expect(reducer.isLoggedIn).toEqual(false);
-    expect(reducer.userLogout).toEqual(
-      TEST_DEFAULT_USER_ADMISSION_STATE.userLogout
-    );
+    expect(reducer).toEqual(initialState);
   });
   it('should set loading logout state on user logout pending', () => {
-    const reducer = userAdmissionReducer(
-      { ...TEST_DEFAULT_USER_ADMISSION_STATE, isLoggedIn: true },
-      {
-        type: onLogout.pending.type,
-      }
-    );
-    expect(reducer.userLogout.isLoading).toEqual(true);
+    const testInitialState = { ...initialState, isLoggedIn: true };
+    const reducer = userAdmissionReducer(testInitialState, {
+      type: onLogout.pending.type,
+    });
+    expect(reducer).toEqual({
+      ...testInitialState,
+      userLogout: { ...testInitialState.userLogout, isLoading: true },
+    });
   });
   it('should set logged in state to false on user logout rejected', () => {
     const reducer = userAdmissionReducer(
       {
-        ...TEST_DEFAULT_USER_ADMISSION_STATE,
+        ...initialState,
         isLoggedIn: true,
-        userLogout: { isLoading: true, errorMessage: null },
+        userLogout: { ...initialState.userLogout, isLoading: true },
       },
       {
         type: onLogout.rejected.type,
       }
     );
-    expect(reducer.isLoggedIn).toEqual(false);
-    expect(reducer.userLogout).toEqual(
-      TEST_DEFAULT_USER_ADMISSION_STATE.userLogout
-    );
+    expect(reducer).toEqual(initialState);
   });
   it('should set logged in state on get user info fulfilled', () => {
     const reducer = userAdmissionReducer(
       {
-        ...TEST_DEFAULT_USER_ADMISSION_STATE,
-        getUser: { isLoading: true, errorMessage: null },
+        ...initialState,
+        getUser: { isLoading: true, errorMessage: 'some get user error' },
       },
       {
         type: onGetUserInfo.fulfilled.type,
       }
     );
-    expect(reducer.isLoggedIn).toEqual(true);
-    expect(reducer.getUser.isLoading).toEqual(false);
-    expect(reducer.getUser.errorMessage).toBeNull();
+    expect(reducer).toEqual({ ...initialState, isLoggedIn: true });
   });
   it('should set loading state on get user info pending', () => {
-    const reducer = userAdmissionReducer(TEST_DEFAULT_USER_ADMISSION_STATE, {
+    const reducer = userAdmissionReducer(initialState, {
       type: onGetUserInfo.pending.type,
     });
-    expect(reducer.getUser.isLoading).toEqual(true);
+    expect(reducer).toEqual({
+      ...initialState,
+      getUser: { ...initialState.getUser, isLoading: true },
+    });
   });
   it('should set error message on get user info rejected', () => {
-    const expectedError: string = 'error message';
-    const reducer = userAdmissionReducer(
-      {
-        ...TEST_DEFAULT_USER_ADMISSION_STATE,
-        isLoggedIn: true,
-        getUser: { isLoading: true, errorMessage: null },
-      },
-      {
-        type: onGetUserInfo.rejected.type,
-        payload: expectedError,
-      }
-    );
-    expect(reducer.getUser.isLoading).toEqual(false);
-    expect(reducer.getUser.errorMessage).toEqual(expectedError);
+    const expectedError: string = 'get user info error message';
+    const testInitialState: TInitialState = {
+      ...initialState,
+      isLoggedIn: true,
+      getUser: { ...initialState.getUser, isLoading: true },
+    };
+    const reducer = userAdmissionReducer(testInitialState, {
+      type: onGetUserInfo.rejected.type,
+      payload: expectedError,
+    });
+    expect(reducer).toEqual({
+      ...testInitialState,
+      getUser: { isLoading: false, errorMessage: expectedError },
+    });
   });
   it('should set initial password reset state on password forgot fulfilled', () => {
     const reducer = userAdmissionReducer(
       {
-        ...TEST_DEFAULT_USER_ADMISSION_STATE,
-        passwordReset: { isLoading: true, errorMessage: 'message' },
+        ...initialState,
+        passwordReset: {
+          isLoading: true,
+          errorMessage: 'password reset error message',
+        },
       },
       {
         type: onPasswordForgot.fulfilled.type,
       }
     );
-    expect(reducer.passwordReset.isLoading).toEqual(false);
-    expect(reducer.passwordReset.errorMessage).toBeNull();
+    expect(reducer).toEqual(initialState);
   });
   it('should set loading state on password forgot pending', () => {
-    const reducer = userAdmissionReducer(TEST_DEFAULT_USER_ADMISSION_STATE, {
+    const reducer = userAdmissionReducer(initialState, {
       type: onPasswordForgot.pending.type,
     });
-    expect(reducer.passwordReset.isLoading).toEqual(true);
+    expect(reducer).toEqual({
+      ...initialState,
+      passwordReset: { ...initialState.passwordReset, isLoading: true },
+    });
   });
   it('should set error message on password forgot rejected', () => {
     const expectedError: string = 'password forgot error message';
     const reducer = userAdmissionReducer(
       {
-        ...TEST_DEFAULT_USER_ADMISSION_STATE,
-        passwordReset: { isLoading: true, errorMessage: null },
+        ...initialState,
+        passwordReset: { ...initialState.passwordReset, isLoading: true },
       },
       {
         type: onPasswordForgot.rejected.type,
         payload: expectedError,
       }
     );
-    expect(reducer.passwordReset.isLoading).toEqual(false);
-    expect(reducer.passwordReset.errorMessage).toEqual(expectedError);
+    expect(reducer).toEqual({
+      ...initialState,
+      passwordReset: {
+        ...initialState.passwordReset,
+        errorMessage: expectedError,
+      },
+    });
   });
   it('should set initial save password state on password reset fulfilled', () => {
     const reducer = userAdmissionReducer(
       {
-        ...TEST_DEFAULT_USER_ADMISSION_STATE,
-        savePassword: { isLoading: true, errorMessage: 'message' },
+        ...initialState,
+        savePassword: { isLoading: true, errorMessage: 'error message' },
       },
       {
         type: onPasswordReset.fulfilled.type,
       }
     );
-    expect(reducer.savePassword).toEqual(
-      TEST_DEFAULT_USER_ADMISSION_STATE.savePassword
-    );
+    expect(reducer).toEqual(initialState);
   });
   it('should set loading state on password reset pending', () => {
-    const reducer = userAdmissionReducer(TEST_DEFAULT_USER_ADMISSION_STATE, {
+    const reducer = userAdmissionReducer(initialState, {
       type: onPasswordReset.pending.type,
     });
-    expect(reducer.savePassword.isLoading).toEqual(true);
+    expect(reducer).toEqual({
+      ...initialState,
+      savePassword: { ...initialState.savePassword, isLoading: true },
+    });
   });
   it('should set error message on password reset rejected', () => {
     const expectedError: string = 'password reset error message';
     const reducer = userAdmissionReducer(
       {
-        ...TEST_DEFAULT_USER_ADMISSION_STATE,
-        savePassword: { isLoading: true, errorMessage: null },
+        ...initialState,
+        savePassword: { ...initialState.savePassword, isLoading: true },
       },
       {
         type: onPasswordReset.rejected.type,
         payload: expectedError,
       }
     );
-    expect(reducer.savePassword.isLoading).toEqual(false);
-    expect(reducer.savePassword.errorMessage).toEqual(expectedError);
+    expect(reducer).toEqual({
+      ...initialState,
+      savePassword: {
+        ...initialState.savePassword,
+        errorMessage: expectedError,
+      },
+    });
   });
 });
 
-const TEST_DEFAULT_USER_ADMISSION_STATE = {
-  isLoggedIn: false,
-  tokenIsLoading: false,
-  passwordReset: {
-    isLoading: false,
-    errorMessage: null,
-  },
-  savePassword: {
-    isLoading: false,
-    errorMessage: null,
-  },
-  registerUser: {
-    isLoading: false,
-    errorMessage: null,
-  },
-  userLogin: {
-    isLoading: false,
-    errorMessage: null,
-  },
-  userLogout: {
-    isLoading: false,
-    errorMessage: null,
-  },
-  userUpdate: {
-    isLoading: false,
-    errorMessage: null,
-  },
-  getUser: {
-    isLoading: false,
-    errorMessage: null,
-  },
-};
-
-const TEST_TOKEN_REFRESHED_RESPONSE = {
+const TEST_TOKEN_REFRESHED_RESPONSE: IToken = {
   success: true,
   accessToken: 'Bearer access token',
   refreshToken: 'refresh token',
 };
 
-const TEST_REGISTER_LOGIN_USER_RESPONSE = {
+const TEST_REGISTER_USER_RESPONSE: IRegisterData = {
   ...TEST_TOKEN_REFRESHED_RESPONSE,
   user: {
     email: 'email.address@here.com',

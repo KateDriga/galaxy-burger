@@ -1,6 +1,6 @@
 describe('Burger constructor is available', () => {
   before(() => {
-    cy.visit('http://localhost:3000');
+    cy.visit('/');
   });
   it('should open ingredients-constructor page by default', () => {
     cy.contains('Соберите бургер');

@@ -5,7 +5,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { generateObjFromArray } from '../../utils/util-functions';
 import { WSStatusEnum } from '../../utils/ts-types/ws-types';
 
-type TFeedOrders = {
+export type TFeedOrders = {
   [key in FeedTypesEnum]: {
     state: IFeedStatus;
     orders: IOrdersObj | null;
@@ -20,7 +20,7 @@ const initialStatus: IFeedStatus = {
   reconnectAttempts: 0,
 };
 
-const initialState: TFeedOrders = {
+export const initialState: TFeedOrders = {
   [FeedTypesEnum.ALL]: { state: initialStatus, orders: null, aggregate: null },
   [FeedTypesEnum.PROFILE]: { state: initialStatus, orders: null },
 };
@@ -51,10 +51,9 @@ const feedSlice = createSlice({
     ) => {
       state[FeedTypesEnum.ALL].state.messageReceived = true;
       if (action.payload) {
-        const orders: IOrdersObj = generateObjFromArray<IOrder>(
+        state[FeedTypesEnum.ALL].orders = generateObjFromArray<IOrder>(
           action.payload.orders
         );
-        state[FeedTypesEnum.ALL].orders = orders;
         state[FeedTypesEnum.ALL].aggregate = {
           total: action.payload.total,
           totalToday: action.payload.totalToday,

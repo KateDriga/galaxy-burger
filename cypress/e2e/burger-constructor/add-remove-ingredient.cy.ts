@@ -1,6 +1,6 @@
 describe('Add and remove ingredient functionality', () => {
   before(() => {
-    cy.visit('http://localhost:3000');
+    cy.visit('/');
   });
   it('should drag and drop ingredient', () => {
     const ingredientSelector = '.ingredients_category:last > div > a:first';

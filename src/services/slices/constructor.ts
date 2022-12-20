@@ -8,12 +8,12 @@ import {
   IngredientTypesEnum,
 } from '../../utils/ts-types/ingredient-types';
 
-interface IInitialState {
+export interface IInitialState {
   bunIngredientId: IConstructorId | null;
   middleIngredientIds: Array<IConstructorId> | null;
 }
 
-const initialState: IInitialState = {
+export const initialState: IInitialState = {
   bunIngredientId: null,
   middleIngredientIds: null,
 };

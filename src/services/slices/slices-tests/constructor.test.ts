@@ -3,63 +3,60 @@ import {
   addIngredient,
   changeIngredientsOrder,
   constructorReducer,
+  IInitialState,
+  initialState,
   removeIngredient,
 } from '../constructor';
-import { IngredientTypesEnum } from '../../../utils/ts-types/ingredient-types';
+import {
+  IConstructorId,
+  IngredientTypesEnum,
+} from '../../../utils/ts-types/ingredient-types';
 import { onNewOrder } from '../../thunks/order';
 
 describe('Constructor redux slice test', () => {
   it('should return initial state without any ingredients', () => {
     const state = store.getState().burgerConstructor;
-    expect(state).toEqual(TEST_DEFAULT_CONSTRUCTOR_STATE);
+    expect(state).toEqual(initialState);
   });
   it('should handle add bun ingredient', () => {
-    const testBunIngredientId = 'testBunIngredientId';
-    const reducer = constructorReducer(TEST_DEFAULT_CONSTRUCTOR_STATE, {
+    const reducer = constructorReducer(initialState, {
       type: addIngredient,
       payload: {
-        ingredientId: testBunIngredientId,
+        ingredientId: bunIngredient.ingredientId,
         type: IngredientTypesEnum.BUN,
       },
     });
     const expectedState = {
-      bunIngredientId: { ingredientId: testBunIngredientId },
-      middleIngredientIds: null,
+      ...initialState,
+      bunIngredientId: { ingredientId: bunIngredient.ingredientId },
     };
     expect(reducer).toEqual(expectedState);
   });
   it('should handle add middle ingredient', () => {
-    const testMiddleIngredientId = 'testMiddleIngredientId';
-    const reducer = constructorReducer(TEST_DEFAULT_CONSTRUCTOR_STATE, {
+    const reducer = constructorReducer(initialState, {
       type: addIngredient,
       payload: {
-        ingredientId: testMiddleIngredientId,
+        ingredientId: middleIngredient1.ingredientId,
         type: IngredientTypesEnum.MAIN,
       },
     });
     const expectedState = {
-      bunIngredientId: null,
-      middleIngredientIds: [{ ingredientId: testMiddleIngredientId }],
+      ...initialState,
+      middleIngredientIds: [{ ingredientId: middleIngredient1.ingredientId }],
     };
     expect(reducer).toEqual(expectedState);
   });
   it('should handle remove ingredient', () => {
+    const index = 1;
     const reducer = constructorReducer(TEST_CONSTRUCTOR_STATE, {
       type: removeIngredient,
-      payload: 1,
+      payload: index,
     });
     const expectedState = {
-      bunIngredientId: null,
-      middleIngredientIds: [
-        {
-          ingredientId: 'testMiddleIngredientId1',
-          constructorId: 'testConstructorId1',
-        },
-        {
-          ingredientId: 'testMiddleIngredientId3',
-          constructorId: 'testConstructorId3',
-        },
-      ],
+      ...TEST_CONSTRUCTOR_STATE,
+      middleIngredientIds: TEST_CONSTRUCTOR_STATE.middleIngredientIds!.filter(
+        (_, idx) => idx !== index
+      ),
     };
     expect(reducer).toEqual(expectedState);
   });
@@ -69,20 +66,11 @@ describe('Constructor redux slice test', () => {
       payload: { oldIndex: 2, newIndex: 1 },
     });
     const expectedState = {
-      bunIngredientId: null,
+      ...TEST_CONSTRUCTOR_STATE,
       middleIngredientIds: [
-        {
-          ingredientId: 'testMiddleIngredientId1',
-          constructorId: 'testConstructorId1',
-        },
-        {
-          ingredientId: 'testMiddleIngredientId3',
-          constructorId: 'testConstructorId3',
-        },
-        {
-          ingredientId: 'testMiddleIngredientId2',
-          constructorId: 'testConstructorId2',
-        },
+        middleIngredient1,
+        middleIngredient3,
+        middleIngredient2,
       ],
     };
     expect(reducer).toEqual(expectedState);
@@ -91,7 +79,7 @@ describe('Constructor redux slice test', () => {
     const reducer = constructorReducer(TEST_CONSTRUCTOR_STATE, {
       type: onNewOrder.fulfilled,
     });
-    expect(reducer).toEqual(TEST_DEFAULT_CONSTRUCTOR_STATE);
+    expect(reducer).toEqual(initialState);
   });
   it('should keep state on new order rejected', () => {
     const reducer = constructorReducer(TEST_CONSTRUCTOR_STATE, {
@@ -101,25 +89,28 @@ describe('Constructor redux slice test', () => {
   });
 });
 
-const TEST_DEFAULT_CONSTRUCTOR_STATE = {
-  bunIngredientId: null,
-  middleIngredientIds: null,
+const middleIngredient1: IConstructorId = {
+  ingredientId: 'testMiddleIngredientId1',
+  constructorId: 'testConstructorId1',
+};
+const middleIngredient2: IConstructorId = {
+  ingredientId: 'testMiddleIngredientId2',
+  constructorId: 'testConstructorId2',
+};
+const middleIngredient3: IConstructorId = {
+  ingredientId: 'testMiddleIngredientId3',
+  constructorId: 'testConstructorId3',
+};
+const bunIngredient: IConstructorId = {
+  ingredientId: 'testBunIngredientId',
+  constructorId: 'testBunConstructorId',
 };
 
-export const TEST_CONSTRUCTOR_STATE = {
-  bunIngredientId: null,
+export const TEST_CONSTRUCTOR_STATE: IInitialState = {
+  bunIngredientId: bunIngredient,
   middleIngredientIds: [
-    {
-      ingredientId: 'testMiddleIngredientId1',
-      constructorId: 'testConstructorId1',
-    },
-    {
-      ingredientId: 'testMiddleIngredientId2',
-      constructorId: 'testConstructorId2',
-    },
-    {
-      ingredientId: 'testMiddleIngredientId3',
-      constructorId: 'testConstructorId3',
-    },
+    middleIngredient1,
+    middleIngredient2,
+    middleIngredient3,
   ],
 };

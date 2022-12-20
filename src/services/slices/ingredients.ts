@@ -6,7 +6,7 @@ interface IInitialState extends IFetchState {
   burgerIngredients: IIngredientsObj | null;
 }
 
-const initialState: IInitialState = {
+export const initialState: IInitialState = {
   isLoading: false,
   isFailed: false,
   burgerIngredients: null,

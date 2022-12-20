@@ -3,11 +3,11 @@ import { onLogout, onUserInfoUpdate } from '../thunks/user-admission';
 import { onGetUserInfo } from '../thunks/user-admission';
 import { IUser } from '../../utils/ts-types/user-types';
 
-interface IInitialState {
+export interface IInitialState {
   personalInfo: IUser;
 }
 
-const initialState: IInitialState = {
+export const initialState: IInitialState = {
   personalInfo: {
     name: null,
     email: null,

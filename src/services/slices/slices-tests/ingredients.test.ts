@@ -3,6 +3,7 @@ import {
   addBurgerIngredients,
   failLoadingIngredients,
   ingredientsReducer,
+  initialState,
   startLoadingIngredients,
 } from '../ingredients';
 import { generateObjFromArray } from '../../../utils/util-functions';
@@ -11,7 +12,11 @@ import { axiosInstance } from '../../../utils/api/make-request';
 import { mockStore } from './mock-store-config';
 import { loadIngredients } from '../../thunks/ingredients';
 import { BASE_URL } from '../../../utils/const-variables/app-variables';
-import { AppUrlsEnum } from '../../../utils/ts-types/api-types';
+import {
+  AppUrlsEnum,
+  IIngredientsData,
+} from '../../../utils/ts-types/api-types';
+import { IngredientTypesEnum } from '../../../utils/ts-types/ingredient-types';
 
 describe('Ingredients redux slice test', () => {
   let mock: MockAdapter;
@@ -20,44 +25,51 @@ describe('Ingredients redux slice test', () => {
 
   it('should return initial state without ingredients', () => {
     const state = store.getState().ingredients;
-    expect(state).toEqual(TEST_DEFAULT_INGREDIENTS_STATE);
+    expect(state).toEqual(initialState);
   });
   it('should set loading state', () => {
-    const reducer = ingredientsReducer(TEST_DEFAULT_INGREDIENTS_STATE, {
+    const reducer = ingredientsReducer(initialState, {
       type: startLoadingIngredients,
     });
     expect(reducer).toEqual({
-      ...TEST_DEFAULT_INGREDIENTS_STATE,
+      ...initialState,
       isLoading: true,
     });
   });
   it('should set failed state', () => {
-    const reducer = ingredientsReducer(TEST_DEFAULT_INGREDIENTS_STATE, {
-      type: failLoadingIngredients,
-    });
+    const reducer = ingredientsReducer(
+      { ...initialState, isLoading: true },
+      {
+        type: failLoadingIngredients,
+      }
+    );
     expect(reducer).toEqual({
-      ...TEST_DEFAULT_INGREDIENTS_STATE,
+      ...initialState,
       isFailed: true,
     });
   });
   it('should add burger ingredients', () => {
-    const reducer = ingredientsReducer(TEST_DEFAULT_INGREDIENTS_STATE, {
-      type: addBurgerIngredients,
-      payload: generateObjFromArray(TEST_INGREDIENTS_RESPONSE.data),
-    });
-    expect(reducer.burgerIngredients).toEqual(
-      generateObjFromArray(TEST_INGREDIENTS_RESPONSE.data)
+    const reducer = ingredientsReducer(
+      { ...initialState, isLoading: true },
+      {
+        type: addBurgerIngredients,
+        payload: generateObjFromArray(TEST_INGREDIENTS_RESPONSE.data),
+      }
     );
+    expect(reducer).toEqual({
+      ...initialState,
+      burgerIngredients: generateObjFromArray(TEST_INGREDIENTS_RESPONSE.data),
+    });
   });
   it('should fire loading and add ingredient actions', async () => {
     const mockedOrderStore = mockStore({
-      ingredients: TEST_DEFAULT_INGREDIENTS_STATE,
+      ingredients: initialState,
     });
     mock
       .onGet(`${BASE_URL}${AppUrlsEnum.INGREDIENTS}`)
       .reply(200, TEST_INGREDIENTS_RESPONSE);
     const expectedActions = [
-      { type: startLoadingIngredients.type },
+      { type: startLoadingIngredients.type, payload: undefined },
       {
         type: addBurgerIngredients.type,
         payload: generateObjFromArray(TEST_INGREDIENTS_RESPONSE.data),
@@ -67,13 +79,11 @@ describe('Ingredients redux slice test', () => {
     await mockedOrderStore.dispatch(loadIngredients());
     const actions = mockedOrderStore.getActions();
 
-    expect(actions[0].type).toEqual(expectedActions[0].type);
-    expect(actions[1].type).toEqual(expectedActions[1].type);
-    expect(actions[1].payload).toEqual(expectedActions[1].payload);
+    expect(actions).toEqual(expectedActions);
   });
   it('should fire loading and fail loading actions', async () => {
     const mockedOrderStore = mockStore({
-      ingredients: TEST_DEFAULT_INGREDIENTS_STATE,
+      ingredients: initialState,
     });
     mock.onGet(`${BASE_URL}${AppUrlsEnum.INGREDIENTS}`).reply(404);
     const expectedActions = [
@@ -89,7 +99,7 @@ describe('Ingredients redux slice test', () => {
   it('should not fire any actions if ingredients were loaded', async () => {
     const mockedOrderStore = mockStore({
       ingredients: {
-        ...TEST_DEFAULT_INGREDIENTS_STATE,
+        ...initialState,
         burgerIngredients: generateObjFromArray(TEST_INGREDIENTS_RESPONSE.data),
       },
     });
@@ -101,19 +111,13 @@ describe('Ingredients redux slice test', () => {
   });
 });
 
-const TEST_DEFAULT_INGREDIENTS_STATE = {
-  isLoading: false,
-  isFailed: false,
-  burgerIngredients: null,
-};
-
-const TEST_INGREDIENTS_RESPONSE = {
+const TEST_INGREDIENTS_RESPONSE: IIngredientsData = {
   success: true,
   data: [
     {
       _id: '60d3b41abdacab0026a733c6',
       name: 'Краторная булка N-200i',
-      type: 'bun',
+      type: IngredientTypesEnum.BUN,
       proteins: 80,
       fat: 24,
       carbohydrates: 53,
@@ -127,7 +131,7 @@ const TEST_INGREDIENTS_RESPONSE = {
     {
       _id: '60d3b41abdacab0026a733c8',
       name: 'Филе Люминесцентного тетраодонтимформа',
-      type: 'main',
+      type: IngredientTypesEnum.MAIN,
       proteins: 44,
       fat: 26,
       carbohydrates: 85,
@@ -141,7 +145,7 @@ const TEST_INGREDIENTS_RESPONSE = {
     {
       _id: '60d3b41abdacab0026a733cc',
       name: 'Соус Spicy-X',
-      type: 'sauce',
+      type: IngredientTypesEnum.SAUCE,
       proteins: 30,
       fat: 20,
       carbohydrates: 40,
